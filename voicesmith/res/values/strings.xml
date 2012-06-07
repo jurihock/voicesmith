@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="titApplication">Voicesmith</string>
+    <string name="titAbout">About Voicesmith</string>
+    <string name="titDelay">Delay</string>
+    <string name="titDenoise">Delay &amp; Denoise</string>
+    <string name="titHoarseness">Hoarseness</string>
+    <string name="titPreferences">Preferences</string>
+    <string name="titReduceNoise">Reduce noise</string>
+    <string name="titResetPreferences">Reset to default values</string>
+    <string name="titRobotize">Robotize</string>
+    <string name="titSampleRate">Sample rate</string>
+    <string name="titTranspose">Transpose</string>
+    <string name="titVolumeLevel">Volume level</string>
+    <string name="sumDelay">Lowest possible delayed audio output on your device.</string>
+    <string name="sumDenoise">Denoised, but also a little bit more delayed, audio output.</string>
+    <string name="sumHoarseness">This effect makes your voice hoarse.</string>
+    <string name="sumRobotize">Now speak like an android. :-)</string>
+    <string name="sumTranspose">Raise or lower the voice pitch. Try to set a different transposition interval in semitones.</string>
+
+    <string-array name="titSampleRates">
+        <item>44100 Hz (default)</item>
+        <item>22050 Hz</item>
+        <item>11025 Hz</item>
+    </string-array>
+
+</resources>

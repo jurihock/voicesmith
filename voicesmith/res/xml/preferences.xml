@@ -1,0 +1,20 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <EditTextPreference
+        android:defaultValue="100"
+        android:key="prefVolumeLevel"
+        android:title="@string/titVolumeLevel" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="prefReduceNoise"
+        android:title="@string/titReduceNoise" />
+
+    <ListPreference
+        android:defaultValue="44100"
+        android:entries="@array/titSampleRates"
+        android:entryValues="@array/defSampleRates"
+        android:key="prefSampleRate"
+        android:title="@string/titSampleRate" />
+
+</PreferenceScreen>

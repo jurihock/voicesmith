@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.jurihock.voicesmith"
+    android:versionCode="4"
+    android:versionName="1.3" >
+
+    <uses-sdk android:minSdkVersion="8" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
+
+
+    <!--
+     Audio activity attributes:
+	 android:alwaysRetainTaskState="True"
+	 android:launchMode="singleInstance"
+    -->
+
+    <application
+        android:icon="@drawable/launcher"
+        android:label="@string/titApplication"
+        android:theme="@android:style/Theme.Black.NoTitleBar">
+        <activity
+            android:name=".activities.AboutActivity"
+            android:label="@string/titApplication"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.DelayActivity"
+            android:label="@string/titApplication"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.DenoiseActivity"
+            android:label="@string/titApplication"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.MainActivity"
+            android:label="@string/titApplication"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.PreferencesActivity"
+            android:label="@string/titApplication"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.RobotizeActivity"
+            android:label="@string/titApplication"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.TransposeActivity"
+            android:label="@string/titApplication"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.HoarsenessActivity"
+            android:label="@string/titApplication"
+            android:screenOrientation="portrait" >
+        </activity>
+    </application>
+
+</manifest>

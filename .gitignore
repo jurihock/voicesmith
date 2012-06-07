@@ -1,12 +1,7 @@
 bin/
 gen/
 obj/
-proguard/
 
-*.apk
-*.ap_
-*.class
-*.dex
-
+libVoicesmith.so
 local.properties
-ant.properties
+*.py[cod]
