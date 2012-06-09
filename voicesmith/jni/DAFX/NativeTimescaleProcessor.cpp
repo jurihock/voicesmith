@@ -43,6 +43,7 @@ JNIEXPORT jlong JNICALL Java_de_jurihock_voicesmith_dsp_dafx_NativeTimescaleProc
 
 	for (int i = 0; i < frameSize; i++)
 	{
+		// TODO: 2pi k/N?
 		ts->omega[i] = 2 * PI * (i / (float) frameSize)
 			* (float) analysisHopSize;
 
