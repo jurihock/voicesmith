@@ -5,6 +5,7 @@
     <string name="titAbout">About Voicesmith</string>
     <string name="titDelay">Delay</string>
     <string name="titDenoise">Delay &amp; Denoise</string>
+    <string name="titDetune">Detune</string>
     <string name="titHoarseness">Hoarseness</string>
     <string name="titPreferences">Preferences</string>
     <string name="titReduceNoise">Reduce noise</string>
@@ -15,6 +16,7 @@
     <string name="titVolumeLevel">Volume level</string>
     <string name="sumDelay">Lowest possible delayed audio output on your device.</string>
     <string name="sumDenoise">Denoised, but also a little bit more delayed, audio output.</string>
+    <string name="sumDetune">TODO</string>
     <string name="sumHoarseness">This effect makes your voice hoarse.</string>
     <string name="sumRobotize">Now speak like an android. :-)</string>
     <string name="sumTranspose">Raise or lower the voice pitch. Try to set a different transposition interval in semitones.</string>

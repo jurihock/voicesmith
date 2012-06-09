@@ -1,5 +1,5 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/dsp/dafx/HoarsenessProcessor.java
+ * src/de/jurihock/voicesmith/activities/DetuneActivity.java
  * is part of the Voicesmith project
  * <http://voicesmith.jurihock.de>
  * 
@@ -19,34 +19,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.jurihock.voicesmith.dsp.dafx;
+package de.jurihock.voicesmith.activities;
 
-import static de.jurihock.voicesmith.dsp.Math.PI;
-import static de.jurihock.voicesmith.dsp.Math.abs;
-import static de.jurihock.voicesmith.dsp.Math.imag;
-import static de.jurihock.voicesmith.dsp.Math.random;
-import static de.jurihock.voicesmith.dsp.Math.real;
+import android.os.Bundle;
+import de.jurihock.voicesmith.R;
+import de.jurihock.voicesmith.threads.DetuneThread;
 
-public final class HoarsenessProcessor
+public final class DetuneActivity extends AudioActivity
 {
-	public static void processFrame(float[] frame)
+	public DetuneActivity()
 	{
-		final int fftSize = frame.length / 2;
-		float re, im, abs, phase;
+		super(DetuneThread.class,
+			R.string.titDetune,
+			R.string.sumDetune);
+	}
 
-		for (int i = 1; i < fftSize; i++)
-		{
-			// Get source Re and Im parts
-			re = frame[2 * i];
-			im = frame[2 * i + 1];
-			abs = abs(re, im);
-
-			// Compute random phase
-			phase = random(-PI, PI);
-
-			// Compute destination Re and Im parts
-			frame[2 * i] = real(abs, phase);
-			frame[2 * i + 1] = imag(abs, phase);
-		}
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.others);
 	}
 }

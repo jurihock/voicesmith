@@ -1,5 +1,5 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/dsp/dafx/HoarsenessProcessor.java
+ * src/de/jurihock/voicesmith/dsp/dafx/DetuneProcessor.java
  * is part of the Voicesmith project
  * <http://voicesmith.jurihock.de>
  * 
@@ -21,13 +21,12 @@
 
 package de.jurihock.voicesmith.dsp.dafx;
 
-import static de.jurihock.voicesmith.dsp.Math.PI;
 import static de.jurihock.voicesmith.dsp.Math.abs;
+import static de.jurihock.voicesmith.dsp.Math.arg;
 import static de.jurihock.voicesmith.dsp.Math.imag;
-import static de.jurihock.voicesmith.dsp.Math.random;
 import static de.jurihock.voicesmith.dsp.Math.real;
 
-public final class HoarsenessProcessor
+public final class DetuneProcessor
 {
 	public static void processFrame(float[] frame)
 	{
@@ -41,8 +40,8 @@ public final class HoarsenessProcessor
 			im = frame[2 * i + 1];
 			abs = abs(re, im);
 
-			// Compute random phase
-			phase = random(-PI, PI);
+			// Invert phase value
+			phase = -arg(re, im);
 
 			// Compute destination Re and Im parts
 			frame[2 * i] = real(abs, phase);

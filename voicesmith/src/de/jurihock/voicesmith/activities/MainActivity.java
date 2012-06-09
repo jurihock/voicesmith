@@ -41,6 +41,7 @@ public final class MainActivity extends Activity implements OnItemClickListener
 		R.string.titAbout,
 		R.string.titTranspose,
 		R.string.titRobotize,
+		R.string.titDetune,
 		R.string.titHoarseness,
 		R.string.titDenoise,
 		R.string.titDelay,
@@ -96,12 +97,15 @@ public final class MainActivity extends Activity implements OnItemClickListener
 			activityClass = RobotizeActivity.class;
 			break;
 		case 3:
-			activityClass = HoarsenessActivity.class;
+			activityClass = DetuneActivity.class;
 			break;
 		case 4:
-			activityClass = DenoiseActivity.class;
+			activityClass = HoarsenessActivity.class;
 			break;
 		case 5:
+			activityClass = DenoiseActivity.class;
+			break;
+		case 6:
 			activityClass = DelayActivity.class;
 			break;
 		default:

@@ -22,14 +22,13 @@
 package de.jurihock.voicesmith.threads;
 
 import android.content.Context;
-import de.jurihock.voicesmith.io.AudioDevice;
-
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Preferences.FrameType;
 import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.dsp.cola.ColaPostprocessor;
 import de.jurihock.voicesmith.dsp.cola.ColaPreprocessor;
 import de.jurihock.voicesmith.dsp.dafx.HoarsenessProcessor;
+import de.jurihock.voicesmith.io.AudioDevice;
 
 public class HoarsenessThread extends AudioThread
 {

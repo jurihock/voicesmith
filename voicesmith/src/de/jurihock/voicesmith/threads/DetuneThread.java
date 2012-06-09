@@ -1,5 +1,5 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/threads/RobotizeThread.java
+ * src/de/jurihock/voicesmith/threads/DetuneThread.java
  * is part of the Voicesmith project
  * <http://voicesmith.jurihock.de>
  * 
@@ -27,17 +27,17 @@ import de.jurihock.voicesmith.Preferences.FrameType;
 import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.dsp.cola.ColaPostprocessor;
 import de.jurihock.voicesmith.dsp.cola.ColaPreprocessor;
-import de.jurihock.voicesmith.dsp.dafx.RobotizeProcessor;
+import de.jurihock.voicesmith.dsp.dafx.DetuneProcessor;
 import de.jurihock.voicesmith.io.AudioDevice;
 
-public class RobotizeThread extends AudioThread
+public class DetuneThread extends AudioThread
 {
 	private final float[]		buffer;
 
 	private ColaPreprocessor	preprocessor	= null;
 	private ColaPostprocessor	postprocessor	= null;
 
-	public RobotizeThread(Context context, AudioDevice input, AudioDevice output)
+	public DetuneThread(Context context, AudioDevice input, AudioDevice output)
 	{
 		super(context, input, output);
 
@@ -48,7 +48,7 @@ public class RobotizeThread extends AudioThread
 		int hopSize = preferences.getHopSize(frameType);
 
 		buffer = new float[frameSize];
-		Utils.log("Robotize frame size is %s.", buffer.length);
+		Utils.log("Detune frame size is %s.", buffer.length);
 
 		preprocessor = new ColaPreprocessor(
 			input,
@@ -91,7 +91,7 @@ public class RobotizeThread extends AudioThread
 		while (!Thread.interrupted())
 		{
 			preprocessor.processFrame(buffer);
-			RobotizeProcessor.processFrame(buffer);
+			DetuneProcessor.processFrame(buffer);
 			postprocessor.processFrame(buffer);
 		}
 	}

@@ -37,6 +37,11 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".activities.DetuneActivity"
+            android:label="@string/titApplication"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".activities.MainActivity"
             android:label="@string/titApplication"
             android:screenOrientation="portrait" >
