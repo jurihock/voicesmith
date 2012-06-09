@@ -29,6 +29,9 @@ import static de.jurihock.voicesmith.dsp.Math.sin;
 import static de.jurihock.voicesmith.dsp.Math.sqrt;
 import de.jurihock.voicesmith.Disposable;
 
+/**
+ * Replaced by the NativeTimescaleProcessor.
+ * */
 @Deprecated
 public final class TimescaleProcessor implements Disposable
 {
@@ -42,6 +45,7 @@ public final class TimescaleProcessor implements Disposable
 		omega = new float[frameSize];
 		for (int i = 0; i < frameSize; i++)
 		{
+			// TODO: 2pi k/N?
 			omega[i] = 2f * PI * (i / (float) frameSize)
 				* (float) analysisHopSize;
 		}

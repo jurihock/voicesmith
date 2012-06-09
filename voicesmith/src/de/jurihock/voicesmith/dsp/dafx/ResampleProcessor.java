@@ -25,6 +25,9 @@ import static de.jurihock.voicesmith.dsp.Math.floor;
 import de.jurihock.voicesmith.Disposable;
 import de.jurihock.voicesmith.dsp.STFT;
 
+/**
+ * Replaced by the NativeResampleProcessor.
+ * */
 @Deprecated
 public final class ResampleProcessor implements Disposable
 {
