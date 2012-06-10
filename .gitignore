@@ -5,3 +5,4 @@ obj/
 libVoicesmith.so
 local.properties
 *.py[cod]
+*.wav

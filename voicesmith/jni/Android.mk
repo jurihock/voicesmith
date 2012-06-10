@@ -8,6 +8,9 @@ include $(CLEAR_VARS)
 	# Instruction set "thumb" or "arm"
 	LOCAL_ARM_MODE := arm
 
+	# Maximum optimization
+	# LOCAL_CFLAGS := -O3
+
 	# Debugging flag
 	# LOCAL_CFLAGS := -g
 
@@ -15,7 +18,9 @@ include $(CLEAR_VARS)
 	# LOCAL_LDLIBS := -llog
 
 	# Include all .c/.cpp files to build
-	LOCAL_SRC_FILES := $(shell cd $(LOCAL_PATH); find . -type f -name '*.c'; find . -type f -name '*.cpp')
+	LOCAL_SRC_FILES := $(shell cd $(LOCAL_PATH); \
+		find . -type f -name '*.c'; \
+		find . -type f -name '*.cpp')
 
 include $(BUILD_SHARED_LIBRARY)
 #include $(BUILD_STATIC_LIBRARY)
