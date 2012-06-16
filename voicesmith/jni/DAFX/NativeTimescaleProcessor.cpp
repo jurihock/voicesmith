@@ -25,34 +25,40 @@
 
 struct Timescale
 {
-	float* omega; // Omega_k incl. H_A
+	int fftSize;
+	float timescaleRatio;
+
+	float* omegaA; // omega * analysisHopSize
+	float* omegaS; // omega * synthesisHopSize
 	float* prevPhaseA;
 	float* prevPhaseS;
-	float  phaseScaleRatio;
-	float  frameSize;
 };
 
-JNIEXPORT jlong JNICALL Java_de_jurihock_voicesmith_dsp_dafx_NativeTimescaleProcessor_alloc
-(JNIEnv *, jobject, jint frameSize, jint analysisHopSize, jint synthesisHopSize)
+JNIEXPORT jlong JNICALL Java_de_jurihock_voicesmith_dsp_dafx_NativeTimescaleProcessor_alloc(
+		JNIEnv *, jobject, jint frameSize, jint analysisHopSize,
+		jint synthesisHopSize)
 {
 	Timescale* ts = new Timescale();
 
-	ts->omega = (float*) malloc(sizeof(float) * frameSize);
-	ts->prevPhaseA = (float*) malloc(sizeof(float) * frameSize);
-	ts->prevPhaseS = (float*) malloc(sizeof(float) * frameSize);
+	ts->fftSize = frameSize / 2;
+	ts->timescaleRatio = (float) synthesisHopSize / (float) analysisHopSize;
 
-	for (int i = 0; i < frameSize; i++)
+	ts->omegaA = (float*) malloc(sizeof(float) * ts->fftSize);
+	ts->omegaS = (float*) malloc(sizeof(float) * ts->fftSize);
+	ts->prevPhaseA = (float*) malloc(sizeof(float) * ts->fftSize);
+	ts->prevPhaseS = (float*) malloc(sizeof(float) * ts->fftSize);
+
+	for (int i = 0; i < ts->fftSize; i++)
 	{
-		// TODO: 2pi k/N?
-		ts->omega[i] = 2 * PI * (i / (float) frameSize)
-			* (float) analysisHopSize;
+		ts->omegaA[i] = 2 * PI * (i / (float) frameSize) // not fftSize!
+				* (float) analysisHopSize;
+
+		ts->omegaS[i] = 2 * PI * (i / (float) frameSize) // not fftSize!
+				* (float) synthesisHopSize;
 
 		ts->prevPhaseA[i] = 0;
 		ts->prevPhaseS[i] = 0;
 	}
-
-	ts->phaseScaleRatio = (float) synthesisHopSize / (float) analysisHopSize;
-	ts->frameSize = frameSize;
 
 	return (jlong) ts;
 }
@@ -61,9 +67,12 @@ JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_dafx_NativeTimescaleProce
 (JNIEnv *, jobject, jlong handle)
 {
 	Timescale* ts = (Timescale*)handle;
-	free(ts->omega);
+
+	free(ts->omegaA);
+	free(ts->omegaS);
 	free(ts->prevPhaseA);
 	free(ts->prevPhaseS);
+
 	free(ts);
 }
 
@@ -71,15 +80,17 @@ JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_dafx_NativeTimescaleProce
 (JNIEnv *env, jobject, jlong handle, jfloatArray _frame)
 {
 	Timescale* ts = (Timescale*)handle;
-	float* frame = (float*)env->GetPrimitiveArrayCritical(_frame, 0);
 
-	int fftSize = ts->frameSize / 2;
+	if (ts->timescaleRatio == 1)
+			return;
+
+	float* frame = (float*)env->GetPrimitiveArrayCritical(_frame, 0);
 
 	float re, im, abs;
 	float nextPhaseA, nextPhaseS;
 	float phaseDeltaA, phaseDeltaS;
 
-	for (int i = 1; i < fftSize; i++)
+	for (int i = 1; i < ts->fftSize; i++)
 	{
 		// Get source Re and Im parts
 		re = frame[2 * i];
@@ -88,16 +99,24 @@ JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_dafx_NativeTimescaleProce
 		// Compute source phase
 		nextPhaseA = atan2f(im, re);
 
-		// Compute phase deltas
-		phaseDeltaA = princargf(nextPhaseA - ts->prevPhaseA[i] - ts->omega[i]) + ts->omega[i];
-		phaseDeltaS = phaseDeltaA * ts->phaseScaleRatio;
+		if (ts->timescaleRatio < 2)
+		{
+			// Compute phase deltas
+			phaseDeltaA = princargf(nextPhaseA - (ts->prevPhaseA[i] + ts->omegaA[i]));
+			phaseDeltaS = phaseDeltaA * ts->timescaleRatio;
 
-		// Compute destination phase
-		nextPhaseS = princargf(ts->prevPhaseS[i] + phaseDeltaS);
+			// Compute destination phase
+			nextPhaseS = princargf((ts->prevPhaseS[i] + ts->omegaS[i]) + phaseDeltaS);
 
-		// Save computed phase values
-		ts->prevPhaseA[i] = nextPhaseA;
-		ts->prevPhaseS[i] = nextPhaseS;
+			// Save computed phase values
+			ts->prevPhaseA[i] = nextPhaseA;
+			ts->prevPhaseS[i] = nextPhaseS;
+		}
+		else
+		{
+			// Compute destination phase
+			nextPhaseS = princargf(nextPhaseA * 2);
+		}
 
 		// Compute destination Re and Im parts
 		abs = sqrtf(re * re + im * im);

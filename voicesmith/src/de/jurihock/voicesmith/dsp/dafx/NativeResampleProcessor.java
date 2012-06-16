@@ -22,42 +22,25 @@
 package de.jurihock.voicesmith.dsp.dafx;
 
 import de.jurihock.voicesmith.Disposable;
-import de.jurihock.voicesmith.dsp.STFT;
 
 public class NativeResampleProcessor implements Disposable
 {
 	private final long		handle;
 
-	private final boolean	doInverseFFT;
-	private STFT			stft;
-
-	public NativeResampleProcessor(int frameSizeIn, int frameSizeOut, int hopSizeIn, boolean doInverseFFT)
+	public NativeResampleProcessor(int frameSizeIn, int frameSizeOut)
 	{
-		this.doInverseFFT = doInverseFFT;
-
-		if (doInverseFFT) stft = new STFT(frameSizeIn, hopSizeIn);
-		else stft = null;
-
 		handle = alloc(frameSizeIn, frameSizeOut);
 //		Utils.log("NativeResampleProcessor was allocated.");
 	}
 
 	public void dispose()
 	{
-		if (doInverseFFT)
-		{
-			stft.dispose();
-			stft = null;
-		}
-		
 		free(handle);
 //		Utils.log("NativeResampleProcessor was freed.");
 	}
 
 	public void processFrame(float[] frameIn, float[] frameOut)
 	{
-		if (doInverseFFT) stft.ifft(frameIn);
-
 		processFrame(handle, frameIn, frameOut);
 	}
 

@@ -20,56 +20,76 @@
  ******************************************************************************/
 
 #include "NativeResampleProcessor.h"
-#include "../SecretRabbitCode/src/samplerate.h"
-#include "../LogCat.h"
+#include "../MATLAB.h"
 #include <stdlib.h>
 
-struct SRC
+struct Resample
 {
-	SRC_STATE *state;
-	SRC_DATA data;
-	double ratio;
-	int error;
+	int frameSizeIn;
+	int frameSizeOut;
+
+	int* ix;
+	int* ix1;
+	float* dx;
+	float* dx1;
 };
 
-JNIEXPORT jlong JNICALL Java_de_jurihock_voicesmith_dsp_dafx_NativeResampleProcessor_alloc
-  (JNIEnv *, jobject, jint frameSizeIn, jint frameSizeOut)
+JNIEXPORT jlong JNICALL Java_de_jurihock_voicesmith_dsp_dafx_NativeResampleProcessor_alloc(
+		JNIEnv *, jobject, jint frameSizeIn, jint frameSizeOut)
 {
-	SRC *src = new SRC();
+	Resample *rs = new Resample();
 
-	src->state = src_new(SRC_LINEAR, 1, &src->error);
-	src->data.end_of_input = 0;
-	src->data.input_frames = frameSizeIn;
-	src->data.output_frames = frameSizeOut;
-	src->data.src_ratio = (double)frameSizeOut / (double)frameSizeIn;
+	rs->frameSizeIn = frameSizeIn;
+	rs->frameSizeOut = frameSizeOut;
 
-	return (jlong)src;
+	rs->ix = (int*) malloc(sizeof(int) * frameSizeOut);
+	rs->ix1 = (int*) malloc(sizeof(int) * frameSizeOut);
+	rs->dx = (float*) malloc(sizeof(float) * frameSizeOut);
+	rs->dx1 = (float*) malloc(sizeof(float) * frameSizeOut);
+
+	for (int i = 0; i < frameSizeOut; i++)
+	{
+		float x = 1 + i * (float) frameSizeIn / (float) frameSizeOut;
+
+		rs->ix[i] = floor(x);
+		rs->ix1[i] = rs->ix[i] + 1;
+		rs->dx[i] = x - rs->ix[i];
+		rs->dx1[i] = 1 - rs->dx[i];
+	}
+
+	return (jlong) rs;
 }
 
 JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_dafx_NativeResampleProcessor_free
-  (JNIEnv *, jobject, jlong handle)
+(JNIEnv *, jobject, jlong handle)
 {
-	SRC *src = (SRC*)handle;
+	Resample *rs = (Resample*)handle;
 
-	src_delete(src->state);
-	free(src);
+	free(rs->ix);
+	free(rs->ix1);
+	free(rs->dx);
+	free(rs->dx1);
+
+	free(rs);
 }
 
 JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_dafx_NativeResampleProcessor_processFrame
-  (JNIEnv *env, jobject, jlong handle, jfloatArray _frameIn, jfloatArray _frameOut)
+(JNIEnv *env, jobject, jlong handle, jfloatArray _frameIn, jfloatArray _frameOut)
 {
-	SRC *src = (SRC*)handle;
+	Resample *rs = (Resample*)handle;
 	float* frameIn = (float*)env->GetPrimitiveArrayCritical(_frameIn, 0);
 	float* frameOut = (float*)env->GetPrimitiveArrayCritical(_frameOut, 0);
 
-	src->data.data_in = frameIn;
-	src->data.data_out = frameOut;
+	int lastValue = rs->frameSizeOut - 1;
 
-	int result = src_process(src->state, &src->data);
-//	LOG("SRC RESULT %i", result);
-//	LOG("SRC ERROR %i", src->error);
-//	LOG("SRC input_frames_used %i", src->data.input_frames_used);
-//	LOG("SRC output_frames_gen %i", src->data.output_frames_gen);
+	for (int i = 0; i < lastValue; i++)
+	{
+		frameOut[i] =
+		frameIn[rs->ix[i] - 1] * rs->dx1[i] +
+		frameIn[rs->ix1[i] - 1] * rs->dx[i];
+	}
+
+	frameOut[lastValue] = frameIn[rs->ix[lastValue] - 1] * rs->dx1[lastValue]; // + 0 * rs->dx[lastValue]
 
 	env->ReleasePrimitiveArrayCritical(_frameOut, frameOut, 0);
 	env->ReleasePrimitiveArrayCritical(_frameIn, frameIn, 0);

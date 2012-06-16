@@ -1,6 +1,6 @@
 (c) 2011-2012 Juergen Hock
 
-Voicesmith is a real-time implementation of audio effects on Android smartphones. This app records an audio signal from the built-in microphone, processes it in some way and plays it back. There are three Phase Vocoder effects available. Raise or lower the voice pitch up to 12 semitones, make it sound like a robot or make it hoarse. Feel free to experiment with this app. Just try to alter your voice or of somebody else.
+Voicesmith is a real-time implementation of audio effects on Android smartphones. This app records an audio signal from the built-in microphone, processes it in some way and plays it back. There are four Phase Vocoder effects available. Raise or lower the voice pitch up to 12 semitones, make it sound like a robot, make it detuned or hoarse. Feel free to experiment with this app. Just try to alter your voice or of somebody else.
 
 Voicesmith can also be used to perform the Delayed Auditory Feedback (DAF) and Frequency-Shifted Auditory Feedback (FAF). The altered auditory feedback is successfully applied in stuttering therapy, to help people speak more fluently. Please ask your therapist to find out more. You should also know, that the lowest possible feedback delay can vary from smartphone to smartphone. Moreover the lowest possible delay on Android based smartphones is unfortunately bigger than on special hardware devices.
 
@@ -19,5 +19,4 @@ THANKS:
 * Udo Zoelzer et al. (Digital Audio Effects)
 * Thierry Dutoit, Ferran Marques et al. (Applied Signal Processing)
 * Mark Borgerding (Kiss FFT)
-* Erik de Castro Lopo (Secret Rabbit Code)
 * webmichl (Powerbutton)

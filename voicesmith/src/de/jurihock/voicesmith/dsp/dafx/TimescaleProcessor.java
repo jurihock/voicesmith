@@ -35,30 +35,38 @@ import de.jurihock.voicesmith.Disposable;
 @Deprecated
 public final class TimescaleProcessor implements Disposable
 {
-	private final float[]		omega;
+	private final int			fftSize;
+	private final float			timescaleRatio;
+
+	private final float[]		omegaA;
+	private final float[]		omegaS;
 	private final float[]		prevPhaseA;
 	private final float[]		prevPhaseS;
-	private final float			phaseScaleRatio;
 
 	public TimescaleProcessor(int frameSize, int analysisHopSize, int synthesisHopSize)
 	{
-		omega = new float[frameSize];
-		for (int i = 0; i < frameSize; i++)
+		fftSize = frameSize / 2;
+		timescaleRatio = (float) synthesisHopSize / (float) analysisHopSize;
+
+		omegaA = new float[fftSize];
+		omegaS = new float[fftSize];
+		prevPhaseA = new float[fftSize];
+		prevPhaseS = new float[fftSize];
+
+		for (int i = 0; i < fftSize; i++)
 		{
-			// TODO: 2pi k/N?
-			omega[i] = 2f * PI * (i / (float) frameSize)
+			omegaA[i] = 2 * PI * (i / (float) frameSize) // not fftSize!
 				* (float) analysisHopSize;
+
+			omegaS[i] = 2 * PI * (i / (float) frameSize) // not fftSize!
+				* (float) synthesisHopSize;
 		}
-
-		prevPhaseA = new float[frameSize];
-		prevPhaseS = new float[frameSize];
-
-		phaseScaleRatio = (float) synthesisHopSize / (float) analysisHopSize;
 	}
 
 	public void processFrame(float[] frame)
 	{
-		final int fftSize = frame.length / 2;
+		if (timescaleRatio == 1)
+			return;
 
 		float re, im, abs;
 		float nextPhaseA, nextPhaseS;
@@ -73,17 +81,24 @@ public final class TimescaleProcessor implements Disposable
 			// Compute source phase
 			nextPhaseA = atan2(im, re);
 
-			// Compute phase deltas
-			phaseDeltaA = omega[i]
-				+ princarg(nextPhaseA - prevPhaseA[i] - omega[i]);
-			phaseDeltaS = phaseDeltaA * phaseScaleRatio;
-
-			// Compute destination phase
-			nextPhaseS = princarg(prevPhaseS[i] + phaseDeltaS);
-
-			// Save computed phase values
-			prevPhaseA[i] = nextPhaseA;
-			prevPhaseS[i] = nextPhaseS;
+			if (timescaleRatio < 2)
+			{
+				// Compute phase deltas
+				phaseDeltaA = princarg(nextPhaseA - (prevPhaseA[i] + omegaA[i]));
+				phaseDeltaS = phaseDeltaA * timescaleRatio;
+	
+				// Compute destination phase
+				nextPhaseS = princarg((prevPhaseS[i] + omegaS[i]) + phaseDeltaS);
+	
+				// Save computed phase values
+				prevPhaseA[i] = nextPhaseA;
+				prevPhaseS[i] = nextPhaseS;
+			}
+			else
+			{
+				// Compute destination phase
+				nextPhaseS = princarg(nextPhaseA * 2);
+			}
 
 			// Compute destination Re and Im parts
 			abs = sqrt(re * re + im * im);

@@ -30,6 +30,7 @@ import android.content.Context;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Preferences.FrameType;
 import de.jurihock.voicesmith.Utils;
+import de.jurihock.voicesmith.dsp.STFT;
 import de.jurihock.voicesmith.dsp.cola.ColaPostprocessor;
 import de.jurihock.voicesmith.dsp.cola.ColaPreprocessor;
 import de.jurihock.voicesmith.dsp.dafx.NativeResampleProcessor;
@@ -45,6 +46,7 @@ public final class TransposeThread extends AudioThread
 
 	private ColaPreprocessor			preprocessor	= null;
 	private NativeTimescaleProcessor	timescaler		= null;
+	private STFT						stft			= null;
 	private NativeResampleProcessor		resampler		= null;
 	private ColaPostprocessor			postprocessor	= null;
 
@@ -78,6 +80,12 @@ public final class TransposeThread extends AudioThread
 			timescaler = null;
 		}
 
+		if (stft != null)
+		{
+			stft.dispose();
+			stft = null;
+		}
+
 		if (resampler != null)
 		{
 			resampler.dispose();
@@ -102,6 +110,7 @@ public final class TransposeThread extends AudioThread
 			{
 				preprocessor.processFrame(analysisFrameBuffer);
 				timescaler.processFrame(analysisFrameBuffer);
+				stft.ifft(analysisFrameBuffer);
 				resampler.processFrame(analysisFrameBuffer,
 					synthesisFrameBuffer);
 				postprocessor.processFrame(synthesisFrameBuffer);
@@ -157,9 +166,9 @@ public final class TransposeThread extends AudioThread
 				analysisFrameSize, analysisHopSize, true);
 			timescaler = new NativeTimescaleProcessor(analysisFrameSize,
 				analysisHopSize, synthesisHopSize);
+			stft = new STFT(analysisFrameSize, analysisHopSize);
 			resampler = new NativeResampleProcessor(
-				analysisFrameSize, synthesisFrameSize,
-				analysisHopSize, true);
+				analysisFrameSize, synthesisFrameSize);
 			postprocessor = new ColaPostprocessor(output,
 				synthesisFrameSize, analysisHopSize, false);
 

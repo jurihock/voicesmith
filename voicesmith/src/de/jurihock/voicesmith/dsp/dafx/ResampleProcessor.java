@@ -23,7 +23,6 @@ package de.jurihock.voicesmith.dsp.dafx;
 
 import static de.jurihock.voicesmith.dsp.Math.floor;
 import de.jurihock.voicesmith.Disposable;
-import de.jurihock.voicesmith.dsp.STFT;
 
 /**
  * Replaced by the NativeResampleProcessor.
@@ -31,68 +30,44 @@ import de.jurihock.voicesmith.dsp.STFT;
 @Deprecated
 public final class ResampleProcessor implements Disposable
 {
-	private final int		lx;
 	private final int[]		ix;
 	private final int[]		ix1;
 	private final float[]	dx;
 	private final float[]	dx1;
 
-	private final float[]	frameBufferIn;
-
-	private final boolean	doInverseFFT;
-	private STFT			stft;
-
-	public ResampleProcessor(int frameSizeIn, int frameSizeOut, int hopSizeIn, boolean doInverseFFT)
+	public ResampleProcessor(int frameSizeIn, int frameSizeOut)
 	{
-		lx = frameSizeOut;
+		ix = new int[frameSizeOut];
+		ix1 = new int[frameSizeOut];
+		dx = new float[frameSizeOut];
+		dx1 = new float[frameSizeOut];
 
-		final float[] x = new float[lx];
-
-		ix = new int[lx];
-		ix1 = new int[lx];
-		dx = new float[lx];
-		dx1 = new float[lx];
-
-		for (int i = 0; i < lx; i++)
+		for (int i = 0; i < frameSizeOut; i++)
 		{
-			x[i] = 1 + i * frameSizeIn / (float) lx;
+			float x = 1 + i * (float) frameSizeIn / (float) frameSizeOut;
 
-			ix[i] = (int) floor(x[i]);
+			ix[i] = (int) floor(x);
 			ix1[i] = ix[i] + 1;
-			dx[i] = x[i] - ix[i];
+			dx[i] = x - ix[i];
 			dx1[i] = 1 - dx[i];
 		}
-
-		frameBufferIn = new float[frameSizeIn + 1];
-
-		this.doInverseFFT = doInverseFFT;
-
-		if (doInverseFFT) stft = new STFT(frameSizeIn, hopSizeIn);
-		else stft = null;
 	}
 
 	public void dispose()
 	{
-		if (doInverseFFT)
-		{
-			stft.dispose();
-			stft = null;
-		}
 	}
 
 	public void processFrame(float[] frameIn, float[] frameOut)
 	{
-		if (doInverseFFT) stft.ifft(frameIn);
+		int lastValue = frameOut.length - 1;
 
-		System.arraycopy(frameIn, 0, frameBufferIn, 0, frameIn.length);
-		frameBufferIn[frameBufferIn.length - 1] = 0;
-
-		for (int i = 0; i < lx; i++)
+		for (int i = 0; i < lastValue; i++)
 		{
-			float value = frameBufferIn[ix[i] - 1] * dx1[i]
-				+ frameBufferIn[ix1[i] - 1] * dx[i];
-
-			frameOut[i] = value;
+			frameOut[i] = frameIn[ix[i] - 1] * dx1[i]
+				+ frameIn[ix1[i] - 1] * dx[i];
 		}
+
+		frameOut[lastValue] = frameIn[ix[lastValue] - 1] * dx1[lastValue];
+		// + 0 * dx[lastValue];
 	}
 }

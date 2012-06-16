@@ -1,7 +1,14 @@
+Changes in version 1.4 (5) from 2012-06-16
+==========================================
+
+ * Added detune effect
+ * Performed refactoring (JAVA & C/C++)
+ * Removed Secret Rabbit Code (it's sadly too large)
+
 Changes in version 1.3 (4) from 2012-06-07
 ==========================================
 
- * Performed refactoring
+ * Performed refactoring (JAVA)
  * Added preferences for volume level, denoising and sample rate
  * Fixed bug: loud tone while transposing (incomplete phase buffer initialisation)
 

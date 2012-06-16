@@ -54,9 +54,11 @@ JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_KissFFT_free
 (JNIEnv *, jobject, jlong handle)
 {
 	KissFFT* fft = (KissFFT*)handle;
+
 	free(fft->forward);
 	free(fft->backward);
 	free(fft->spectrum);
+
 	free(fft);
 }
 

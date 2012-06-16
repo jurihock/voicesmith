@@ -16,7 +16,7 @@
     <string name="titVolumeLevel">Volume level</string>
     <string name="sumDelay">Lowest possible delayed audio output on your device.</string>
     <string name="sumDenoise">Denoised, but also a little bit more delayed, audio output.</string>
-    <string name="sumDetune">TODO</string>
+    <string name="sumDetune">Detune your voice depending on pitch.</string>
     <string name="sumHoarseness">This effect makes your voice hoarse.</string>
     <string name="sumRobotize">Now speak like an android. :-)</string>
     <string name="sumTranspose">Raise or lower the voice pitch. Try to set a different transposition interval in semitones.</string>
