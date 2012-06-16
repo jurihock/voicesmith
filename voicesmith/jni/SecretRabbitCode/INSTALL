@@ -1,5 +1,0 @@
-To configure the SRC run
-
-	./configure --host=arm-eabi
-
-from Android terminal.
