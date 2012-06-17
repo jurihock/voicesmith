@@ -27,15 +27,15 @@ import de.jurihock.voicesmith.io.AudioDevice;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.Preferences.FrameType;
-import de.jurihock.voicesmith.dsp.cola.ColaPostprocessor;
-import de.jurihock.voicesmith.dsp.cola.ColaPreprocessor;
+import de.jurihock.voicesmith.dsp.stft.StftPostprocessor;
+import de.jurihock.voicesmith.dsp.stft.StftPreprocessor;
 
 public class DenoiseThread extends AudioThread
 {
 	private final float[]		buffer;
 
-	private ColaPreprocessor	preprocessor	= null;
-	private ColaPostprocessor	postprocessor	= null;
+	private StftPreprocessor	preprocessor	= null;
+	private StftPostprocessor	postprocessor	= null;
 
 	public DenoiseThread(Context context, AudioDevice input, AudioDevice output)
 	{
@@ -46,13 +46,13 @@ public class DenoiseThread extends AudioThread
 		buffer = new float[preferences.getFrameSize(FrameType.Medium)];
 		Utils.log("Denoise frame size is %s.", buffer.length);
 
-		preprocessor = new ColaPreprocessor(input,
+		preprocessor = new StftPreprocessor(input,
 			preferences.getFrameSize(FrameType.Medium),
 			preferences.getHopSize(FrameType.Medium),
 			true,
 			true);
 
-		postprocessor = new ColaPostprocessor(output,
+		postprocessor = new StftPostprocessor(output,
 			preferences.getFrameSize(FrameType.Medium),
 			preferences.getHopSize(FrameType.Medium),
 			true);

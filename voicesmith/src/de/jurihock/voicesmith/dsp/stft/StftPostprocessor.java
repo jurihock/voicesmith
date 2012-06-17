@@ -1,5 +1,5 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/dsp/cola/ColaPostprocessor.java
+ * src/de/jurihock/voicesmith/dsp/cola/StftPostprocessor.java
  * is part of the Voicesmith project
  * <http://voicesmith.jurihock.de>
  * 
@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.jurihock.voicesmith.dsp.cola;
+package de.jurihock.voicesmith.dsp.stft;
 
 import static de.jurihock.voicesmith.dsp.Math.max;
 import static de.jurihock.voicesmith.dsp.Math.min;
@@ -28,7 +28,7 @@ import static de.jurihock.voicesmith.dsp.Math.round;
 import java.util.Arrays;
 
 import de.jurihock.voicesmith.Disposable;
-import de.jurihock.voicesmith.dsp.STFT;
+import de.jurihock.voicesmith.dsp.FFT;
 import de.jurihock.voicesmith.io.AudioDevice;
 
 /**
@@ -36,26 +36,26 @@ import de.jurihock.voicesmith.io.AudioDevice;
  * audio sink. Frames get shifted by the given hop size, normalized, weighted
  * and optinal transformed into time domain.
  * */
-public final class ColaPostprocessor implements Disposable
+public final class StftPostprocessor implements Disposable
 {
 	private final AudioDevice	output;
 	private final int			frameSize;
 	private final int			hopSize;
 	private final boolean		doInverseFFT;
 
-	private STFT				stft;
+	private FFT					fft;
 
 	private final short[]		prevFrame, nextFrame;
 	private int					frameCursor;
 
-	public ColaPostprocessor(AudioDevice output, int frameSize, int hopSize, boolean doInverseFFT)
+	public StftPostprocessor(AudioDevice output, int frameSize, int hopSize, boolean doInverseFFT)
 	{
 		this.output = output;
 		this.frameSize = frameSize;
 		this.hopSize = hopSize;
 		this.doInverseFFT = doInverseFFT;
 
-		stft = new STFT(frameSize, hopSize);
+		fft = new FFT(frameSize, hopSize);
 
 		prevFrame = new short[frameSize];
 		nextFrame = new short[frameSize];
@@ -64,27 +64,27 @@ public final class ColaPostprocessor implements Disposable
 
 	public void dispose()
 	{
-		stft.dispose();
-		stft = null;
+		fft.dispose();
+		fft = null;
 	}
 
 	public void processFrame(float[] frame)
 	{
-		if (doInverseFFT) stft.ifft(frame);
+		if (doInverseFFT) fft.ifft(frame);
 
 		// Prepare left frame part
 		synthesizeFrame(
 			frame, 0,
 			prevFrame, frameCursor,
 			frameSize - frameCursor,
-			stft.window());
+			fft.window());
 
 		// Prepare right frame part
 		synthesizeFrame(
 			frame, frameSize - frameCursor,
 			nextFrame, 0,
 			frameCursor,
-			stft.window());
+			fft.window());
 
 		// Increment and handle frame cursor
 		frameCursor += hopSize;

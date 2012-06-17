@@ -25,17 +25,17 @@ import android.content.Context;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Preferences.FrameType;
 import de.jurihock.voicesmith.Utils;
-import de.jurihock.voicesmith.dsp.cola.ColaPostprocessor;
-import de.jurihock.voicesmith.dsp.cola.ColaPreprocessor;
 import de.jurihock.voicesmith.dsp.dafx.HoarsenessProcessor;
+import de.jurihock.voicesmith.dsp.stft.StftPostprocessor;
+import de.jurihock.voicesmith.dsp.stft.StftPreprocessor;
 import de.jurihock.voicesmith.io.AudioDevice;
 
 public class HoarsenessThread extends AudioThread
 {
 	private final float[]		buffer;
 
-	private ColaPreprocessor	preprocessor	= null;
-	private ColaPostprocessor	postprocessor	= null;
+	private StftPreprocessor	preprocessor	= null;
+	private StftPostprocessor	postprocessor	= null;
 
 	public HoarsenessThread(Context context, AudioDevice input, AudioDevice output)
 	{
@@ -46,12 +46,12 @@ public class HoarsenessThread extends AudioThread
 		buffer = new float[preferences.getFrameSize(FrameType.Small)];
 		Utils.log("Hoarseness frame size is %s.", buffer.length);
 
-		preprocessor = new ColaPreprocessor(input,
+		preprocessor = new StftPreprocessor(input,
 			preferences.getFrameSize(FrameType.Small),
 			preferences.getHopSize(FrameType.Small),
 			true);
 
-		postprocessor = new ColaPostprocessor(output,
+		postprocessor = new StftPostprocessor(output,
 			preferences.getFrameSize(FrameType.Small),
 			preferences.getHopSize(FrameType.Small),
 			true);

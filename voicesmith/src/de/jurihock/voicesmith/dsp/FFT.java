@@ -1,5 +1,5 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/dsp/STFT.java
+ * src/de/jurihock/voicesmith/dsp/FFT.java
  * is part of the Voicesmith project
  * <http://voicesmith.jurihock.de>
  * 
@@ -26,14 +26,14 @@ import static de.jurihock.voicesmith.dsp.Math.cos;
 import static de.jurihock.voicesmith.dsp.Math.sqrt;
 import de.jurihock.voicesmith.Disposable;
 
-public final class STFT implements Disposable
+public final class FFT implements Disposable
 {
 	private final float[]	window;
 	private final float[]	fftShiftBuffer;
 
 	private KissFFT			fft;
-	
-	public STFT(int frameSize, int hopSize)
+
+	public FFT(int frameSize, int hopSize)
 	{
 		this.window = hannWindow(frameSize, hopSize, false);
 		this.fftShiftBuffer = new float[frameSize / 2];
@@ -99,7 +99,7 @@ public final class STFT implements Disposable
 		if (weight)
 		{
 			float cola_weighting = 0;
-			
+
 			for (int i = 0; i < N; i++)
 				cola_weighting += window[i] * window[i];
 

@@ -30,11 +30,11 @@ import android.content.Context;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Preferences.FrameType;
 import de.jurihock.voicesmith.Utils;
-import de.jurihock.voicesmith.dsp.STFT;
-import de.jurihock.voicesmith.dsp.cola.ColaPostprocessor;
-import de.jurihock.voicesmith.dsp.cola.ColaPreprocessor;
+import de.jurihock.voicesmith.dsp.FFT;
 import de.jurihock.voicesmith.dsp.dafx.NativeResampleProcessor;
 import de.jurihock.voicesmith.dsp.dafx.NativeTimescaleProcessor;
+import de.jurihock.voicesmith.dsp.stft.StftPostprocessor;
+import de.jurihock.voicesmith.dsp.stft.StftPreprocessor;
 import de.jurihock.voicesmith.io.AudioDevice;
 
 public final class TransposeThread extends AudioThread
@@ -44,11 +44,11 @@ public final class TransposeThread extends AudioThread
 
 	private int							semitones;
 
-	private ColaPreprocessor			preprocessor	= null;
+	private StftPreprocessor			preprocessor	= null;
 	private NativeTimescaleProcessor	timescaler		= null;
-	private STFT						stft			= null;
+	private FFT							fft				= null;
 	private NativeResampleProcessor		resampler		= null;
-	private ColaPostprocessor			postprocessor	= null;
+	private StftPostprocessor			postprocessor	= null;
 
 	private float[]						analysisFrameBuffer;
 	private float[]						synthesisFrameBuffer;
@@ -80,10 +80,10 @@ public final class TransposeThread extends AudioThread
 			timescaler = null;
 		}
 
-		if (stft != null)
+		if (fft != null)
 		{
-			stft.dispose();
-			stft = null;
+			fft.dispose();
+			fft = null;
 		}
 
 		if (resampler != null)
@@ -110,7 +110,7 @@ public final class TransposeThread extends AudioThread
 			{
 				preprocessor.processFrame(analysisFrameBuffer);
 				timescaler.processFrame(analysisFrameBuffer);
-				stft.ifft(analysisFrameBuffer);
+				fft.ifft(analysisFrameBuffer);
 				resampler.processFrame(analysisFrameBuffer,
 					synthesisFrameBuffer);
 				postprocessor.processFrame(synthesisFrameBuffer);
@@ -162,14 +162,14 @@ public final class TransposeThread extends AudioThread
 
 			disposeProcessors();
 
-			preprocessor = new ColaPreprocessor(input,
+			preprocessor = new StftPreprocessor(input,
 				analysisFrameSize, analysisHopSize, true);
 			timescaler = new NativeTimescaleProcessor(analysisFrameSize,
 				analysisHopSize, synthesisHopSize);
-			stft = new STFT(analysisFrameSize, analysisHopSize);
+			fft = new FFT(analysisFrameSize, analysisHopSize);
 			resampler = new NativeResampleProcessor(
 				analysisFrameSize, synthesisFrameSize);
-			postprocessor = new ColaPostprocessor(output,
+			postprocessor = new StftPostprocessor(output,
 				synthesisFrameSize, analysisHopSize, false);
 
 			analysisFrameBuffer = new float[analysisFrameSize];

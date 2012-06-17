@@ -1,5 +1,5 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/dsp/cola/ColaPreprocessor.java
+ * src/de/jurihock/voicesmith/dsp/cola/StftPreprocessor.java
  * is part of the Voicesmith project
  * <http://voicesmith.jurihock.de>
  * 
@@ -19,13 +19,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.jurihock.voicesmith.dsp.cola;
+package de.jurihock.voicesmith.dsp.stft;
 
 import static de.jurihock.voicesmith.dsp.Math.max;
 import static de.jurihock.voicesmith.dsp.Math.min;
 import de.jurihock.voicesmith.Disposable;
 import de.jurihock.voicesmith.Preferences;
-import de.jurihock.voicesmith.dsp.STFT;
+import de.jurihock.voicesmith.dsp.FFT;
 import de.jurihock.voicesmith.dsp.dafx.DenoiseProcessor;
 import de.jurihock.voicesmith.io.AudioDevice;
 
@@ -34,7 +34,7 @@ import de.jurihock.voicesmith.io.AudioDevice;
  * source. Frames get shifted by the given hop size, normalized, weighted,
  * optional denoised and transformed into frequency domain.
  * */
-public final class ColaPreprocessor implements Disposable
+public final class StftPreprocessor implements Disposable
 {
 	private final AudioDevice	input;
 	private final int			frameSize;
@@ -42,12 +42,12 @@ public final class ColaPreprocessor implements Disposable
 	private final boolean		doForwardFFT;
 	private final boolean		doDenoise;
 
-	private STFT				stft;
+	private FFT					fft;
 
 	private final short[]		prevFrame, nextFrame;
 	private int					frameCursor;
 
-	public ColaPreprocessor(AudioDevice input, int frameSize, int hopSize, boolean doForwardFFT, boolean doDenoise)
+	public StftPreprocessor(AudioDevice input, int frameSize, int hopSize, boolean doForwardFFT, boolean doDenoise)
 	{
 		this.input = input;
 		this.frameSize = frameSize;
@@ -55,14 +55,14 @@ public final class ColaPreprocessor implements Disposable
 		this.doForwardFFT = doForwardFFT;
 		this.doDenoise = doDenoise;
 
-		stft = new STFT(frameSize, hopSize);
+		fft = new FFT(frameSize, hopSize);
 
 		prevFrame = new short[frameSize];
 		nextFrame = new short[frameSize];
 		frameCursor = -1;
 	}
 
-	public ColaPreprocessor(AudioDevice audioDevice, int frameSize, int hopSize, boolean doForwardFFT)
+	public StftPreprocessor(AudioDevice audioDevice, int frameSize, int hopSize, boolean doForwardFFT)
 	{
 		this(audioDevice, frameSize, hopSize, doForwardFFT,
 			new Preferences(audioDevice.getContext()).isReduceNoise());
@@ -70,8 +70,8 @@ public final class ColaPreprocessor implements Disposable
 
 	public void dispose()
 	{
-		stft.dispose();
-		stft = null;
+		fft.dispose();
+		fft = null;
 	}
 
 	public void processFrame(float[] frame)
@@ -100,16 +100,16 @@ public final class ColaPreprocessor implements Disposable
 			prevFrame, frameCursor,
 			frame, 0,
 			frameSize - frameCursor,
-			stft.window());
+			fft.window());
 
 		// Prepare right frame part
 		analyzeFrame(
 			nextFrame, 0,
 			frame, frameSize - frameCursor,
 			frameCursor,
-			stft.window());
+			fft.window());
 
-		if (doForwardFFT) stft.fft(frame);
+		if (doForwardFFT) fft.fft(frame);
 
 		if (doForwardFFT && doDenoise) DenoiseProcessor.processFrame(frame);
 

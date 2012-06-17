@@ -25,17 +25,17 @@ import android.content.Context;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Preferences.FrameType;
 import de.jurihock.voicesmith.Utils;
-import de.jurihock.voicesmith.dsp.cola.ColaPostprocessor;
-import de.jurihock.voicesmith.dsp.cola.ColaPreprocessor;
 import de.jurihock.voicesmith.dsp.dafx.RobotizeProcessor;
+import de.jurihock.voicesmith.dsp.stft.StftPostprocessor;
+import de.jurihock.voicesmith.dsp.stft.StftPreprocessor;
 import de.jurihock.voicesmith.io.AudioDevice;
 
 public class RobotizeThread extends AudioThread
 {
 	private final float[]		buffer;
 
-	private ColaPreprocessor	preprocessor	= null;
-	private ColaPostprocessor	postprocessor	= null;
+	private StftPreprocessor	preprocessor	= null;
+	private StftPostprocessor	postprocessor	= null;
 
 	public RobotizeThread(Context context, AudioDevice input, AudioDevice output)
 	{
@@ -50,13 +50,13 @@ public class RobotizeThread extends AudioThread
 		buffer = new float[frameSize];
 		Utils.log("Robotize frame size is %s.", buffer.length);
 
-		preprocessor = new ColaPreprocessor(
+		preprocessor = new StftPreprocessor(
 			input,
 			frameSize,
 			hopSize,
 			true);
 
-		postprocessor = new ColaPostprocessor(
+		postprocessor = new StftPostprocessor(
 			output,
 			frameSize,
 			hopSize,
