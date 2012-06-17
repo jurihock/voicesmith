@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 #include "NativeResampleProcessor.h"
-#include "../MATLAB.h"
+#include "../Math/MathDefs.h"
 #include <stdlib.h>
 
 struct Resample

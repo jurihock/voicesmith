@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 #include "NativeTimescaleProcessor.h"
-#include "../MATLAB.h"
+#include "../Math/MathDefs.h"
 #include <stdlib.h>
 
 struct Timescale
