@@ -1,5 +1,5 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/dsp/cola/StftPostprocessor.java
+ * src/de/jurihock/voicesmith/dsp/stft/StftPostprocessor.java
  * is part of the Voicesmith project
  * <http://voicesmith.jurihock.de>
  * 
