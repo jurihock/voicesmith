@@ -42,7 +42,7 @@ public final class StftPreprocessor implements Disposable
 	private final boolean		doForwardFFT;
 	private final boolean		doDenoise;
 
-	private FFT					fft;
+	private FFT					fft	= null;
 
 	private final short[]		prevFrame, nextFrame;
 	private int					frameCursor;
@@ -70,8 +70,11 @@ public final class StftPreprocessor implements Disposable
 
 	public void dispose()
 	{
-		fft.dispose();
-		fft = null;
+		if (fft != null)
+		{
+			fft.dispose();
+			fft = null;
+		}
 	}
 
 	public void processFrame(float[] frame)

@@ -23,8 +23,6 @@ package de.jurihock.voicesmith.activities;
 
 import java.io.IOException;
 
-import de.jurihock.voicesmith.io.AudioDevice;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,6 +37,7 @@ import android.widget.ToggleButton;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.R;
 import de.jurihock.voicesmith.Utils;
+import de.jurihock.voicesmith.io.AudioDevice;
 import de.jurihock.voicesmith.io.pcm.PcmInDevice;
 import de.jurihock.voicesmith.io.pcm.PcmOutDevice;
 import de.jurihock.voicesmith.threads.AudioThread;
@@ -48,8 +47,9 @@ public abstract class AudioActivity extends Activity implements OnClickListener
 	private final Class<? extends AudioThread>	threadClass;
 	private final int							threadTitleID, threadInfoID;
 
-	protected AudioThread						thread;
-	protected AudioDevice						input, output;
+	protected AudioThread						thread	= null;
+	protected AudioDevice						input	= null;
+	protected AudioDevice						output	= null;
 
 	protected ToggleButton						ctrlToggleButton;
 	protected TextView							ctrlTitle, ctrlSummary;
@@ -74,7 +74,7 @@ public abstract class AudioActivity extends Activity implements OnClickListener
 		loadVolumeLevel();
 		registerHeadsetDetector();
 	}
-	
+
 	@Override
 	protected void onDestroy()
 	{
@@ -86,21 +86,30 @@ public abstract class AudioActivity extends Activity implements OnClickListener
 		storeVolumeLevel();
 		unregisterHeadsetDetector();
 
-		if (thread.isRunning())
+		if (thread != null)
 		{
-			thread.stop();
+			if (thread.isRunning())
+			{
+				thread.stop();
+			}
+
+			thread.dispose();
+			thread = null;
 		}
 
-		thread.dispose();
-		thread = null;
+		if (input != null)
+		{
+			input.dispose();
+			input = null;
+		}
 
-		input.dispose();
-		input = null;
-
-		output.dispose();
-		output = null;
+		if (output != null)
+		{
+			output.dispose();
+			output = null;
+		}
 	}
-	
+
 	@Override
 	protected void onStop()
 	{
@@ -158,7 +167,8 @@ public abstract class AudioActivity extends Activity implements OnClickListener
 			this.getSystemService(Context.AUDIO_SERVICE);
 
 		// VOL = VOL% * (MAX / 100)
-		double volumeLevel = audio.getStreamMaxVolume(Preferences.PCM_OUT_SOURCE) / 100D;
+		double volumeLevel = audio
+			.getStreamMaxVolume(Preferences.PCM_OUT_SOURCE) / 100D;
 		volumeLevel *= new Preferences(this).getVolumeLevel();
 
 		audio.setStreamVolume(

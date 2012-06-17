@@ -43,7 +43,7 @@ public final class StftPostprocessor implements Disposable
 	private final int			hopSize;
 	private final boolean		doInverseFFT;
 
-	private FFT					fft;
+	private FFT					fft	= null;
 
 	private final short[]		prevFrame, nextFrame;
 	private int					frameCursor;
@@ -64,8 +64,11 @@ public final class StftPostprocessor implements Disposable
 
 	public void dispose()
 	{
-		fft.dispose();
-		fft = null;
+		if (fft != null)
+		{
+			fft.dispose();
+			fft = null;
+		}
 	}
 
 	public void processFrame(float[] frame)

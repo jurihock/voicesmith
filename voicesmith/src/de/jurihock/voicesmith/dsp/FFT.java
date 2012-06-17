@@ -31,7 +31,7 @@ public final class FFT implements Disposable
 	private final float[]	window;
 	private final float[]	fftShiftBuffer;
 
-	private KissFFT			fft;
+	private KissFFT			fft	= null;
 
 	public FFT(int frameSize, int hopSize)
 	{
@@ -42,8 +42,11 @@ public final class FFT implements Disposable
 
 	public void dispose()
 	{
-		fft.dispose();
-		fft = null;
+		if (fft != null)
+		{
+			fft.dispose();
+			fft = null;
+		}
 	}
 
 	public float[] window()
