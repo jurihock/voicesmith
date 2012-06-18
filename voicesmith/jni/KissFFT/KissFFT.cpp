@@ -27,16 +27,35 @@
 // Custom structure to organize the KissFFT stuff
 struct KissFFT
 {
-	kiss_fftr_cfg forward; 	// FFT handler
+	int size; // FFT size
+	kiss_fftr_cfg forward; // FFT handler
 	kiss_fftr_cfg backward; // IFFT handler
-	kiss_fft_cpx* spectrum; // Spectrum data buffer
-	int size; 				// FFT size
+	kiss_fft_cpx* spectrum; // spectrum data buffer
+	float* halfBuffer; // fftshift auxiliary buffer
 };
 
-JNIEXPORT jlong JNICALL Java_de_jurihock_voicesmith_dsp_KissFFT_alloc
-(JNIEnv *, jobject, jint size)
+// Swaps the left and right halves of the value like the MATLAB fftshift function
+void fftshift(KissFFT* fft, float* buffer)
+{
+	const int halfSize = (fft->size / 2);
+	const int floatCount = sizeof(float) * halfSize;
+
+	// buffer(0:N/2) => halfBuffer
+	memcpy(fft->halfBuffer, buffer, floatCount);
+
+	// buffer(N/2:N) => buffer(0:N/2)
+	memcpy(buffer, buffer + halfSize, floatCount);
+
+	// halfBuffer => buffer(N/2:N)
+	memcpy(buffer + halfSize, fft->halfBuffer, floatCount);
+}
+
+JNIEXPORT jlong JNICALL Java_de_jurihock_voicesmith_dsp_KissFFT_alloc(JNIEnv *,
+		jobject, jint size)
 {
 	KissFFT* fft = new KissFFT();
+
+	fft->size = size;
 
 	fft->forward = kiss_fftr_alloc(size, 0, NULL, NULL);
 	fft->backward = kiss_fftr_alloc(size, 1, NULL, NULL);
@@ -45,7 +64,7 @@ JNIEXPORT jlong JNICALL Java_de_jurihock_voicesmith_dsp_KissFFT_alloc
 	fft->spectrum = (kiss_fft_cpx*) malloc(
 			sizeof(kiss_fft_cpx) * ((size / 2) + 1));
 
-	fft->size = size;
+	fft->halfBuffer = (float*) malloc(sizeof(float) * (size / 2));
 
 	return (jlong) fft;
 }
@@ -58,6 +77,7 @@ JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_KissFFT_free
 	free(fft->forward);
 	free(fft->backward);
 	free(fft->spectrum);
+	free(fft->halfBuffer);
 
 	free(fft);
 }
@@ -68,6 +88,8 @@ JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_KissFFT_fft
 	KissFFT* fft = (KissFFT*)handle;
 
 	float* buffer = (float*)env->GetPrimitiveArrayCritical(_buffer, 0);
+
+	fftshift(fft, buffer);
 
 	// fft(buffer) => spectrum
 	kiss_fftr(fft->forward, buffer, fft->spectrum);
@@ -104,7 +126,9 @@ JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_KissFFT_ifft
 
 	// Normalize buffer values by 1/N
 	for (int i = 0; i < fft->size; i++)
-		buffer[i] /= fft->size;
+	buffer[i] /= fft->size;
+
+	fftshift(fft, buffer);
 
 	env->ReleasePrimitiveArrayCritical(_buffer, buffer, 0);
 }

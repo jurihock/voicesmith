@@ -29,14 +29,12 @@ import de.jurihock.voicesmith.Disposable;
 public final class FFT implements Disposable
 {
 	private final float[]	window;
-	private final float[]	fftShiftBuffer;
 
 	private KissFFT			fft	= null;
 
 	public FFT(int frameSize, int hopSize)
 	{
 		this.window = hannWindow(frameSize, hopSize, false);
-		this.fftShiftBuffer = new float[frameSize / 2];
 		this.fft = new KissFFT(frameSize);
 	}
 
@@ -56,33 +54,16 @@ public final class FFT implements Disposable
 
 	public void fft(float[] value)
 	{
-		fftshift(value);
-
-		// Utils.tic("fft");
+//		Utils.tic("fft");
 		fft.fft(value);
-		// Utils.toc("fft");
+//		Utils.toc("fft");
 	}
 
 	public void ifft(float[] value)
 	{
-		// Utils.tic("ifft");
+//		Utils.tic("ifft");
 		fft.ifft(value);
-		// Utils.toc("ifft");
-
-		fftshift(value);
-	}
-
-	/**
-	 * Swaps the left and right halves of the value like the MATLAB fftshift
-	 * function.
-	 * */
-	private synchronized void fftshift(float[] value)
-	{
-		final int halfSize = value.length / 2;
-
-		System.arraycopy(value, 0, fftShiftBuffer, 0, halfSize);
-		System.arraycopy(value, halfSize, value, 0, halfSize);
-		System.arraycopy(fftShiftBuffer, 0, value, halfSize, halfSize);
+//		Utils.toc("ifft");
 	}
 
 	/**
