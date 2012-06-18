@@ -34,14 +34,14 @@ public final class Preferences
 {
 	// TODO: Try different audio sources
 	public static final int			PCM_IN_SOURCE	= MediaRecorder.AudioSource.MIC;
-//	 public static final int PCM_IN_SOURCE =
-//	 MediaRecorder.AudioSource.VOICE_CALL;
-//	 public static final int PCM_IN_SOURCE =
-//	 MediaRecorder.AudioSource.VOICE_DOWNLINK;
-//	 public static final int PCM_IN_SOURCE =
-//	 MediaRecorder.AudioSource.VOICE_UPLINK;
+	// public static final int PCM_IN_SOURCE =
+	// MediaRecorder.AudioSource.VOICE_CALL;
+	// public static final int PCM_IN_SOURCE =
+	// MediaRecorder.AudioSource.VOICE_DOWNLINK;
+	// public static final int PCM_IN_SOURCE =
+	// MediaRecorder.AudioSource.VOICE_UPLINK;
 	public static final int			PCM_OUT_SOURCE	= AudioManager.STREAM_MUSIC;
-//	 public static final int PCM_OUT_SOURCE = AudioManager.STREAM_VOICE_CALL;
+	// public static final int PCM_OUT_SOURCE = AudioManager.STREAM_VOICE_CALL;
 
 	private final SharedPreferences	preferences;
 

@@ -17,7 +17,7 @@ function GenerateJNI()
 	# Make the JNI header file
 	javah -verbose -jni -classpath $CLASSPATH -o jni/$OUTPUTDIR/$CLASSNAME.h $PACKAGE.$CLASSNAME
 
-	# Only if using rather (S/J)DK version than Eclipse --
+	# Only if using rather SDK/JDK version than Eclipse --
 	# delete the compiled Java class file
 	# rm bin/classes/$INPUTDIR/$CLASSNAME.class
 }

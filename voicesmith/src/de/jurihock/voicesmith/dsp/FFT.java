@@ -95,7 +95,7 @@ public final class FFT implements Disposable
 		// Compute Hann window coefficients
 		for (int n = 0; n < N; n++)
 		{
-			window[n] = 0.5F * (1F - cos(2F * PI * n / (N - 1)));
+			window[n] = 0.5F * (1F - cos(2F * PI * n / (N - 1F)));
 		}
 
 		// Compute COLA window weighting factor

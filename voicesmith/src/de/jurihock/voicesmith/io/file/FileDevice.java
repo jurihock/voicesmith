@@ -24,9 +24,7 @@ package de.jurihock.voicesmith.io.file;
 import java.nio.ByteOrder;
 
 import android.content.Context;
-
 import de.jurihock.voicesmith.io.AudioDevice;
-
 
 public abstract class FileDevice extends AudioDevice
 {
@@ -34,7 +32,7 @@ public abstract class FileDevice extends AudioDevice
 	{
 		super(context);
 	}
-	
+
 	private String	filePath;
 
 	public String getFilePath()
@@ -47,7 +45,7 @@ public abstract class FileDevice extends AudioDevice
 		this.filePath = filePath;
 	}
 
-	private ByteOrder fileEncoding;
+	private ByteOrder	fileEncoding;
 
 	public ByteOrder getFileEncoding()
 	{
@@ -58,12 +56,12 @@ public abstract class FileDevice extends AudioDevice
 	{
 		this.fileEncoding = fileEncoding;
 	}
-	
+
 	/**
 	 * Swaps low and high bytes of the given short value.
 	 * */
 	protected static short swapBytes(short value)
 	{
-		return (short) ((((value >> 0) & 0xff) << 8) + (((value >> 8) & 0xff) << 0));
+		return (short) ((((value >> 0) & 0xFF) << 8) + (((value >> 8) & 0xFF) << 0));
 	}
 }
