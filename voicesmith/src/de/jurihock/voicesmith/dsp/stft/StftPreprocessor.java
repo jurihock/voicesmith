@@ -43,6 +43,7 @@ public final class StftPreprocessor implements Disposable
 	private final boolean		doDenoise;
 
 	private FFT					fft	= null;
+	private final float[]		window;
 
 	private final short[]		prevFrame, nextFrame;
 	private int					frameCursor;
@@ -56,6 +57,7 @@ public final class StftPreprocessor implements Disposable
 		this.doDenoise = doDenoise;
 
 		fft = new FFT(frameSize, hopSize);
+		window = fft.window();
 
 		prevFrame = new short[frameSize];
 		nextFrame = new short[frameSize];
@@ -103,14 +105,14 @@ public final class StftPreprocessor implements Disposable
 			prevFrame, frameCursor,
 			frame, 0,
 			frameSize - frameCursor,
-			fft.window());
+			window);
 
 		// Prepare right frame part
 		analyzeFrame(
 			nextFrame, 0,
 			frame, frameSize - frameCursor,
 			frameCursor,
-			fft.window());
+			window);
 
 		if (doForwardFFT) fft.fft(frame);
 

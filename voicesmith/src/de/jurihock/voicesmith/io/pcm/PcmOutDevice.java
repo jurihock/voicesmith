@@ -31,7 +31,7 @@ import de.jurihock.voicesmith.Utils;
 
 public final class PcmOutDevice extends PcmDevice
 {
-	private AudioTrack	output	= null;
+	private WrappedAudioTrack	output	= null;
 
 	public PcmOutDevice(Context context) throws IOException
 	{
@@ -46,7 +46,7 @@ public final class PcmOutDevice extends PcmDevice
 		this.setBufferSize(new Preferences(context).getPcmBufferSize());
 		Utils.log("PCM OUT buffer size is %s.", this.getBufferSize());
 
-		output = new AudioTrack(getAudioSource(), getSampleRate(),
+		output = new WrappedAudioTrack(getAudioSource(), getSampleRate(),
 			getChannels(), getEncoding(), getBufferSize(),
 			AudioTrack.MODE_STREAM);
 
@@ -89,6 +89,19 @@ public final class PcmOutDevice extends PcmDevice
 		{
 			output.release();
 			output = null;
+		}
+	}
+
+	private final class WrappedAudioTrack extends AudioTrack
+	{
+		public WrappedAudioTrack(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int bufferSizeInBytes, int mode)
+			throws IllegalArgumentException
+		{
+			super(streamType, sampleRateInHz, channelConfig, audioFormat,
+				bufferSizeInBytes, mode);
+
+			Utils.log("PCM OUT native frame count is %s.",
+				getNativeFrameCount());
 		}
 	}
 }

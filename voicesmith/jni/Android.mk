@@ -8,8 +8,8 @@ LOCAL_MODULE := Voicesmith
 # Instruction set "thumb" or "arm"
 LOCAL_ARM_MODE := arm
 
-# LogCat library
-# LOCAL_LDLIBS := -llog
+# LogCat support
+LOCAL_LDLIBS := -llog
 
 # Debugging flag
 # LOCAL_CFLAGS := -g

@@ -38,9 +38,9 @@ public final class Utils
 	private static final String				NATIVELIB_NAME	= "Voicesmith";
 	private static final String				LOGCAT_TAG		= "Voicesmith";
 
-	private static final int				TOAST_LENGTH	= Toast.LENGTH_SHORT;
-
 	private static final boolean			LOGGING			= false;
+
+	private static final int				TOAST_LENGTH	= Toast.LENGTH_SHORT;
 
 	/**
 	 * Stopwatch timestamps.

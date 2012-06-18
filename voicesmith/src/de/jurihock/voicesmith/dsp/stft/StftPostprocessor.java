@@ -44,6 +44,7 @@ public final class StftPostprocessor implements Disposable
 	private final boolean		doInverseFFT;
 
 	private FFT					fft	= null;
+	private final float[]		window;
 
 	private final short[]		prevFrame, nextFrame;
 	private int					frameCursor;
@@ -56,6 +57,7 @@ public final class StftPostprocessor implements Disposable
 		this.doInverseFFT = doInverseFFT;
 
 		fft = new FFT(frameSize, hopSize);
+		window = fft.window();
 
 		prevFrame = new short[frameSize];
 		nextFrame = new short[frameSize];
@@ -80,14 +82,14 @@ public final class StftPostprocessor implements Disposable
 			frame, 0,
 			prevFrame, frameCursor,
 			frameSize - frameCursor,
-			fft.window());
+			window);
 
 		// Prepare right frame part
 		synthesizeFrame(
 			frame, frameSize - frameCursor,
 			nextFrame, 0,
 			frameCursor,
-			fft.window());
+			window);
 
 		// Increment and handle frame cursor
 		frameCursor += hopSize;
