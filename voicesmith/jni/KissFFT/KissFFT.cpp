@@ -21,7 +21,7 @@
 
 #include "KissFFT.h"
 #include "src/kiss_fftr.h"
-#include "../LogCat.h"
+#include "../Utils.h"
 #include <stdlib.h>
 
 // Custom structure to organize the KissFFT stuff

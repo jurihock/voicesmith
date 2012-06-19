@@ -1,5 +1,5 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/dsp/FFT.java
+ * src/de/jurihock/voicesmith/dsp/Window.java
  * is part of the Voicesmith project
  * <http://voicesmith.jurihock.de>
  * 
@@ -24,73 +24,49 @@ package de.jurihock.voicesmith.dsp;
 import static de.jurihock.voicesmith.dsp.Math.PI;
 import static de.jurihock.voicesmith.dsp.Math.cos;
 import static de.jurihock.voicesmith.dsp.Math.sqrt;
-import de.jurihock.voicesmith.Disposable;
 
-public final class FFT implements Disposable
+public final class Window
 {
-	private final float[]	window;
-
-	private KissFFT			fft	= null;
-
-	public FFT(int frameSize, int hopSize)
-	{
-		this.window = hannWindow(frameSize, hopSize, false);
-		this.fft = new KissFFT(frameSize);
-	}
-
-	public void dispose()
-	{
-		if (fft != null)
-		{
-			fft.dispose();
-			fft = null;
-		}
-	}
-
-	public float[] window()
-	{
-		return window;
-	}
-
-	public void fft(float[] value)
-	{
-//		Utils.tic("fft");
-		fft.fft(value);
-//		Utils.toc("fft");
-	}
-
-	public void ifft(float[] value)
-	{
-//		Utils.tic("ifft");
-		fft.ifft(value);
-//		Utils.toc("ifft");
-	}
+	private final int		frameSize;
+	private final int		hopSize;
+	private final boolean	isPeriodic;
+	private final boolean	isWeighted;
 
 	/**
-	 * Returns first N coefficients of the N+1 Hann window.
+	 * @param isPeriodic
+	 *            Compute first N coefficients for the N+1 window.
+	 * @param isWeighted
+	 *            Weight window according to the Weighted Overlap Add (WOLA) routine.
 	 * */
-	private static float[] hannWindow(int N, int hopSize, boolean weight)
+	public Window(int frameSize, int hopSize, boolean isPeriodic, boolean isWeighted)
 	{
-		final float[] window = new float[N];
+		this.frameSize = frameSize;
+		this.hopSize = hopSize;
+		this.isPeriodic = isPeriodic;
+		this.isWeighted = isWeighted;
+	}
 
-		// Compute Hann window coefficients
-		for (int n = 0; n < N; n++)
+	public float[] hann()
+	{
+		final float[] window = new float[frameSize];
+		final int N = (isPeriodic) ? frameSize + 1 : frameSize;
+
+		for (int n = 0; n < frameSize; n++)
 		{
 			window[n] = 0.5F * (1F - cos(2F * PI * n / (N - 1F)));
 		}
 
-		// Compute COLA window weighting factor
-		if (weight)
+		if (isWeighted)
 		{
-			float cola_weighting = 0;
+			float weighting = 0;
 
-			for (int i = 0; i < N; i++)
-				cola_weighting += window[i] * window[i];
+			for (int i = 0; i < frameSize; i++)
+				weighting += window[i] * window[i];
 
-			cola_weighting = 1 / sqrt(cola_weighting / hopSize);
+			weighting = 1 / sqrt(weighting / hopSize);
 
-			for (int i = 0; i < N; i++)
-				window[i] *= cola_weighting;
+			for (int i = 0; i < frameSize; i++)
+				window[i] *= weighting;
 		}
 
 		return window;

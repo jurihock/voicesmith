@@ -25,7 +25,8 @@ import static de.jurihock.voicesmith.dsp.Math.max;
 import static de.jurihock.voicesmith.dsp.Math.min;
 import de.jurihock.voicesmith.Disposable;
 import de.jurihock.voicesmith.Preferences;
-import de.jurihock.voicesmith.dsp.FFT;
+import de.jurihock.voicesmith.dsp.KissFFT;
+import de.jurihock.voicesmith.dsp.Window;
 import de.jurihock.voicesmith.dsp.dafx.DenoiseProcessor;
 import de.jurihock.voicesmith.io.AudioDevice;
 
@@ -42,7 +43,7 @@ public final class StftPreprocessor implements Disposable
 	private final boolean		doForwardFFT;
 	private final boolean		doDenoise;
 
-	private FFT					fft	= null;
+	private KissFFT				fft	= null;
 	private final float[]		window;
 
 	private final short[]		prevFrame, nextFrame;
@@ -56,8 +57,8 @@ public final class StftPreprocessor implements Disposable
 		this.doForwardFFT = doForwardFFT;
 		this.doDenoise = doDenoise;
 
-		fft = new FFT(frameSize, hopSize);
-		window = fft.window();
+		fft = new KissFFT(frameSize);
+		window = new Window(frameSize, hopSize, true, false).hann();
 
 		prevFrame = new short[frameSize];
 		nextFrame = new short[frameSize];

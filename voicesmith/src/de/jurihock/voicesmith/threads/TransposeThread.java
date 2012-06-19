@@ -30,7 +30,7 @@ import android.content.Context;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Preferences.FrameType;
 import de.jurihock.voicesmith.Utils;
-import de.jurihock.voicesmith.dsp.FFT;
+import de.jurihock.voicesmith.dsp.KissFFT;
 import de.jurihock.voicesmith.dsp.dafx.NativeResampleProcessor;
 import de.jurihock.voicesmith.dsp.dafx.NativeTimescaleProcessor;
 import de.jurihock.voicesmith.dsp.stft.StftPostprocessor;
@@ -46,7 +46,7 @@ public final class TransposeThread extends AudioThread
 
 	private StftPreprocessor			preprocessor	= null;
 	private NativeTimescaleProcessor	timescaler		= null;
-	private FFT							fft				= null;
+	private KissFFT							fft				= null;
 	private NativeResampleProcessor		resampler		= null;
 	private StftPostprocessor			postprocessor	= null;
 
@@ -166,7 +166,7 @@ public final class TransposeThread extends AudioThread
 				analysisFrameSize, analysisHopSize, true);
 			timescaler = new NativeTimescaleProcessor(analysisFrameSize,
 				analysisHopSize, synthesisHopSize);
-			fft = new FFT(analysisFrameSize, analysisHopSize);
+			fft = new KissFFT(analysisFrameSize);
 			resampler = new NativeResampleProcessor(
 				analysisFrameSize, synthesisFrameSize);
 			postprocessor = new StftPostprocessor(output,

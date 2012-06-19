@@ -25,33 +25,40 @@ import de.jurihock.voicesmith.Disposable;
 
 public final class KissFFT implements Disposable
 {
-	private final long handle;
+	private final long	handle;
 
 	public KissFFT(int size)
 	{
 		handle = alloc(size);
-//		Utils.log("KissFFT was allocated.");
+		// Utils.log("KissFFT was allocated.");
 	}
 
 	public void dispose()
 	{
 		free(handle);
-//		Utils.log("KissFFT was freed.");
+		// Utils.log("KissFFT was freed.");
 	}
 
 	public void fft(float[] buffer)
 	{
+		// Utils.tic("fft");
 		fft(handle, buffer);
+		// Utils.toc("fft");
 	}
 
 	public void ifft(float[] buffer)
 	{
+		// Utils.tic("ifft");
 		ifft(handle, buffer);
+		// Utils.toc("ifft");
 	}
 
 	// JNI calls
 	private native long alloc(int size);
+
 	private native void free(long handle);
+
 	private native void fft(long handle, float[] buffer);
+
 	private native void ifft(long handle, float[] buffer);
 }

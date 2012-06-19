@@ -28,7 +28,8 @@ import static de.jurihock.voicesmith.dsp.Math.round;
 import java.util.Arrays;
 
 import de.jurihock.voicesmith.Disposable;
-import de.jurihock.voicesmith.dsp.FFT;
+import de.jurihock.voicesmith.dsp.KissFFT;
+import de.jurihock.voicesmith.dsp.Window;
 import de.jurihock.voicesmith.io.AudioDevice;
 
 /**
@@ -43,7 +44,7 @@ public final class StftPostprocessor implements Disposable
 	private final int			hopSize;
 	private final boolean		doInverseFFT;
 
-	private FFT					fft	= null;
+	private KissFFT				fft	= null;
 	private final float[]		window;
 
 	private final short[]		prevFrame, nextFrame;
@@ -56,8 +57,8 @@ public final class StftPostprocessor implements Disposable
 		this.hopSize = hopSize;
 		this.doInverseFFT = doInverseFFT;
 
-		fft = new FFT(frameSize, hopSize);
-		window = fft.window();
+		fft = new KissFFT(frameSize);
+		window = new Window(frameSize, hopSize, true, false).hann();
 
 		prevFrame = new short[frameSize];
 		nextFrame = new short[frameSize];
