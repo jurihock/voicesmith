@@ -8,7 +8,6 @@ build:
 	ndk-build
 
 verbose:
-
 	ndk-build V=1
 
 clean:

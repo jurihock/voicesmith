@@ -21,31 +21,26 @@
 
 package de.jurihock.voicesmith.dsp.dafx;
 
-import static de.jurihock.voicesmith.dsp.Math.abs;
-import static de.jurihock.voicesmith.dsp.Math.arg;
-import static de.jurihock.voicesmith.dsp.Math.imag;
-import static de.jurihock.voicesmith.dsp.Math.real;
 
 public final class DetuneProcessor
 {
 	public static void processFrame(float[] frame)
 	{
 		final int fftSize = frame.length / 2;
-		float re, im, abs, phase;
+		float re, im;
 
 		for (int i = 1; i < fftSize; i++)
 		{
 			// Get source Re and Im parts
 			re = frame[2 * i];
 			im = frame[2 * i + 1];
-			abs = abs(re, im);
 
 			// Invert phase value
-			phase = -arg(re, im);
+			im = -im;
 
-			// Compute destination Re and Im parts
-			frame[2 * i] = real(abs, phase);
-			frame[2 * i + 1] = imag(abs, phase);
+			// Store destination Re and Im parts
+			frame[2 * i] = re;
+			frame[2 * i + 1] = im;
 		}
 	}
 }

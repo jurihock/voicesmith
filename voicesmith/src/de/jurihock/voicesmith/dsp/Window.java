@@ -35,8 +35,18 @@ public final class Window
 	/**
 	 * @param isPeriodic
 	 *            Compute first N coefficients for the N+1 window.
+	 * */
+	public Window(int frameSize, boolean isPeriodic)
+	{
+		this(frameSize, frameSize, isPeriodic, false);
+	}
+
+	/**
+	 * @param isPeriodic
+	 *            Compute first N coefficients for the N+1 window.
 	 * @param isWeighted
-	 *            Weight window according to the Weighted Overlap Add (WOLA) routine.
+	 *            Weight window according to the Weighted Overlap Add (WOLA)
+	 *            routine.
 	 * */
 	public Window(int frameSize, int hopSize, boolean isPeriodic, boolean isWeighted)
 	{
@@ -44,6 +54,19 @@ public final class Window
 		this.hopSize = hopSize;
 		this.isPeriodic = isPeriodic;
 		this.isWeighted = isWeighted;
+	}
+
+	private void weight(float[] window)
+	{
+		float weighting = 0;
+
+		for (int n = 0; n < frameSize; n++)
+			weighting += window[n] * window[n];
+
+		weighting = 1F / sqrt(weighting / hopSize);
+
+		for (int n = 0; n < frameSize; n++)
+			window[n] *= weighting;
 	}
 
 	public float[] hann()
@@ -56,18 +79,7 @@ public final class Window
 			window[n] = 0.5F * (1F - cos(2F * PI * n / (N - 1F)));
 		}
 
-		if (isWeighted)
-		{
-			float weighting = 0;
-
-			for (int i = 0; i < frameSize; i++)
-				weighting += window[i] * window[i];
-
-			weighting = 1 / sqrt(weighting / hopSize);
-
-			for (int i = 0; i < frameSize; i++)
-				window[i] *= weighting;
-		}
+		if (isWeighted) weight(window);
 
 		return window;
 	}

@@ -89,6 +89,7 @@ JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_KissFFT_fft
 
 	float* buffer = (float*)env->GetPrimitiveArrayCritical(_buffer, 0);
 
+	// Circular shift by N/2
 	fftshift(fft, buffer);
 
 	// fft(buffer) => spectrum
@@ -128,6 +129,7 @@ JNIEXPORT void JNICALL Java_de_jurihock_voicesmith_dsp_KissFFT_ifft
 	for (int i = 0; i < fft->size; i++)
 	buffer[i] /= fft->size;
 
+	// Circular shift by N/2
 	fftshift(fft, buffer);
 
 	env->ReleasePrimitiveArrayCritical(_buffer, buffer, 0);

@@ -22,13 +22,12 @@
 package de.jurihock.voicesmith.threads;
 
 import android.content.Context;
-import de.jurihock.voicesmith.io.AudioDevice;
-
 import de.jurihock.voicesmith.Preferences;
-import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.Preferences.FrameType;
+import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.dsp.stft.StftPostprocessor;
 import de.jurihock.voicesmith.dsp.stft.StftPreprocessor;
+import de.jurihock.voicesmith.io.AudioDevice;
 
 public class DenoiseThread extends AudioThread
 {
@@ -40,7 +39,7 @@ public class DenoiseThread extends AudioThread
 	public DenoiseThread(Context context, AudioDevice input, AudioDevice output)
 	{
 		super(context, input, output);
-		
+
 		Preferences preferences = new Preferences(context);
 
 		buffer = new float[preferences.getFrameSize(FrameType.Medium)];

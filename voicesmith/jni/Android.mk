@@ -5,7 +5,7 @@ include $(CLEAR_VARS)
 # Name of the library without prefix "lib" and file extension
 LOCAL_MODULE := Voicesmith
 
-# Optimization flags
+# Optimization flags (see KissFFT makefile)
 LOCAL_ARM_MODE := arm
 LOCAL_CFLAGS := -Wall -O3 -ffast-math -funroll-loops -fomit-frame-pointer
 

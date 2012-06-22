@@ -58,7 +58,7 @@ public final class StftPreprocessor implements Disposable
 		this.doDenoise = doDenoise;
 
 		fft = new KissFFT(frameSize);
-		window = new Window(frameSize, hopSize, true, false).hann();
+		window = new Window(frameSize, true).hann();
 
 		prevFrame = new short[frameSize];
 		nextFrame = new short[frameSize];
