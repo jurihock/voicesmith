@@ -1,9 +1,6 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/Utils.java
- * is part of the Voicesmith project
- * <http://voicesmith.jurihock.de>
- * 
- * Copyright (C) 2011-2012 Juergen Hock
+ * Voicesmith <http://voicesmith.jurihock.de/>
+ * Copyright (c) 2011-2012 Juergen Hock
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,14 +18,20 @@
 
 package de.jurihock.voicesmith;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
@@ -38,9 +41,9 @@ public final class Utils
 	private static final String				NATIVELIB_NAME	= "Voicesmith";
 	private static final String				LOGCAT_TAG		= "Voicesmith";
 
-	private static final boolean			LOGGING			= false;
+	private static final boolean			LOGGING			= true;
 
-	private static final int				TOAST_LENGTH	= Toast.LENGTH_SHORT;
+	private static final int				TOAST_LENGTH	= Toast.LENGTH_LONG;
 
 	/**
 	 * Stopwatch timestamps.
@@ -56,10 +59,60 @@ public final class Utils
 		{
 			System.loadLibrary(NATIVELIB_NAME);
 		}
-		catch (UnsatisfiedLinkError e)
+		catch (UnsatisfiedLinkError exception)
 		{
 			Utils.log("Native library %s could not be loaded!", NATIVELIB_NAME);
 		}
+	}
+
+	/**
+	 * Checks if a local service is just running.
+	 * */
+	public static boolean isServiceRunning(Context context, Class<?> serviceClass)
+	{
+		ActivityManager manager = (ActivityManager)
+			context.getSystemService(Context.ACTIVITY_SERVICE);
+
+		List<RunningServiceInfo> services =
+			manager.getRunningServices(Integer.MAX_VALUE);
+
+		for (RunningServiceInfo service : services)
+		{
+			if (service.service.getClassName().equals(
+				serviceClass.getName()))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Tries to mount the external storage, makes necessary dirs and finally
+	 * returns a File instance for assigned file path.
+	 * */
+	public static File mountFile(String path) throws IOException
+	{
+		if (!Environment.MEDIA_MOUNTED.equals(
+			Environment.getExternalStorageState()))
+		{
+			throw new IOException("Unable to mount external storage!");
+		}
+
+		File file = new File(
+			Environment.getExternalStorageDirectory(),
+			path);
+
+		File dir = file.getParentFile();
+		if (!dir.exists() && !dir.mkdirs())
+		{
+			throw new IOException(String.format(
+				"Unable to make directory '%s'!",
+				dir.getAbsolutePath()));
+		}
+
+		return file;
 	}
 
 	public static void postNotification(Context context, int iconID, String tickerText, String contentTitle, String contentText, Class<?> activityClass)
@@ -72,7 +125,7 @@ public final class Utils
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
 		Intent intent = new Intent(context, activityClass);
-		intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 		PendingIntent pendingIntent = PendingIntent
 			.getActivity(context, 0, intent, 0);
@@ -113,7 +166,7 @@ public final class Utils
 	 * */
 	public static void log(Throwable exception)
 	{
-		log(Log.getStackTraceString(exception));
+		log("[EXCEPTION] " + Log.getStackTraceString(exception));
 	}
 
 	/**
@@ -130,6 +183,22 @@ public final class Utils
 	public static void log(Context context, String message, Object... args)
 	{
 		log(context, String.format(message, args));
+	}
+
+	/**
+	 * Writes a LogCat log entry if condition is FALSE.
+	 * */
+	public static void assertTrue(boolean condition, String message)
+	{
+		if (!condition) log("[ASSERT] " + message);
+	}
+
+	/**
+	 * Writes a formatted LogCat log entry if condition is FALSE.
+	 * */
+	public static void assertTrue(boolean condition, String message, Object... args)
+	{
+		assertTrue(condition, String.format(message, args));
 	}
 
 	/**
