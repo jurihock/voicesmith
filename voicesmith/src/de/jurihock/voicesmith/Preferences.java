@@ -1,9 +1,6 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/Preferences.java
- * is part of the Voicesmith project
- * <http://voicesmith.jurihock.de>
- * 
- * Copyright (C) 2011-2012 Juergen Hock
+ * Voicesmith <http://voicesmith.jurihock.de/>
+ * Copyright (c) 2011-2012 Juergen Hock
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,24 +21,28 @@ package de.jurihock.voicesmith;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioFormat;
-import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
-import android.media.MediaRecorder;
 import android.preference.PreferenceManager;
 
 public final class Preferences
 {
 	// TODO: Try different audio sources
-	public static final int			PCM_IN_SOURCE	= MediaRecorder.AudioSource.MIC;
+//	public static final int			PCM_IN_SOURCE	= MediaRecorder.AudioSource.MIC;
 	// public static final int PCM_IN_SOURCE =
 	// MediaRecorder.AudioSource.VOICE_CALL;
 	// public static final int PCM_IN_SOURCE =
 	// MediaRecorder.AudioSource.VOICE_DOWNLINK;
 	// public static final int PCM_IN_SOURCE =
 	// MediaRecorder.AudioSource.VOICE_UPLINK;
-	public static final int			PCM_OUT_SOURCE	= AudioManager.STREAM_MUSIC;
+//	public static final int			PCM_OUT_SOURCE	= AudioManager.STREAM_MUSIC;
 	// public static final int PCM_OUT_SOURCE = AudioManager.STREAM_VOICE_CALL;
+
+	public static final String		DATASTORE_DIR	= "Android/data/de.jurihock.voicesmith";
+	public static final String		VOICEBANK_DIR	= DATASTORE_DIR
+														+ "/voicebank";
+	public static final String		RECORDS_FILE	= VOICEBANK_DIR
+														+ "/records.xml";
 
 	private final SharedPreferences	preferences;
 
@@ -100,6 +101,25 @@ public final class Preferences
 
 		return sr;
 	}
+	
+	/**
+	 * Returns the optimal PCM buffer size. Because of output buffer stuffing,
+	 * the input buffer should be bigger, to prevent the overflow.
+	 * */
+	public int getPcmBufferSize(int sampleRate)
+	{
+		int pcmInBufferSize = AudioRecord.getMinBufferSize(
+			sampleRate,
+			AudioFormat.CHANNEL_IN_MONO, // DON'T CHANGE!
+			AudioFormat.ENCODING_PCM_16BIT); // DON'T CHANGE!
+
+		int pcmOutBufferSize = AudioTrack.getMinBufferSize(
+			sampleRate,
+			AudioFormat.CHANNEL_OUT_MONO, // DON'T CHANGE!
+			AudioFormat.ENCODING_PCM_16BIT); // DON'T CHANGE!
+
+		return Math.max(pcmInBufferSize, pcmOutBufferSize);
+	}
 
 	public enum FrameType
 	{
@@ -116,7 +136,7 @@ public final class Preferences
 		}
 	}
 
-	public int getFrameSize(FrameType frameType)
+	public int getFrameSize(FrameType frameType, int sampleRate)
 	{
 		// An example for the 44,1 kHz sample rate:
 		// - Large frame size = 4096
@@ -130,29 +150,8 @@ public final class Preferences
 		return (int) (getSampleRate() * frameSizeRatio * frameTypeRatio);
 	}
 
-	public int getHopSize(FrameType frameType)
+	public int getHopSize(FrameType frameType, int sampleRate)
 	{
-		return getFrameSize(frameType) / 4;
-	}
-
-	/**
-	 * Returns the optimal PCM buffer size. Because of output buffer stuffing,
-	 * the input buffer should be bigger, to prevent the overflow.
-	 * */
-	public int getPcmBufferSize()
-	{
-		int sampleRate = getSampleRate();
-
-		int pcmInBufferSize = AudioRecord.getMinBufferSize(
-			sampleRate,
-			AudioFormat.CHANNEL_IN_MONO, // DON'T CHANGE!
-			AudioFormat.ENCODING_PCM_16BIT); // DON'T CHANGE!
-
-		int pcmOutBufferSize = AudioTrack.getMinBufferSize(
-			sampleRate,
-			AudioFormat.CHANNEL_OUT_MONO, // DON'T CHANGE!
-			AudioFormat.ENCODING_PCM_16BIT); // DON'T CHANGE!
-
-		return Math.max(pcmInBufferSize, pcmOutBufferSize);
+		return getFrameSize(frameType, sampleRate) / 4;
 	}
 }
