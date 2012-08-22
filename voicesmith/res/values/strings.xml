@@ -3,7 +3,7 @@
 
     <!-- Application -->
     <string name="ApplicationName">Voicesmith</string>
-    <string name="ApplicationDescription">Real-time voice changer and Altered Auditory Feedback (DAF &amp; FAF) application for Android</string>
+    <string name="ApplicationDescription">Real-time voice changer and Altered Auditory Feedback (DAF &amp; FAF) application for Android devices</string>
     <string name="ApplicationLink">http://voicesmith.jurihock.de</string>
 
     <!-- Activities -->
@@ -29,7 +29,7 @@
     <!-- Services -->
     <string name="DafxService">Voicesmith DAFX Service</string>
     <string name="AafService">Voicesmith AAF Service</string>
-    <string name="ServiceFailureMessage">Sorry, something went wrong! :-( Check if a wired or Bluetooth earphone/headset is plugged in. Maybe try it with another sample rate again.</string>
+    <string name="ServiceFailureMessage">Sorry, something went wrong! :-( Check if a wired or Bluetooth earphone/headset is plugged in. Maybe try it with a different sample rate again.</string>
     <string name="ServiceNotificationTitle">Voicesmith runs in the background!</string>
     <string name="ServiceNotificationSubtitle">Touch here to see details.</string>
 

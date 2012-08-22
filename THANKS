@@ -1,18 +1,25 @@
-DAFX: Digital Audio Effects by Udo Zoelzer et al.
+Udo Zoelzer et al.
 
+	DAFX: Digital Audio Effects
 	http://www.dafx.de/
 
-Applied Signal Processing: A MATLAB(TM)-Based Proof of Concept
+Thierry Dutoit, Ferran Marques et al.
 
-	by Thierry Dutoit, Ferran Marques et al.
-
+	Applied Signal Processing: A MATLAB(TM)-Based Proof of Concept
 	http://www.springerlink.com/content/j945lp18q1u87574
 
-Kiss FFT by Mark Borgerding
+Julius Orion Smith
 
+	Spectral Audio Signal Processing
+	http://ccrma.stanford.edu/~jos/sasp
+
+Mark Borgerding
+
+	Kiss FFT
 	http://kissfft.sourceforge.net/
 
-GreenDroid by Cyril Mottier and Julien Dupouy
+Cyril Mottier, Julien Dupouy
 
+	GreenDroid
 	http://github.com/cyrilmottier/GreenDroid
 	http://github.com/jdupouy/GreenDroid
