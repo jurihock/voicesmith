@@ -116,9 +116,7 @@ a.button {
   font-size: 15px;
   padding: 12px 8px 12px 8px;
   display: block;
-  float: left;
-  width: 179px;
-  margin-right: 14px;  
+  width: 40%;
   background: #fdfdfd; /* Old browsers */
   background: -moz-linear-gradient(top,  #fdfdfd 0%, #f2f2f2 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fdfdfd), color-stop(100%,#f2f2f2)); /* Chrome,Safari4+ */
@@ -152,17 +150,20 @@ a.button span {
   height: 23px;
 }
 
-#download-zip span {
-  background: transparent url(../images/zip-icon.png) 12px 50% no-repeat;
-}
-#download-tar-gz span {
-  background: transparent url(../images/tar-gz-icon.png) 12px 50% no-repeat;
+#view-on-googleplay span {
+  background: transparent url(../images/play-icon.png) 12px 50% no-repeat;
 }
 #view-on-github span {
   background: transparent url(../images/octocat-icon.png) 12px 50% no-repeat;
 }
+
+#view-on-googleplay {
+	float: left;
+	margin-right: 5%;
+}
+
 #view-on-github {
-  margin-right: 0;
+	float: left;
 }
 
 code, pre {
