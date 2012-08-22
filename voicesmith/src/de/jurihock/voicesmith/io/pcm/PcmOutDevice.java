@@ -25,25 +25,69 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioTrack;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Utils;
+import de.jurihock.voicesmith.audio.HeadsetMode;
 
 public final class PcmOutDevice extends PcmDevice
 {
-	private WrappedAudioTrack	output	= null;
+	private static final int	WIRED_HEADSET_SOURCE		= AudioManager.STREAM_MUSIC;
+	private static final int	BLUETOOTH_HEADSET_SOURCE	= AudioManager.STREAM_VOICE_CALL;
+
+	private WrappedAudioTrack	output						= null;
+
+	public PcmOutDevice(Context context, HeadsetMode headsetMode)
+		throws IOException
+	{
+		super(context);
+
+		switch (headsetMode)
+		{
+		case WIRED_HEADSET:
+			setAudioSource(WIRED_HEADSET_SOURCE);
+			break;
+
+		case BLUETOOTH_HEADSET:
+			setSampleRate(8000);
+			setAudioSource(BLUETOOTH_HEADSET_SOURCE);
+			break;
+		default:
+			throw new IOException("Unknown HeadsetMode!");
+		}
+
+		init(context);
+	}
+
+	public PcmOutDevice(Context context, int sampleRate) throws IOException
+	{
+		super(context, sampleRate);
+		init(context);
+	}
 
 	public PcmOutDevice(Context context) throws IOException
 	{
 		super(context);
+		init(context);
+	}
 
-		this.setAudioSource(Preferences.PCM_OUT_SOURCE);
+	private void init(Context context) throws IOException
+	{
 		this.setChannels(AudioFormat.CHANNEL_OUT_MONO); // DON'T CHANGE!
 		this.setEncoding(AudioFormat.ENCODING_PCM_16BIT); // DON'T CHANGE!
 		this.setMinBufferSize(AudioTrack.getMinBufferSize(
 			getSampleRate(), getChannels(), getEncoding()));
 
-		this.setBufferSize(new Preferences(context).getPcmBufferSize());
+		if (this.getMinBufferSize() == AudioTrack.ERROR_BAD_VALUE ||
+			this.getMinBufferSize() == AudioTrack.ERROR)
+		{
+			throw new IOException(
+				"Unable to determine the MinBufferSize for AudioTrack!");
+		}
+
+		this.setBufferSize(new Preferences(context)
+			.getPcmBufferSize(getSampleRate()));
 		Utils.log("PCM OUT buffer size is %s.", this.getBufferSize());
 
 		output = new WrappedAudioTrack(getAudioSource(), getSampleRate(),

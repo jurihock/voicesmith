@@ -1,8 +1,16 @@
+# Android auto-generated files
 bin/
 gen/
 libs/
 obj/
+out/
 
+# Eclipse project files
+# .settings/
+# .classpath
+# .project
+
+# Miscellaneous files
 local.properties
 *.py[cod]
 *.wav

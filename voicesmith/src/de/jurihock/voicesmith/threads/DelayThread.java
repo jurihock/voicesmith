@@ -1,5 +1,5 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/threads/DelayThread.java
+ * src/de/jurihock/voicesmith/threads/DenoiseThread.java
  * is part of the Voicesmith project
  * <http://voicesmith.jurihock.de>
  * 
@@ -22,39 +22,68 @@
 package de.jurihock.voicesmith.threads;
 
 import android.content.Context;
-import de.jurihock.voicesmith.Preferences.FrameType;
-import de.jurihock.voicesmith.io.AudioDevice;
-
+import de.jurihock.voicesmith.FrameType;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Utils;
+import de.jurihock.voicesmith.dsp.stft.StftPostprocessor;
+import de.jurihock.voicesmith.dsp.stft.StftPreprocessor;
+import de.jurihock.voicesmith.io.AudioDevice;
 
 public class DelayThread extends AudioThread
 {
-	private final short[]	buffer;
+	private final float[]		buffer;
+
+	private StftPreprocessor	preprocessor	= null;
+	private StftPostprocessor	postprocessor	= null;
 
 	public DelayThread(Context context, AudioDevice input, AudioDevice output)
 	{
 		super(context, input, output);
-		
+
 		Preferences preferences = new Preferences(context);
 
-		buffer = new short[preferences.getFrameSize(FrameType.Small)];
-		Utils.log("Delay frame size is %s.", buffer.length);
+		FrameType frameType = FrameType.Medium;
+		int frameSize = preferences.getFrameSize(
+			frameType, input.getSampleRate());
+		int hopSize = preferences.getHopSize(
+			frameType, input.getSampleRate());
+
+		buffer = new float[frameSize];
+		Utils.log("Denoise frame size is %s.", buffer.length);
+
+		preprocessor = new StftPreprocessor(input, frameSize, hopSize, true);
+		postprocessor = new StftPostprocessor(output, frameSize, hopSize, true);
 	}
 
 	@Override
-	protected final void doProcessing()
+	public void dispose()
+	{
+		super.dispose();
+		disposeProcessors();
+	}
+
+	private void disposeProcessors()
+	{
+		if (preprocessor != null)
+		{
+			preprocessor.dispose();
+			preprocessor = null;
+		}
+
+		if (postprocessor != null)
+		{
+			postprocessor.dispose();
+			postprocessor = null;
+		}
+	}
+
+	@Override
+	protected void doProcessing()
 	{
 		while (!Thread.interrupted())
 		{
-//			Utils.tic("IN");
-			input.read(buffer);
-//			Utils.toc("IN");
-			
-//			Utils.tic("OUT");
-			output.write(buffer);
-//			Utils.toc("OUT");
-
+			preprocessor.processFrame(buffer);
+			postprocessor.processFrame(buffer);
 		}
 	}
 }

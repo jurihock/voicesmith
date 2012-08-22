@@ -22,10 +22,10 @@
 package de.jurihock.voicesmith.threads;
 
 import android.content.Context;
+import de.jurihock.voicesmith.FrameType;
 import de.jurihock.voicesmith.Preferences;
-import de.jurihock.voicesmith.Preferences.FrameType;
 import de.jurihock.voicesmith.Utils;
-import de.jurihock.voicesmith.dsp.dafx.HoarsenessProcessor;
+import de.jurihock.voicesmith.dsp.processors.HoarsenessProcessor;
 import de.jurihock.voicesmith.dsp.stft.StftPostprocessor;
 import de.jurihock.voicesmith.dsp.stft.StftPreprocessor;
 import de.jurihock.voicesmith.io.AudioDevice;
@@ -42,19 +42,18 @@ public class HoarsenessThread extends AudioThread
 		super(context, input, output);
 
 		Preferences preferences = new Preferences(context);
+		
+		FrameType frameType = FrameType.Small;
+		int frameSize = preferences.getFrameSize(
+			frameType, input.getSampleRate());
+		int hopSize = preferences.getHopSize(
+			frameType, input.getSampleRate());
 
-		buffer = new float[preferences.getFrameSize(FrameType.Small)];
+		buffer = new float[frameSize];
 		Utils.log("Hoarseness frame size is %s.", buffer.length);
 
-		preprocessor = new StftPreprocessor(input,
-			preferences.getFrameSize(FrameType.Small),
-			preferences.getHopSize(FrameType.Small),
-			true);
-
-		postprocessor = new StftPostprocessor(output,
-			preferences.getFrameSize(FrameType.Small),
-			preferences.getHopSize(FrameType.Small),
-			true);
+		preprocessor = new StftPreprocessor(input, frameSize, hopSize, true);
+		postprocessor = new StftPostprocessor(output, frameSize, hopSize, true);
 	}
 
 	@Override

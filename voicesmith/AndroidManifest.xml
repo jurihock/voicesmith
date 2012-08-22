@@ -1,74 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.jurihock.voicesmith"
-    android:versionCode="5"
-    android:versionName="1.4" >
+    android:versionCode="6"
+    android:versionName="2.0" >
 
     <uses-sdk android:minSdkVersion="8" />
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
-
-
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <!--
-     Audio activity attributes:
-	 android:alwaysRetainTaskState="True"
-	 android:launchMode="singleInstance"
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     -->
 
     <application
+        android:name=".Application"
         android:icon="@drawable/launcher"
-        android:label="@string/titApplication"
-        android:theme="@android:style/Theme.Black.NoTitleBar">
+        android:label="@string/ApplicationName"
+        android:theme="@style/Theme.GreenDroid" >
+        <service
+            android:name=".services.DafxService"
+            android:label="@string/DafxService" >
+        </service>
+        <service
+            android:name=".services.AafService"
+            android:label="@string/AafService" >
+        </service>
         <activity
-            android:name=".activities.AboutActivity"
-            android:label="@string/titApplication"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".activities.DelayActivity"
-            android:label="@string/titApplication"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".activities.DenoiseActivity"
-            android:label="@string/titApplication"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".activities.DetuneActivity"
-            android:label="@string/titApplication"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".activities.MainActivity"
-            android:label="@string/titApplication"
+            android:name=".activities.HomeActivity"
+            android:label="@string/HomeActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.PreferencesActivity"
-            android:label="@string/titApplication"
+            android:name=".activities.DafxActivity"
+            android:label="@string/DafxActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.RobotizeActivity"
-            android:label="@string/titApplication"
+            android:name=".activities.AafActivity"
+            android:label="@string/AafActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.TransposeActivity"
-            android:label="@string/titApplication"
+            android:name=".activities.PreferenceActivity"
+            android:label="@string/PreferenceActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+		<activity
+            android:name=".activities.AboutActivity"
+            android:label="@string/AboutActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.HoarsenessActivity"
-            android:label="@string/titApplication"
+            android:name=".activities.AboutApplicationActivity"
+            android:label="@string/AboutApplicationActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.AboutLicenseActivity"
+            android:label="@string/AboutLicenseActivity"
             android:screenOrientation="portrait" >
         </activity>
     </application>

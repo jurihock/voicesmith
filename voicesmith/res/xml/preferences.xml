@@ -1,20 +1,32 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:voicesmith="http://voicesmith.jurihock.de" >
 
-    <EditTextPreference
-        android:defaultValue="100"
-        android:key="prefVolumeLevel"
-        android:title="@string/titVolumeLevel" />
+    <de.jurihock.voicesmith.widgets.SeekBarPreference
+        android:defaultValue="50"
+        android:key="VolumeLevel"
+        android:title="@string/VolumeLevelPreference"
+        voicesmith:maxValue="100"
+        voicesmith:minValue="0"
+        voicesmith:valueFormat="%s%%" />
+
+    <de.jurihock.voicesmith.widgets.SeekBarPreference
+        android:defaultValue="6"
+        android:key="SoundAmplification"
+        android:title="@string/SoundAmplificationPreference"
+        voicesmith:maxValue="12"
+        voicesmith:minValue="0"
+        voicesmith:valueFormat="%s dB" />
 
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="prefReduceNoise"
-        android:title="@string/titReduceNoise" />
+        android:key="ReduceNoise"
+        android:title="@string/ReduceNoisePreference" />
 
-    <ListPreference
+    <de.jurihock.voicesmith.widgets.ListPreference
         android:defaultValue="44100"
-        android:entries="@array/titSampleRates"
-        android:entryValues="@array/defSampleRates"
-        android:key="prefSampleRate"
-        android:title="@string/titSampleRate" />
+        android:entries="@array/SampleRateEntries"
+		android:entryValues="@array/SampleRateValues"
+        android:key="SampleRate"
+        android:title="@string/SampleRatePreference" />
 
 </PreferenceScreen>

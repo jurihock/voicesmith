@@ -27,12 +27,12 @@ import static de.jurihock.voicesmith.dsp.Math.round;
 import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
+import de.jurihock.voicesmith.FrameType;
 import de.jurihock.voicesmith.Preferences;
-import de.jurihock.voicesmith.Preferences.FrameType;
 import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.dsp.KissFFT;
-import de.jurihock.voicesmith.dsp.dafx.NativeResampleProcessor;
-import de.jurihock.voicesmith.dsp.dafx.NativeTimescaleProcessor;
+import de.jurihock.voicesmith.dsp.processors.NativeResampleProcessor;
+import de.jurihock.voicesmith.dsp.processors.NativeTimescaleProcessor;
 import de.jurihock.voicesmith.dsp.stft.StftPostprocessor;
 import de.jurihock.voicesmith.dsp.stft.StftPreprocessor;
 import de.jurihock.voicesmith.io.AudioDevice;
@@ -46,7 +46,7 @@ public final class TransposeThread extends AudioThread
 
 	private StftPreprocessor			preprocessor	= null;
 	private NativeTimescaleProcessor	timescaler		= null;
-	private KissFFT							fft				= null;
+	private KissFFT						fft				= null;
 	private NativeResampleProcessor		resampler		= null;
 	private StftPostprocessor			postprocessor	= null;
 
@@ -127,6 +127,24 @@ public final class TransposeThread extends AudioThread
 		return semitones;
 	}
 
+	@Override
+	public void configure(Object... params)
+	{
+		int semitones = 0;
+
+		if (params != null)
+		{
+			Utils.assertTrue(params.length == 1,
+				"%s expected only one parameter, the interval!",
+				this.getClass().getName());
+			
+			semitones = Integer.parseInt(
+				params[0].toString());
+		}
+
+		setSemitones(semitones);
+	}
+
 	/**
 	 * Allowed values: [-12..0..12]
 	 * */
@@ -147,8 +165,11 @@ public final class TransposeThread extends AudioThread
 		{
 			Preferences preferences = new Preferences(context);
 
-			final int frameSize = preferences.getFrameSize(FrameType.Default);
-			final int hopSize = preferences.getHopSize(FrameType.Default);
+			final FrameType frameType = FrameType.Default;
+			final int frameSize = preferences.getFrameSize(
+				frameType, input.getSampleRate());
+			final int hopSize = preferences.getHopSize(
+				frameType, input.getSampleRate());
 
 			final int synthesisHopSize = hopSize;
 			final int analysisHopSize = (int) round(hopSize / tau);

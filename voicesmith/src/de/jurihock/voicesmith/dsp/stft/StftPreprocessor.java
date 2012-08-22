@@ -27,7 +27,8 @@ import de.jurihock.voicesmith.Disposable;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.dsp.KissFFT;
 import de.jurihock.voicesmith.dsp.Window;
-import de.jurihock.voicesmith.dsp.dafx.DenoiseProcessor;
+import de.jurihock.voicesmith.dsp.processors.AmplifyProcessor;
+import de.jurihock.voicesmith.dsp.processors.DenoiseProcessor;
 import de.jurihock.voicesmith.io.AudioDevice;
 
 /**
@@ -37,17 +38,19 @@ import de.jurihock.voicesmith.io.AudioDevice;
  * */
 public final class StftPreprocessor implements Disposable
 {
-	private final AudioDevice	input;
-	private final int			frameSize;
-	private final int			hopSize;
-	private final boolean		doForwardFFT;
-	private final boolean		doDenoise;
+	private final AudioDevice		input;
+	private final int				frameSize;
+	private final int				hopSize;
+	private final boolean			doForwardFFT;
+	private final boolean			doDenoise;
 
-	private KissFFT				fft	= null;
-	private final float[]		window;
+	private final AmplifyProcessor	amplifier;
 
-	private final short[]		prevFrame, nextFrame;
-	private int					frameCursor;
+	private KissFFT					fft	= null;
+	private final float[]			window;
+
+	private final short[]			prevFrame, nextFrame;
+	private int						frameCursor;
 
 	public StftPreprocessor(AudioDevice input, int frameSize, int hopSize, boolean doForwardFFT, boolean doDenoise)
 	{
@@ -56,6 +59,8 @@ public final class StftPreprocessor implements Disposable
 		this.hopSize = hopSize;
 		this.doForwardFFT = doForwardFFT;
 		this.doDenoise = doDenoise;
+
+		amplifier = new AmplifyProcessor(input.getContext());
 
 		fft = new KissFFT(frameSize);
 		window = new Window(frameSize, true).hann();
@@ -87,6 +92,7 @@ public final class StftPreprocessor implements Disposable
 		{
 			frameCursor = frameSize;
 			input.read(nextFrame);
+			amplifier.processFrame(nextFrame);
 		}
 		// Handle frame cursor
 		else if (frameCursor >= frameSize)
@@ -99,6 +105,7 @@ public final class StftPreprocessor implements Disposable
 
 			// Read next frame
 			input.read(nextFrame);
+			amplifier.processFrame(nextFrame);
 		}
 
 		// Prepare left frame part

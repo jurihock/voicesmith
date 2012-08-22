@@ -1,30 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="titApplication">Voicesmith</string>
-    <string name="titAbout">About Voicesmith</string>
-    <string name="titDelay">Delay</string>
-    <string name="titDenoise">Delay &amp; Denoise</string>
-    <string name="titDetune">Detune</string>
-    <string name="titHoarseness">Hoarseness</string>
-    <string name="titPreferences">Preferences</string>
-    <string name="titReduceNoise">Reduce noise</string>
-    <string name="titResetPreferences">Reset to default values</string>
-    <string name="titRobotize">Robotize</string>
-    <string name="titSampleRate">Sample rate</string>
-    <string name="titTranspose">Transpose</string>
-    <string name="titVolumeLevel">Volume level</string>
-    <string name="sumDelay">Lowest possible delayed audio output on your device.</string>
-    <string name="sumDenoise">Denoised, but also a little bit more delayed, audio output.</string>
-    <string name="sumDetune">Detune your voice depending on pitch.</string>
-    <string name="sumHoarseness">This effect makes your voice hoarse.</string>
-    <string name="sumRobotize">Now speak like an android. :-)</string>
-    <string name="sumTranspose">Raise or lower the voice pitch. Try to set a different transposition interval in semitones.</string>
+    <!-- Application -->
+    <string name="ApplicationName">Voicesmith</string>
+    <string name="ApplicationDescription">Real-time voice changer and Altered Auditory Feedback (DAF &amp; FAF) application for Android</string>
+    <string name="ApplicationLink">http://voicesmith.jurihock.de</string>
 
-    <string-array name="titSampleRates">
-        <item>44100 Hz (default)</item>
-        <item>22050 Hz</item>
-        <item>11025 Hz</item>
-    </string-array>
+    <!-- Activities -->
+    <string name="HomeActivity">Voicesmith</string>
+    <string name="DafxActivity">Real-time voice changer</string>
+    <string name="AafActivity">Altered Auditory Feedback</string>
+    <string name="PreferenceActivity">Preferences</string>
+    <string name="AboutActivity">About Voicesmith</string>
+    <string name="AboutApplicationActivity">About</string>
+    <string name="AboutLicenseActivity">License</string>
+
+    <!-- Widgets -->
+    <string name="BluetoothHeadsetButton">Use Bluetooth if available</string>
+    <string name="IntervalPickerLabel">Transpose by %s semitone(s)</string>
+
+    <!-- Preferences -->
+    <string name="VolumeLevelPreference">Volume level</string>
+    <string name="SoundAmplificationPreference">Sound amplification</string>
+    <string name="ReduceNoisePreference">Reduce noise</string>
+    <string name="SampleRatePreference">Sample rate</string>
+    <string name="ResetPreferences">Reset to default values</string>
+
+    <!-- Services -->
+    <string name="DafxService">Voicesmith DAFX Service</string>
+    <string name="AafService">Voicesmith AAF Service</string>
+    <string name="ServiceFailureMessage">Sorry, something went wrong! :-( Check if a wired or Bluetooth earphone/headset is plugged in. Maybe try it with another sample rate again.</string>
+    <string name="ServiceNotificationTitle">Voicesmith runs in the background!</string>
+    <string name="ServiceNotificationSubtitle">Touch here to see details.</string>
 
 </resources>

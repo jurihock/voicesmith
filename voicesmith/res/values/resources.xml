@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="LayoutMargin">10dip</dimen>
+    
+    <string-array name="SampleRateEntries">
+        <item>44100 Hz</item>
+        <item>22050 Hz</item>
+        <item>11025 Hz</item>
+    </string-array>
+    <string-array name="SampleRateValues">
+        <item>44100</item>
+        <item>22050</item>
+        <item>11025</item>
+    </string-array>
+
+</resources>

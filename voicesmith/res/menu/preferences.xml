@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/ctrlResetPreferences"
-        android:title="@string/titResetPreferences"/>
+        android:id="@+id/ResetPreferences"
+        android:title="@string/ResetPreferences"/>
 
 </menu>

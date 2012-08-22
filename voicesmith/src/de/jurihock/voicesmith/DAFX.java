@@ -29,7 +29,7 @@ public enum DAFX
 	Hoarseness;
 	
 	private static final DAFX[] dafxValues = DAFX.values();
-	
+
 	public static int count()
 	{
 		return dafxValues.length;

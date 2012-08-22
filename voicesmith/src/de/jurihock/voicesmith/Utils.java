@@ -122,7 +122,8 @@ public final class Utils
 
 		Notification notification = new Notification(
 			iconID, tickerText, System.currentTimeMillis());
-		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		notification.flags |= Notification.FLAG_AUTO_CANCEL
+			| Notification.FLAG_NO_CLEAR;
 
 		Intent intent = new Intent(context, activityClass);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

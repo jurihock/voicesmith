@@ -35,21 +35,27 @@ public abstract class AudioDevice implements Disposable
 		return context;
 	}
 
-	private final int	sampleRate;
+	private int	sampleRate;
 
 	public int getSampleRate()
 	{
 		return sampleRate;
 	}
-
+	
+	protected void setSampleRate(int sampleRate)
+	{
+		this.sampleRate = sampleRate;
+	}
+	
 	public AudioDevice(Context context)
 	{
+		this(context, new Preferences(context).getSampleRate());
+	}
+
+	public AudioDevice(Context context, int	sampleRate)
+	{
 		this.context = context;
-
-		this.sampleRate =
-			new Preferences(context)
-				.getSampleRate();
-
+		this.sampleRate = sampleRate;
 		Utils.log("Current sample rate is %s Hz.", sampleRate);
 	}
 

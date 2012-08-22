@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run this script only from project root directory!
+# Run this script only from the project root directory!
 
 CLASSPATH=bin/classes:$ANDROID_SDK_HOME/platforms/android-8/android.jar
 
@@ -33,11 +33,11 @@ GenerateJNI "KissFFT" \
 	"KissFFT"
 
 GenerateJNI "NativeResampleProcessor" \
-	"de.jurihock.voicesmith.dsp.dafx" \
-	"de/jurihock/voicesmith/dsp/dafx" \
-	"DAFX"
+	"de.jurihock.voicesmith.dsp.processors" \
+	"de/jurihock/voicesmith/dsp/processors" \
+	"Processors"
 
 GenerateJNI "NativeTimescaleProcessor" \
-	"de.jurihock.voicesmith.dsp.dafx" \
-	"de/jurihock/voicesmith/dsp/dafx" \
-	"DAFX"
+	"de.jurihock.voicesmith.dsp.processors" \
+	"de/jurihock/voicesmith/dsp/processors" \
+	"Processors"

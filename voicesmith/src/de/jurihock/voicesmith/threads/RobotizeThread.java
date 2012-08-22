@@ -22,10 +22,10 @@
 package de.jurihock.voicesmith.threads;
 
 import android.content.Context;
+import de.jurihock.voicesmith.FrameType;
 import de.jurihock.voicesmith.Preferences;
-import de.jurihock.voicesmith.Preferences.FrameType;
 import de.jurihock.voicesmith.Utils;
-import de.jurihock.voicesmith.dsp.dafx.RobotizeProcessor;
+import de.jurihock.voicesmith.dsp.processors.RobotizeProcessor;
 import de.jurihock.voicesmith.dsp.stft.StftPostprocessor;
 import de.jurihock.voicesmith.dsp.stft.StftPreprocessor;
 import de.jurihock.voicesmith.io.AudioDevice;
@@ -44,23 +44,16 @@ public class RobotizeThread extends AudioThread
 		Preferences preferences = new Preferences(context);
 
 		FrameType frameType = FrameType.Medium;
-		int frameSize = preferences.getFrameSize(frameType);
-		int hopSize = preferences.getHopSize(frameType);
+		int frameSize = preferences.getFrameSize(
+			frameType, input.getSampleRate());
+		int hopSize = preferences.getHopSize(
+			frameType, input.getSampleRate());
 
 		buffer = new float[frameSize];
 		Utils.log("Robotize frame size is %s.", buffer.length);
 
-		preprocessor = new StftPreprocessor(
-			input,
-			frameSize,
-			hopSize,
-			true);
-
-		postprocessor = new StftPostprocessor(
-			output,
-			frameSize,
-			hopSize,
-			true);
+		preprocessor = new StftPreprocessor(input, frameSize, hopSize, true);
+		postprocessor = new StftPostprocessor(output, frameSize, hopSize, true);
 	}
 
 	@Override

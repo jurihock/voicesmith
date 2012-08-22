@@ -26,11 +26,16 @@ import de.jurihock.voicesmith.io.AudioDevice;
 
 public abstract class PcmDevice extends AudioDevice
 {
+	public PcmDevice(Context context, int sampleRate)
+	{
+		super(context, sampleRate);
+	}
+
 	public PcmDevice(Context context)
 	{
 		super(context);
 	}
-	
+
 	private int	audioSource;
 
 	public int getAudioSource()
@@ -69,11 +74,18 @@ public abstract class PcmDevice extends AudioDevice
 
 	private int	minBufferSize;
 
+	/**
+	 * [Bytes]
+	 * */
 	public int getMinBufferSize()
 	{
 		return minBufferSize;
 	}
 
+	/**
+	 * [Bytes]
+	 * @param minBufferSize [Bytes]
+	 * */
 	protected void setMinBufferSize(int minBufferSize)
 	{
 		this.minBufferSize = minBufferSize;
@@ -81,11 +93,18 @@ public abstract class PcmDevice extends AudioDevice
 
 	private int	bufferSize;
 
+	/**
+	 * [Bytes]
+	 * */
 	public int getBufferSize()
 	{
 		return bufferSize;
 	}
 
+	/**
+	 * [Bytes]
+	 * @param bufferSize [Bytes]
+	 * */
 	protected void setBufferSize(int bufferSize)
 	{
 		this.bufferSize = bufferSize;

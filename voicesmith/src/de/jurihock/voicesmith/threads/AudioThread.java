@@ -24,6 +24,8 @@ package de.jurihock.voicesmith.threads;
 import java.util.Arrays;
 
 import android.content.Context;
+import de.jurihock.voicesmith.AAF;
+import de.jurihock.voicesmith.DAFX;
 import de.jurihock.voicesmith.Disposable;
 import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.io.AudioDevice;
@@ -41,6 +43,13 @@ public abstract class AudioThread implements Runnable, Disposable
 		this.context = context;
 		this.input = input;
 		this.output = output;
+	}
+
+	public void configure(Object... params)
+	{
+		// ReentrantLock lock = new ReentrantLock(true);
+		// lock.lock();
+		// try { ... } finally { lock.unlock(); }
 	}
 
 	public void dispose()
@@ -111,4 +120,36 @@ public abstract class AudioThread implements Runnable, Disposable
 	}
 
 	protected abstract void doProcessing();
+
+	public static AudioThread create(Context context, AudioDevice input, AudioDevice output, DAFX dafx)
+	{
+		switch (dafx)
+		{
+		case Robotize:
+			return new RobotizeThread(context, input, output);
+		case Transpose:
+			return new TransposeThread(context, input, output);
+		case Detune:
+			return new DetuneThread(context, input, output);
+		case Hoarseness:
+			return new HoarsenessThread(context, input, output);
+		default:
+			throw new IllegalArgumentException("Illegal DAFX argument!");
+		}
+	}
+
+	public static AudioThread create(Context context, AudioDevice input, AudioDevice output, AAF aaf)
+	{
+		switch (aaf)
+		{
+		case FAF:
+			return new TransposeThread(context, input, output);
+		case DAF:
+			return new DelayThread(context, input, output);
+		case FastDAF:
+			return new LowDelayThread(context, input, output);
+		default:
+			throw new IllegalArgumentException("Illegal AAF argument!");
+		}
+	}
 }

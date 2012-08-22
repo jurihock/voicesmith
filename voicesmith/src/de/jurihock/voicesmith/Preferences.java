@@ -20,6 +20,7 @@ package de.jurihock.voicesmith;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
@@ -28,14 +29,14 @@ import android.preference.PreferenceManager;
 public final class Preferences
 {
 	// TODO: Try different audio sources
-//	public static final int			PCM_IN_SOURCE	= MediaRecorder.AudioSource.MIC;
+	// public static final int PCM_IN_SOURCE = MediaRecorder.AudioSource.MIC;
 	// public static final int PCM_IN_SOURCE =
 	// MediaRecorder.AudioSource.VOICE_CALL;
 	// public static final int PCM_IN_SOURCE =
 	// MediaRecorder.AudioSource.VOICE_DOWNLINK;
 	// public static final int PCM_IN_SOURCE =
 	// MediaRecorder.AudioSource.VOICE_UPLINK;
-//	public static final int			PCM_OUT_SOURCE	= AudioManager.STREAM_MUSIC;
+	// public static final int PCM_OUT_SOURCE = AudioManager.STREAM_MUSIC;
 	// public static final int PCM_OUT_SOURCE = AudioManager.STREAM_VOICE_CALL;
 
 	public static final String		DATASTORE_DIR	= "Android/data/de.jurihock.voicesmith";
@@ -55,6 +56,16 @@ public final class Preferences
 			context, R.xml.preferences, false);
 	}
 
+	public void registerOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener listener)
+	{
+		preferences.registerOnSharedPreferenceChangeListener(listener);
+	}
+
+	public void unregisterOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener listener)
+	{
+		preferences.unregisterOnSharedPreferenceChangeListener(listener);
+	}
+
 	public void reset()
 	{
 		preferences.edit().clear().commit();
@@ -62,46 +73,40 @@ public final class Preferences
 
 	public int getVolumeLevel()
 	{
-		int vl = Integer.parseInt(
-			preferences.getString("prefVolumeLevel", "100"));
-
-		return vl;
+		return Integer.parseInt(
+			preferences.getString("VolumeLevel", "50"));
 	}
 
-	public boolean setVolumeLevel(int newVolumeLevel)
+	public boolean setVolumeLevel(int value)
 	{
-		if ((0 <= newVolumeLevel) && (newVolumeLevel <= 100))
+		if ((0 <= value) && (value <= 100))
 		{
 			return preferences.edit()
-				.putString("prefVolumeLevel",
-					Integer.toString(newVolumeLevel))
+				.putString("VolumeLevel",
+					Integer.toString(value))
 				.commit();
 		}
 
 		return false;
 	}
 
+	public int getSoundAmplification()
+	{
+		return Integer.parseInt(
+			preferences.getString("SoundAmplification", "6"));
+	}
+
 	public boolean isReduceNoise()
 	{
-		return preferences.getBoolean("prefReduceNoise", true);
+		return preferences.getBoolean("ReduceNoise", true);
 	}
 
 	public int getSampleRate()
 	{
-		int sr = Integer.parseInt(
-			preferences.getString("prefSampleRate", "44100"));
-
-		// TODO: Handle system default sample rate
-		// if (sr == 0)
-		// {
-		// sr = AudioTrack
-		// .getNativeOutputSampleRate(
-		// AudioManager.STREAM_SYSTEM);
-		// }
-
-		return sr;
+		return Integer.parseInt(
+			preferences.getString("SampleRate", "44100"));
 	}
-	
+
 	/**
 	 * Returns the optimal PCM buffer size. Because of output buffer stuffing,
 	 * the input buffer should be bigger, to prevent the overflow.
@@ -121,21 +126,6 @@ public final class Preferences
 		return Math.max(pcmInBufferSize, pcmOutBufferSize);
 	}
 
-	public enum FrameType
-	{
-		Large(2),
-		Default(1),
-		Medium(1D / 2),
-		Small(1D / 4);
-
-		public final double	ratio;
-
-		private FrameType(double ratio)
-		{
-			this.ratio = ratio;
-		}
-	}
-
 	public int getFrameSize(FrameType frameType, int sampleRate)
 	{
 		// An example for the 44,1 kHz sample rate:
@@ -147,11 +137,16 @@ public final class Preferences
 		final double frameSizeRatio = 1D / (44100D / 2048D); // default ratio
 		final double frameTypeRatio = frameType.ratio;
 
-		return (int) (getSampleRate() * frameSizeRatio * frameTypeRatio);
+		// Only even frame sizes are required
+		int frameSize = (int) (sampleRate * frameSizeRatio * frameTypeRatio);
+		if (frameSize % 2 != 0) frameSize++;
+
+		return frameSize;
 	}
 
 	public int getHopSize(FrameType frameType, int sampleRate)
 	{
+		// The hop size for a Hann window is 1/4 of the frame size:
 		return getFrameSize(frameType, sampleRate) / 4;
 	}
 }

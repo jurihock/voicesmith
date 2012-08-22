@@ -26,25 +26,71 @@ import java.io.IOException;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Utils;
+import de.jurihock.voicesmith.audio.HeadsetMode;
 
 public final class PcmInDevice extends PcmDevice
 {
-	private AudioRecord	input	= null;
+	private static final int	WIRED_HEADSET_SOURCE		= MediaRecorder.AudioSource.MIC;
+	private static final int	BLUETOOTH_HEADSET_SOURCE	= MediaRecorder.AudioSource.MIC;
+
+	private AudioRecord			input						= null;
+
+	public PcmInDevice(Context context, HeadsetMode headsetMode)
+		throws IOException
+	{
+		super(context);
+
+		switch (headsetMode)
+		{
+		case WIRED_HEADSET:
+			setAudioSource(WIRED_HEADSET_SOURCE);
+			break;
+
+		case BLUETOOTH_HEADSET:
+			setSampleRate(8000);
+			setAudioSource(BLUETOOTH_HEADSET_SOURCE);
+			break;
+		default:
+			throw new IOException("Unknown HeadsetMode!");
+		}
+
+		init(context);
+	}
+
+	public PcmInDevice(Context context, int sampleRate) throws IOException
+	{
+		super(context, sampleRate);
+		setAudioSource(WIRED_HEADSET_SOURCE);
+		init(context);
+	}
 
 	public PcmInDevice(Context context) throws IOException
 	{
 		super(context);
+		setAudioSource(WIRED_HEADSET_SOURCE);
+		init(context);
+	}
 
-		this.setAudioSource(Preferences.PCM_IN_SOURCE);
-		this.setChannels(AudioFormat.CHANNEL_IN_MONO); // DON'T CHANGE!
-		this.setEncoding(AudioFormat.ENCODING_PCM_16BIT); // DON'T CHANGE!
-		this.setMinBufferSize(AudioRecord.getMinBufferSize(
+	private void init(Context context) throws IOException
+	{
+		setChannels(AudioFormat.CHANNEL_IN_MONO); // DON'T CHANGE!
+		setEncoding(AudioFormat.ENCODING_PCM_16BIT); // DON'T CHANGE!
+		setMinBufferSize(AudioRecord.getMinBufferSize(
 			getSampleRate(), getChannels(), getEncoding()));
 
-		this.setBufferSize(new Preferences(context).getPcmBufferSize());
-		Utils.log("PCM IN buffer size is %s.", this.getBufferSize());
+		if (getMinBufferSize() == AudioRecord.ERROR_BAD_VALUE ||
+			getMinBufferSize() == AudioRecord.ERROR)
+		{
+			throw new IOException(
+				"Unable to determine the MinBufferSize for AudioRecord!");
+		}
+
+		setBufferSize(new Preferences(context)
+			.getPcmBufferSize(getSampleRate()));
+		Utils.log("PCM IN buffer size is %s.", getBufferSize());
 
 		input = new AudioRecord(getAudioSource(), getSampleRate(),
 			getChannels(), getEncoding(), getBufferSize());
