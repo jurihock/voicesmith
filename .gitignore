@@ -6,7 +6,7 @@ obj/
 out/
 
 # Eclipse project files
-# .settings/
+.settings/
 # .classpath
 # .project
 
