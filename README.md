@@ -5,7 +5,9 @@ Voicesmith app records an audio signal from the built-in microphone, processes i
 
 There are some of the classical Phase Vocoder effects available. Raise or lower your voice pitch up to 12 semitones, make it sound like a robot, make it detuned or hoarse. Feel free to experiment with this app. Just try to alter your voice or of somebody else.
 
-Voicesmith can also be used to perform the Delayed Auditory Feedback (DAF) and Frequency-Shifted Auditory Feedback (FAF). The altered auditory feedback is successfully applied in stuttering therapy, to help people speak more fluently. Please ask your therapist to find out more. You should also know, that the lowest possible feedback delay can vary from smartphone to smartphone. Moreover the lowest possible delay on Android based smartphones is unfortunately bigger than on special hardware devices.
+Voicesmith can also be used to perform the Delayed Auditory Feedback (DAF) and Frequency-Shifted Auditory Feedback (FAF). The altered auditory feedback is successfully applied in stuttering therapy, to help people speak more fluently. Please ask your therapist to find out more.
+
+You should also know, the lowest possible feedback delay can vary from smartphone to smartphone. Moreover, the lowest possible delay on Android based smartphones is unfortunately bigger than on special hardware devices.
 
 IMPORTANT NOTES:
 
