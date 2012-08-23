@@ -19,8 +19,10 @@
 package de.jurihock.voicesmith.audio;
 
 import java.io.IOException;
+import java.util.Set;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -133,7 +135,6 @@ public final class HeadsetManager
 		return audio.isWiredHeadsetOn();
 	}
 
-	// TODO: How to correct detect that?
 	public boolean isBluetoothHeadsetOn()
 	{
 		boolean isHeadsetConnected = false;
@@ -143,27 +144,12 @@ public final class HeadsetManager
 			BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 			if (adapter != null && adapter.isEnabled())
 			{
-				isHeadsetConnected = true;
+				Set<BluetoothDevice> devices = adapter.getBondedDevices();
 
-				// Set<BluetoothDevice> devices = adapter.getBondedDevices();
-				// for (BluetoothDevice device : devices)
-				// {
-				// BluetoothClass bluetoothClass = device.getBluetoothClass();
-				// if (bluetoothClass == null) continue;
-				//
-				// int deviceClass = bluetoothClass.getDeviceClass();
-				// if (bluetoothClass.hasService(Service.RENDER)
-				// || deviceClass == Device.AUDIO_VIDEO_CAR_AUDIO
-				// || deviceClass == Device.AUDIO_VIDEO_HANDSFREE
-				// || deviceClass == Device.AUDIO_VIDEO_WEARABLE_HEADSET
-				// || deviceClass == Device.AUDIO_VIDEO_PORTABLE_AUDIO
-				// || deviceClass == 1036) // TODO: Bluetooth device
-				// // classes?
-				// {
-				// isHeadsetConnected = true;
-				// break;
-				// }
-				// }
+				isHeadsetConnected = devices != null
+					&& devices.size() > 0;
+				
+				// TODO: Check device classes, what sort of devices it is
 			}
 		}
 		catch (Exception exception)
