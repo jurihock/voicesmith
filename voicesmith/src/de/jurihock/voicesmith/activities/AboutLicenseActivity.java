@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Voicesmith <http://voicesmith.jurihock.de>
+ * Voicesmith <http://voicesmith.jurihock.de/>
  * Copyright (c) 2011-2012 Juergen Hock
  * 
  * This program is free software: you can redistribute it and/or modify

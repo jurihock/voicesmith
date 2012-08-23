@@ -1,9 +1,6 @@
 /*******************************************************************************
- * src/de/jurihock/voicesmith/dsp/dafx/HoarsenessProcessor.java
- * is part of the Voicesmith project
- * <http://voicesmith.jurihock.de>
- * 
- * Copyright (C) 2011-2012 Juergen Hock
+ * Voicesmith <http://voicesmith.jurihock.de/>
+ * Copyright (c) 2011-2012 Juergen Hock
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
