@@ -18,15 +18,12 @@
 
 package de.jurihock.voicesmith.threads;
 
-import java.util.Arrays;
-
 import android.content.Context;
 import de.jurihock.voicesmith.AAF;
 import de.jurihock.voicesmith.DAFX;
 import de.jurihock.voicesmith.Disposable;
 import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.io.AudioDevice;
-import de.jurihock.voicesmith.io.pcm.PcmOutDevice;
 
 public abstract class AudioThread implements Runnable, Disposable
 {
@@ -96,24 +93,12 @@ public abstract class AudioThread implements Runnable, Disposable
 			android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
 
 		output.start();
-		stuffPcmOutput();
 		input.start();
 
 		doProcessing();
 
 		input.stop();
 		output.stop();
-	}
-
-	private void stuffPcmOutput()
-	{
-		if (output.getClass() != PcmOutDevice.class) return;
-
-		int bufferSize = ((PcmOutDevice) output).getBufferSize();
-		final short[] buffer = new short[bufferSize];
-		Arrays.fill(buffer, (short) 0);
-
-		output.write(buffer);
 	}
 
 	protected abstract void doProcessing();

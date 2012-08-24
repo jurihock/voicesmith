@@ -19,6 +19,7 @@
 package de.jurihock.voicesmith.io.pcm;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import android.content.Context;
 import android.media.AudioFormat;
@@ -33,7 +34,7 @@ public final class PcmOutDevice extends PcmDevice
 	private static final int	WIRED_HEADSET_SOURCE		= AudioManager.STREAM_MUSIC;
 	private static final int	BLUETOOTH_HEADSET_SOURCE	= AudioManager.STREAM_VOICE_CALL;
 
-	private WrappedAudioTrack	output						= null;
+	private AudioTrack			output						= null;
 
 	public PcmOutDevice(Context context, HeadsetMode headsetMode)
 		throws IOException
@@ -115,6 +116,11 @@ public final class PcmOutDevice extends PcmDevice
 	public void start()
 	{
 		output.play();
+
+		// Stuff the internal PCM buffer with empty data
+		final byte[] buffer = new byte[getBufferSize()];
+		Arrays.fill(buffer, (byte)0);
+		output.write(buffer, 0, buffer.length);
 	}
 
 	@Override

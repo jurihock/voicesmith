@@ -108,8 +108,8 @@ public final class Preferences
 	}
 
 	/**
-	 * Returns the optimal PCM buffer size. Because of output buffer stuffing,
-	 * the input buffer should be bigger, to prevent the overflow.
+	 * Returns the optimal PCM buffer size in bytes. Because of output buffer
+	 * stuffing, the input buffer should be bigger, to prevent the overflow.
 	 * */
 	public int getPcmBufferSize(int sampleRate)
 	{
