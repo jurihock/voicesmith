@@ -26,6 +26,7 @@ import de.jurihock.voicesmith.dsp.KissFFT;
 import de.jurihock.voicesmith.dsp.Window;
 import de.jurihock.voicesmith.dsp.processors.AmplifyProcessor;
 import de.jurihock.voicesmith.dsp.processors.DenoiseProcessor;
+import de.jurihock.voicesmith.dsp.silence.SilenceTester;
 import de.jurihock.voicesmith.io.AudioDevice;
 
 /**
@@ -42,6 +43,7 @@ public final class StftPreprocessor implements Disposable
 	private final boolean			doDenoise;
 
 	private final AmplifyProcessor	amplifier;
+	private final SilenceTester		silenceTester;
 
 	private KissFFT					fft	= null;
 	private final float[]			window;
@@ -58,6 +60,7 @@ public final class StftPreprocessor implements Disposable
 		this.doDenoise = doDenoise;
 
 		amplifier = new AmplifyProcessor(input.getContext());
+		silenceTester = new SilenceTester();
 
 		fft = new KissFFT(frameSize);
 		window = new Window(frameSize, true).hann();
@@ -89,6 +92,9 @@ public final class StftPreprocessor implements Disposable
 		{
 			frameCursor = frameSize;
 			input.read(nextFrame);
+
+			// Pre-preprocess frame
+			silenceTester.testFrame(nextFrame); // TEST
 			amplifier.processFrame(nextFrame);
 		}
 		// Handle frame cursor
@@ -102,6 +108,9 @@ public final class StftPreprocessor implements Disposable
 
 			// Read next frame
 			input.read(nextFrame);
+
+			// Pre-preprocess frame
+			silenceTester.testFrame(nextFrame); // TEST
 			amplifier.processFrame(nextFrame);
 		}
 
