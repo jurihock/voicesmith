@@ -25,20 +25,25 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteOrder;
 
-import de.jurihock.voicesmith.Utils;
-
 import android.content.Context;
 import android.os.Environment;
+import de.jurihock.voicesmith.Utils;
 
 public final class FileInDevice extends FileDevice
 {
 	private DataInputStream	input	= null;
 
+	public FileInDevice(Context context, String fileName)
+		throws IOException
+	{
+		this(context, fileName, ByteOrder.nativeOrder());
+	}
+
 	public FileInDevice(Context context, String fileName, ByteOrder fileEncoding)
 		throws IOException
 	{
 		super(context);
-		
+
 		if (!Environment.MEDIA_MOUNTED.equals(
 			Environment.getExternalStorageState()))
 		{
@@ -59,16 +64,16 @@ public final class FileInDevice extends FileDevice
 	{
 		int result = 0;
 
+		final boolean swapBytes =
+			this.getFileEncoding() != ByteOrder.nativeOrder();
+
 		for (int i = 0; i < count; i++)
 		{
 			try
 			{
 				short value = input.readShort();
 
-				if (this.getFileEncoding() == ByteOrder.LITTLE_ENDIAN)
-				{
-					value = swapBytes(value);
-				}
+				if (swapBytes) value = swapBytes(value);
 
 				buffer[i + offset] = value;
 				result++;
