@@ -1,4 +1,4 @@
-package de.jurihock.voicesmith.dsp.silence;
+package de.jurihock.voicesmith.dsp.vad;
 
 public final class SchmittTrigger
 {

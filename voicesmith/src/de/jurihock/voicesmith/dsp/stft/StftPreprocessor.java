@@ -26,7 +26,7 @@ import de.jurihock.voicesmith.dsp.KissFFT;
 import de.jurihock.voicesmith.dsp.Window;
 import de.jurihock.voicesmith.dsp.processors.AmplifyProcessor;
 import de.jurihock.voicesmith.dsp.processors.DenoiseProcessor;
-import de.jurihock.voicesmith.dsp.silence.SilenceTester;
+import de.jurihock.voicesmith.dsp.vad.SilenceTester;
 import de.jurihock.voicesmith.io.AudioDevice;
 
 /**

@@ -1,4 +1,4 @@
-package de.jurihock.voicesmith.dsp.silence;
+package de.jurihock.voicesmith.dsp.vad;
 
 /**
  * Computes the Root Mean Square (RMS) value, i.e. only the Parseval's sum of
