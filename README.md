@@ -42,6 +42,6 @@ Thanks
 
 * Udo Zoelzer et al. (Digital Audio Effects)
 * Thierry Dutoit, Ferran Marques et al. (Applied Signal Processing)
-* Julius Orion Smith (Spectral Audio Signal Processing)
+* Julius Orion Smith (Online Books)
 * Mark Borgerding (Kiss FFT)
 * Cyril Mottier, Julien Dupouy (GreenDroid)
