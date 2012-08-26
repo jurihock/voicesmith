@@ -13,4 +13,5 @@ out/
 # Miscellaneous files
 local.properties
 *.py[cod]
+*.raw
 *.wav
