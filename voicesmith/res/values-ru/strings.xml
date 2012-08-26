@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Application -->
+    <string name="ApplicationName">Voicesmith</string>
+    <string name="ApplicationDescription">Приложение для изменения голоса в реальном времени и акустической обратной связи (DAF &amp; FAF) для Android смартфонов</string>
+    <string name="ApplicationLink">http://voicesmith.jurihock.de</string>
+
+    <!-- Activities -->
+    <string name="HomeActivity">Voicesmith</string>
+    <string name="DafxActivity">Изменение голоса</string>
+    <string name="AafActivity">Акустическая обратная связь</string>
+    <string name="PreferenceActivity">Регулировки</string>
+    <string name="AboutActivity">О программе Voicesmith</string>
+    <string name="AboutApplicationActivity">О программе</string>
+    <string name="AboutLicenseActivity">Лицензия</string>
+
+    <!-- Widgets -->
+    <string name="BluetoothHeadsetButton">Используй Bluetooth при наличии</string>
+    <string name="IntervalPickerLabel">Странспонируй на %s полутон(а)</string>
+
+    <!-- Preferences -->
+    <string name="VolumeLevelPreference">Уровень громкости</string>
+    <string name="SoundAmplificationPreference">Усиление звука</string>
+    <string name="ReduceNoisePreference">Подавление шума</string>
+    <string name="SampleRatePreference">Частота дискретизации</string>
+    <string name="ResetPreferences">Сбросить к значениям по умолчанию</string>
+
+    <!-- Services -->
+    <string name="DafxService">Voicesmith DAFX Service</string>
+    <string name="AafService">Voicesmith AAF Service</string>
+    <string name="ServiceFailureMessage">Oops! Something went wrong. :-( Check if a wired or Bluetooth earphone/headset is plugged in. Maybe try it with a different sample rate again.</string>
+    <string name="ServiceNotificationTitle">Voicesmith runs in the background!</string>
+    <string name="ServiceNotificationSubtitle">Touch here to see details.</string>
+
+</resources>
