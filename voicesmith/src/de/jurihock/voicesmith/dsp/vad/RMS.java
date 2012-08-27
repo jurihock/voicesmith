@@ -1,8 +1,9 @@
 package de.jurihock.voicesmith.dsp.vad;
 
+import static de.jurihock.voicesmith.dsp.Math.sqrt;
+
 /**
- * Computes the Root Mean Square (RMS) value, i.e. only the Parseval's sum of
- * squares, without square root or division by N.
+ * Computes the Root Mean Square (RMS) value.
  * */
 public final class RMS
 {
@@ -42,6 +43,14 @@ public final class RMS
 		rmsBuffer[rmsBufferCursor] = value * value;
 		rmsBufferSum += rmsBuffer[rmsBufferCursor];
 
-		return rmsBufferSum;
+		// $ \sum x^2 $
+		// return rmsBufferSum;
+
+		// $ 1/N \sum x^2 $
+		// return (long) (rmsBufferSum / (double) rmsBufferSize);
+
+		// $ \sqrt{ 1/N \sum x^2 } $
+		// TODO: float or double?
+		return (long) sqrt((float) rmsBufferSum / (float) rmsBufferSize);
 	}
 }

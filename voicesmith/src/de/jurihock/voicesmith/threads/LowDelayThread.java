@@ -35,11 +35,14 @@ public class LowDelayThread extends AudioThread
 		super(context, input, output);
 
 		Preferences preferences = new Preferences(context);
-		
+
+		FrameType frameType = FrameType.Small;
+		int frameSize = preferences.getFrameSize(
+			frameType, input.getSampleRate());
+
 		amplifier = new AmplifyProcessor(context);
 
-		buffer = new short[preferences.getFrameSize(
-			FrameType.Small, input.getSampleRate())];
+		buffer = new short[frameSize];
 
 		Utils.log("Delay frame size is %s.", buffer.length);
 	}
@@ -52,7 +55,7 @@ public class LowDelayThread extends AudioThread
 			// Utils.tic("IN");
 			input.read(buffer);
 			// Utils.toc("IN");
-			
+
 			amplifier.processFrame(buffer);
 
 			// Utils.tic("OUT");
