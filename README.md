@@ -37,6 +37,11 @@ Source code and licensing
 
 Voicesmith is an open source project licensed under the [GPL v3](http://www.gnu.org/licenses/gpl.html). Its source code is publicly available on [GitHub](http://github.com/jurihock/voicesmith).
 
+Donate
+------
+
+Do you want support this project? Great! :-) Please make a [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RDZAFKVYQJYFA) donation or take a look at my (Amazon.de)[http://www.amazon.de/registry/wishlist/32GEAFNKPX67Y] or (Amazon.com)[http://www.amazon.com/registry/wishlist/24L7URDMP4U2N] wishlists. Thanks!
+
 Thanks
 ------
 
