@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
+@import url(https://fonts.googleapis.com/css?family=Lato:400italic,700italic,400,700);
 
 body {
   padding:50px;
@@ -118,11 +118,11 @@ header ul {
   border-radius:5px;
   border:1px solid #d2d2d2;
   box-shadow:inset #fff 0 1px 0, inset rgba(0,0,0,0.03) 0 -1px 0;
-  width:270px;
+  width:202px;
 }
 
 header li {
-  width:89px;
+  width:100px;
   float:left;
   border-right:1px solid #d2d2d2;
   height:40px;
@@ -144,13 +144,9 @@ strong {
 }
 
 header ul li + li {
-  width:88px;
+  width:100px;
   border-left:1px solid #fff;
-}
-
-header ul li + li + li {
   border-right:none;
-  width:89px;
 }
 
 header ul a strong {
