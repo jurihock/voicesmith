@@ -10,11 +10,11 @@ REQUIREMENTS:
 DEPENDENCIES:
 
 * Kiss FFT (Mark Borgerding) -- already included
-* GreenDroid (Cyril Mottier) -- download separately
-* GreenDroid/GDPreferenceActivity (Julien Dupouy) -- paste above
+* GreenDroid (Cyril Mottier) -- git submodule -> separate forked repository
+* GreenDroid/GDPreferenceActivity (Julien Dupouy) -- pasted above
 
 HOW TO BUILD:
 
 Voicesmith repository contains Eclipse project files, an auto-generated Ant build script and a custom Makefile to handle the JNI source code.
 
-Feel free to setup an IDE of your choise, e.g. Eclipse. But don't forget to download all dependencies and reference them in your project.
+Feel free to setup an IDE of your choise, e.g. Eclipse. But don't forget to download (or check out) all dependencies and reference them in your project.
