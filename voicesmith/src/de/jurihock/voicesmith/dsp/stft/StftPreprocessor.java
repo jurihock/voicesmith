@@ -94,7 +94,7 @@ public final class StftPreprocessor implements Disposable
 			input.read(nextFrame);
 
 			// Pre-preprocess frame
-			silenceTester.testFrame(nextFrame); // TEST
+			// silenceTester.testFrame(nextFrame); // TEST
 			amplifier.processFrame(nextFrame);
 		}
 		// Handle frame cursor
@@ -110,7 +110,7 @@ public final class StftPreprocessor implements Disposable
 			input.read(nextFrame);
 
 			// Pre-preprocess frame
-			silenceTester.testFrame(nextFrame); // TEST
+			// silenceTester.testFrame(nextFrame); // TEST
 			amplifier.processFrame(nextFrame);
 		}
 

@@ -10,8 +10,9 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
-    <!-- TEST -->
+    <!-- TEST
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    -->
 
     <application
         android:name=".Application"
