@@ -189,12 +189,13 @@ public abstract class AudioService extends Service implements
 			if (input == null)
 			{
 				input = new PcmInDevice(this, getHeadsetMode());
+//				input = new FileInDevice(this, "dank.raw"); // TEST
 			}
 
 			if (output == null)
 			{
 				output = new PcmOutDevice(this, getHeadsetMode());
-				// output = new FileOutDevice(this, "test.raw"); // TEST
+//				 output = new FileOutDevice(this, "dank_robot.raw"); // TEST
 			}
 		}
 		catch (IOException exception)
