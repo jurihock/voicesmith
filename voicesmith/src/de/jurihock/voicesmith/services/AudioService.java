@@ -177,6 +177,8 @@ public abstract class AudioService extends Service implements
 			thread.dispose();
 			thread = null;
 		}
+		
+		disposeAudioDevices();
 	}
 
 	private boolean initAudioDevices()
