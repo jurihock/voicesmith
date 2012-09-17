@@ -16,6 +16,8 @@
     <SeekBar
         android:id="@+id/viewSeekBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/LayoutMargin"
+        android:layout_marginRight="@dimen/LayoutMargin" />
 
 </LinearLayout>
