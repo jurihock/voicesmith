@@ -46,7 +46,7 @@ public class DelayThread extends AudioThread
 			frameType, input.getSampleRate());
 
 		buffer = new float[frameSize];
-		Utils.log("Denoise frame size is %s.", buffer.length);
+		new Utils(context).log("Denoise frame size is %s.", buffer.length);
 
 		preprocessor = new StftPreprocessor(input, frameSize, hopSize, true);
 		postprocessor = new StftPostprocessor(output, frameSize, hopSize, true);

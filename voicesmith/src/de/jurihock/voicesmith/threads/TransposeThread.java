@@ -131,7 +131,7 @@ public final class TransposeThread extends AudioThread
 
 		if (params != null)
 		{
-			Utils.assertTrue(params.length == 1,
+			new Utils(context).assertTrue(params.length == 1,
 				"%s expected only one parameter, the interval!",
 				this.getClass().getName());
 			
@@ -193,7 +193,7 @@ public final class TransposeThread extends AudioThread
 			analysisFrameBuffer = new float[analysisFrameSize];
 			synthesisFrameBuffer = new float[synthesisFrameSize];
 
-			Utils.log("Transpose frame sizes are %s and %s.",
+			new Utils(context).log("Transpose frame sizes are %s and %s.",
 				analysisFrameBuffer.length, synthesisFrameBuffer.length);
 		}
 		finally

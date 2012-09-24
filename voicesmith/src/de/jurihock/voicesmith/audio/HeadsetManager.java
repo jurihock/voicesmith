@@ -85,7 +85,7 @@ public final class HeadsetManager
 			source = BLUETOOTH_HEADSET_SOURCE;
 			break;
 		default:
-			Utils.log(new IOException("Unknown HeadsetMode!"));
+			new Utils(context).log(new IOException("Unknown HeadsetMode!"));
 			source = WIRED_HEADSET_SOURCE;
 		}
 
@@ -117,7 +117,7 @@ public final class HeadsetManager
 			source = BLUETOOTH_HEADSET_SOURCE;
 			break;
 		default:
-			Utils.log(new IOException("Unknown HeadsetMode!"));
+			new Utils(context).log(new IOException("Unknown HeadsetMode!"));
 			source = WIRED_HEADSET_SOURCE;
 		}
 
@@ -154,7 +154,7 @@ public final class HeadsetManager
 		}
 		catch (Exception exception)
 		{
-			Utils.log(exception);
+			new Utils(context).log(exception);
 		}
 
 		return isHeadsetConnected
@@ -172,12 +172,12 @@ public final class HeadsetManager
 
 		if (bluetoothScoOn = on)
 		{
-			Utils.log("Start Bluetooth SCO");
+			new Utils(context).log("Start Bluetooth SCO");
 			audio.startBluetoothSco();
 		}
 		else
 		{
-			Utils.log("Stop Bluetooth SCO");
+			new Utils(context).log("Stop Bluetooth SCO");
 			audio.stopBluetoothSco();
 		}
 	}
@@ -229,7 +229,7 @@ public final class HeadsetManager
 						case BLUETOOTH_STATE_DISCONNECTED:
 						case BLUETOOTH_STATE_ERROR:
 						default:
-							Utils.log("Bluetooth headset disconnected.");
+							new Utils(context).log("Bluetooth headset disconnected.");
 							if (listener != null)
 							{
 								listener.onBluetoothHeadsetOff();

@@ -47,7 +47,7 @@ public class HoarsenessThread extends AudioThread
 			frameType, input.getSampleRate());
 
 		buffer = new float[frameSize];
-		Utils.log("Hoarseness frame size is %s.", buffer.length);
+		new Utils(context).log("Hoarseness frame size is %s.", buffer.length);
 
 		preprocessor = new StftPreprocessor(input, frameSize, hopSize, true);
 		postprocessor = new StftPostprocessor(output, frameSize, hopSize, true);

@@ -40,20 +40,26 @@ public final class Utils
 {
 	private static final String				NATIVELIB_NAME	= "Voicesmith";
 	private static final String				LOGCAT_TAG		= "Voicesmith";
-
-	private static final boolean			LOGGING			= false;						// TEST
-
 	private static final int				TOAST_LENGTH	= Toast.LENGTH_LONG;
+
+	private final Context					context;
+	private final Preferences				preferences;
 
 	/**
 	 * Stopwatch timestamps.
 	 * */
 	private static final Map<String, Long>	tics			= new HashMap<String, Long>();
 
+	public Utils(Context context)
+	{
+		this.context = context;
+		this.preferences = new Preferences(context);
+	}
+
 	/**
 	 * Loads the native library.
 	 * */
-	public static void loadNativeLibrary()
+	public void loadNativeLibrary()
 	{
 		try
 		{
@@ -61,14 +67,14 @@ public final class Utils
 		}
 		catch (UnsatisfiedLinkError exception)
 		{
-			Utils.log("Native library %s could not be loaded!", NATIVELIB_NAME);
+			log("Native library %s could not be loaded!", NATIVELIB_NAME);
 		}
 	}
 
 	/**
 	 * Checks if a local service is just running.
 	 * */
-	public static boolean isServiceRunning(Context context, Class<?> serviceClass)
+	public boolean isServiceRunning(Class<?> serviceClass)
 	{
 		ActivityManager manager = (ActivityManager)
 			context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -92,7 +98,7 @@ public final class Utils
 	 * Tries to mount the external storage, makes necessary dirs and finally
 	 * returns a File instance for assigned file path.
 	 * */
-	public static File mountFile(String path) throws IOException
+	public File mountFile(String path) throws IOException
 	{
 		if (!Environment.MEDIA_MOUNTED.equals(
 			Environment.getExternalStorageState()))
@@ -115,7 +121,7 @@ public final class Utils
 		return file;
 	}
 
-	public static void postNotification(Context context, int iconID, String tickerText, String contentTitle, String contentText, Class<?> activityClass)
+	public void postNotification(int iconID, String tickerText, String contentTitle, String contentText, Class<?> activityClass)
 	{
 		NotificationManager service = (NotificationManager)
 			context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -138,7 +144,7 @@ public final class Utils
 		service.notify(0, notification);
 	}
 
-	public static void cancelAllNotifications(Context context)
+	public void cancelAllNotifications()
 	{
 		NotificationManager service = (NotificationManager)
 			context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -149,15 +155,18 @@ public final class Utils
 	/**
 	 * Writes a LogCat log entry.
 	 * */
-	public static void log(String message)
+	public void log(String message)
 	{
-		if (LOGGING) Log.d(LOGCAT_TAG, message);
+		if (preferences.isLogging())
+		{
+			Log.d(LOGCAT_TAG, message);
+		}
 	}
 
 	/**
 	 * Writes a formatted LogCat log entry.
 	 * */
-	public static void log(String message, Object... args)
+	public void log(String message, Object... args)
 	{
 		log(String.format(message, args));
 	}
@@ -165,7 +174,7 @@ public final class Utils
 	/**
 	 * Writes a LogCat log entry.
 	 * */
-	public static void log(Throwable exception)
+	public void log(Throwable exception)
 	{
 		log("[EXCEPTION] " + Log.getStackTraceString(exception));
 	}
@@ -173,7 +182,7 @@ public final class Utils
 	/**
 	 * Shows a Toast message.
 	 * */
-	public static void log(Context context, String message)
+	public void toast(String message)
 	{
 		Toast.makeText(context, message, TOAST_LENGTH).show();
 	}
@@ -181,15 +190,15 @@ public final class Utils
 	/**
 	 * Shows a formatted Toast message.
 	 * */
-	public static void log(Context context, String message, Object... args)
+	public void toast(String message, Object... args)
 	{
-		log(context, String.format(message, args));
+		toast(String.format(message, args));
 	}
 
 	/**
 	 * Writes a LogCat log entry if condition is FALSE.
 	 * */
-	public static void assertTrue(boolean condition, String message)
+	public void assertTrue(boolean condition, String message)
 	{
 		if (!condition) log("[ASSERT] " + message);
 	}
@@ -197,7 +206,7 @@ public final class Utils
 	/**
 	 * Writes a formatted LogCat log entry if condition is FALSE.
 	 * */
-	public static void assertTrue(boolean condition, String message, Object... args)
+	public void assertTrue(boolean condition, String message, Object... args)
 	{
 		assertTrue(condition, String.format(message, args));
 	}
@@ -205,7 +214,7 @@ public final class Utils
 	/**
 	 * Starts a stopwatch.
 	 * */
-	public static synchronized void tic(String tag)
+	public synchronized void tic(String tag)
 	{
 		if (tics.containsKey(tag))
 		{
@@ -221,7 +230,7 @@ public final class Utils
 	/**
 	 * Stops a stopwatch and prints out the time difference.
 	 * */
-	public static synchronized void toc(String tag)
+	public synchronized void toc(String tag)
 	{
 		long toc = SystemClock.elapsedRealtime(); // ms
 		// long toc = System.nanoTime(); // ns

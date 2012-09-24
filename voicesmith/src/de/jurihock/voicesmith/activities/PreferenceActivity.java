@@ -62,7 +62,7 @@ public final class PreferenceActivity extends GDPreferenceActivity
 				}
 				catch (ClassNotFoundException exception)
 				{
-					Utils.log(exception);
+					new Utils(this).log(exception);
 				}
 			}
 		}

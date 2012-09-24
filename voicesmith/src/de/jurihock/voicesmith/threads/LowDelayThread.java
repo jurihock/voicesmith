@@ -44,7 +44,7 @@ public class LowDelayThread extends AudioThread
 
 		buffer = new short[frameSize];
 
-		Utils.log("Delay frame size is %s.", buffer.length);
+		new Utils(context).log("Delay frame size is %s.", buffer.length);
 	}
 
 	@Override

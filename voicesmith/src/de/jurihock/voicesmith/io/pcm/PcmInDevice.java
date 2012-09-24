@@ -87,7 +87,7 @@ public final class PcmInDevice extends PcmDevice
 
 		setBufferSize(new Preferences(context)
 			.getPcmBufferSize(getSampleRate()));
-		Utils.log("PCM IN buffer size is %s.", getBufferSize());
+		new Utils(context).log("PCM IN buffer size is %s.", getBufferSize());
 
 		input = new AudioRecord(getAudioSource(), getSampleRate(),
 			getChannels(), getEncoding(), getBufferSize());

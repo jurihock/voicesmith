@@ -52,7 +52,7 @@ public class AboutApplicationActivity extends Activity
 		}
 		catch (PackageManager.NameNotFoundException exception)
 		{
-			Utils.log(exception);
+			new Utils(this).log(exception);
 		}
 
 		return null;

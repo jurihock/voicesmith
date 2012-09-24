@@ -8,7 +8,6 @@
         voicesmith:maxValue="100"
         voicesmith:minValue="0"
         voicesmith:valueFormat="%s%%" />
-
     <de.jurihock.voicesmith.widgets.SeekBarPreference
         android:defaultValue="6"
         android:key="SoundAmplification"
@@ -25,8 +24,14 @@
     <de.jurihock.voicesmith.widgets.ListPreference
         android:defaultValue="44100"
         android:entries="@array/SampleRateEntries"
-		android:entryValues="@array/SampleRateValues"
+        android:entryValues="@array/SampleRateValues"
         android:key="SampleRate"
         android:title="@string/SampleRatePreference" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="Logging"
+        android:summary="@string/LoggingSummary"
+        android:title="@string/LoggingPreference" />
 
 </PreferenceScreen>

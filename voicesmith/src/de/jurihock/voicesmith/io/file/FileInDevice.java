@@ -85,7 +85,7 @@ public final class FileInDevice extends FileDevice
 			}
 			catch (IOException exception)
 			{
-				Utils.log(exception);
+				new Utils(context).log(exception);
 			}
 		}
 
@@ -103,7 +103,7 @@ public final class FileInDevice extends FileDevice
 			}
 			catch (IOException exception)
 			{
-				Utils.log(exception);
+				new Utils(context).log(exception);
 			}
 			finally
 			{

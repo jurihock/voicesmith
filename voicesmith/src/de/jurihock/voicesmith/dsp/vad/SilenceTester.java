@@ -1,16 +1,20 @@
 package de.jurihock.voicesmith.dsp.vad;
 
+import android.content.Context;
 import de.jurihock.voicesmith.Utils;
 
 public final class SilenceTester
 {
+	private final Context context;
 	private final RMS				rms;
 	private final SchmittTrigger	hysteresis;
 
 	private boolean					isSignalSilent	= false;
 
-	public SilenceTester()
+	public SilenceTester(Context context)
 	{
+		this.context = context;
+
 		rms = new RMS(10);
 		hysteresis = new SchmittTrigger(1000, 1000000);
 	}
@@ -26,7 +30,7 @@ public final class SilenceTester
 			if (this.isSignalSilent != isSignalSilent)
 			{
 				this.isSignalSilent = isSignalSilent;
-				Utils.log("SilenceTester: %s, %s, %s",
+				new Utils(context).log("SilenceTester: %s, %s, %s",
 					isSignalSilent, meanValue, value);
 			}
 		}

@@ -58,7 +58,7 @@ public abstract class AudioServiceActivity<T extends AudioService> extends
 
 	protected T getService()
 	{
-		Utils.assertTrue(serviceInstance != null,
+		new Utils(this).assertTrue(serviceInstance != null,
 			"Service %s wasn't properly instantiated!",
 			serviceClass.getName());
 
@@ -79,11 +79,11 @@ public abstract class AudioServiceActivity<T extends AudioService> extends
 				serviceClass);
 		}
 
-		if (!Utils.isServiceRunning(serviceContext, serviceClass))
+		if (!new Utils(serviceContext).isServiceRunning(serviceClass))
 		{
 			if (startService(serviceIntent) == null)
 			{
-				Utils.log(this, "Unable to start service %s!",
+				new Utils(this).toast("Unable to start service %s!",
 					serviceClass.getName());
 			}
 		}
@@ -127,7 +127,7 @@ public abstract class AudioServiceActivity<T extends AudioService> extends
 			if (!bindService(serviceIntent,
 				serviceConnection, Context.BIND_AUTO_CREATE))
 			{
-				Utils.log(this, "Unable to bind service %s!",
+				new Utils(this).toast("Unable to bind service %s!",
 					serviceClass.getName());
 			}
 		}
@@ -175,7 +175,7 @@ public abstract class AudioServiceActivity<T extends AudioService> extends
 
 		unbindService();
 	}
-	
+
 	@Override
 	public boolean onHandleActionBarItemClick(ActionBarItem item, int position)
 	{

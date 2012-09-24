@@ -107,6 +107,11 @@ public final class Preferences
 			preferences.getString("SampleRate", "44100"));
 	}
 
+	public boolean isLogging()
+	{
+		return preferences.getBoolean("Logging", false);
+	}
+
 	/**
 	 * Returns the optimal PCM buffer size in bytes. Because of output buffer
 	 * stuffing, the input buffer should be bigger, to prevent the overflow.

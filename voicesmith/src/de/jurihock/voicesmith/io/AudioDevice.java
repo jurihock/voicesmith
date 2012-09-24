@@ -25,7 +25,7 @@ import de.jurihock.voicesmith.Utils;
 
 public abstract class AudioDevice implements Disposable
 {
-	private final Context	context;
+	protected final Context	context;
 
 	public Context getContext()
 	{
@@ -53,7 +53,7 @@ public abstract class AudioDevice implements Disposable
 	{
 		this.context = context;
 		this.sampleRate = sampleRate;
-		Utils.log("Current sample rate is %s Hz.", sampleRate);
+		new Utils(context).log("Current sample rate is %s Hz.", sampleRate);
 	}
 
 	public int read(short[] buffer, int offset, int count)

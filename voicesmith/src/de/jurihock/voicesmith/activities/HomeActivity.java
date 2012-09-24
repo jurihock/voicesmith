@@ -86,11 +86,11 @@ public final class HomeActivity extends GDListActivity
 		// Stop the DafxService if it's running
 		serviceClass = DafxService.class;
 		serviceIntent = new Intent(serviceContext, serviceClass);
-		if (Utils.isServiceRunning(serviceContext, serviceClass))
+		if (new Utils(serviceContext).isServiceRunning(serviceClass))
 		{
 			stopService(serviceIntent);
 
-			Utils.log("%s was stopped by the %s.",
+			new Utils(this).log("%s was stopped by the %s.",
 				serviceClass.getName(),
 				this.getClass().getName());
 		}
@@ -98,11 +98,11 @@ public final class HomeActivity extends GDListActivity
 		// Stop the AafService if it's running
 		serviceClass = AafService.class;
 		serviceIntent = new Intent(serviceContext, serviceClass);
-		if (Utils.isServiceRunning(serviceContext, serviceClass))
+		if (new Utils(serviceContext).isServiceRunning(serviceClass))
 		{
 			stopService(serviceIntent);
 
-			Utils.log("%s was stopped by the %s.",
+			new Utils(this).log("%s was stopped by the %s.",
 				serviceClass.getName(),
 				this.getClass().getName());
 		}

@@ -82,7 +82,7 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 	@Override
 	protected void onServiceConnected()
 	{
-		Utils.log("%s was connected to its service.",
+		new Utils(this).log("%s was connected to its service.",
 			this.getClass().getName());
 
 		getService().setActivityVisible(true, this.getClass());
@@ -114,7 +114,7 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 	@Override
 	protected void onServiceDisconnected()
 	{
-		Utils.log("%s was disconnected from its service.",
+		new Utils(this).log("%s was disconnected from its service.",
 			this.getClass().getName());
 
 		if (!this.isFinishing())
@@ -194,7 +194,7 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 		if (viewStartStopButton.isChecked())
 			viewStartStopButton.setChecked(false);
 
-		Utils.log(this, getString(R.string.ServiceFailureMessage));
+		new Utils(this).toast(getString(R.string.ServiceFailureMessage));
 
 		// BZZZTT!!1!
 		viewStartStopButton.performHapticFeedback(0);

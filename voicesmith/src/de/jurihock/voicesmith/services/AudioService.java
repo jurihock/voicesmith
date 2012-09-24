@@ -162,7 +162,7 @@ public abstract class AudioService extends Service implements
 
 		if (!restarting)
 		{
-			Utils.cancelAllNotifications(this);
+			new Utils(this).cancelAllNotifications();
 		}
 
 		headset.storeVolumeLevel(getHeadsetMode());
@@ -183,7 +183,7 @@ public abstract class AudioService extends Service implements
 
 	private boolean initAudioDevices()
 	{
-		Utils.log("%s inits audio devices.",
+		new Utils(this).log("%s inits audio devices.",
 			this.getClass().getName());
 
 		try
@@ -202,7 +202,7 @@ public abstract class AudioService extends Service implements
 		}
 		catch (IOException exception)
 		{
-			Utils.log(exception);
+			new Utils(this).log(exception);
 			return false;
 		}
 
@@ -211,7 +211,7 @@ public abstract class AudioService extends Service implements
 
 	private void disposeAudioDevices()
 	{
-		Utils.log("%s disposes audio devices.",
+		new Utils(this).log("%s disposes audio devices.",
 			this.getClass().getName());
 
 		if (input != null)
@@ -235,12 +235,11 @@ public abstract class AudioService extends Service implements
 	{
 		if (isActivityVisible)
 		{
-			Utils.cancelAllNotifications(this);
+			new Utils(this).cancelAllNotifications();
 		}
 		else if (isThreadRunning())
 		{
-			Utils.postNotification(
-				this,
+			new Utils(this).postNotification(
 				R.drawable.notification,
 				getString(R.string.ApplicationName),
 				getString(R.string.ServiceNotificationTitle),
@@ -258,7 +257,7 @@ public abstract class AudioService extends Service implements
 	@Override
 	public void onCreate()
 	{
-		Utils.log("%s is created.",
+		new Utils(this).log("%s is created.",
 			this.getClass().getName());
 
 		super.onCreate();
@@ -277,7 +276,7 @@ public abstract class AudioService extends Service implements
 	@Override
 	public void onDestroy()
 	{
-		Utils.log("%s is destroyed.",
+		new Utils(this).log("%s is destroyed.",
 			this.getClass().getName());
 
 		stopThread(false);
@@ -297,7 +296,7 @@ public abstract class AudioService extends Service implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
 	{
-		Utils.log("Preference changed => reinitialising service.");
+		new Utils(this).log("Preference changed => reinitialising service.");
 
 		if (isThreadRunning())
 		{

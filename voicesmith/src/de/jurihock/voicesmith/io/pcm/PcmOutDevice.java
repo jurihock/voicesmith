@@ -86,7 +86,7 @@ public final class PcmOutDevice extends PcmDevice
 
 		this.setBufferSize(new Preferences(context)
 			.getPcmBufferSize(getSampleRate()));
-		Utils.log("PCM OUT buffer size is %s.", this.getBufferSize());
+		new Utils(context).log("PCM OUT buffer size is %s.", this.getBufferSize());
 
 		output = new WrappedAudioTrack(getAudioSource(), getSampleRate(),
 			getChannels(), getEncoding(), getBufferSize(),
@@ -147,7 +147,7 @@ public final class PcmOutDevice extends PcmDevice
 			super(streamType, sampleRateInHz, channelConfig, audioFormat,
 				bufferSizeInBytes, mode);
 
-			Utils.log("PCM OUT native frame count is %s.",
+			new Utils(context).log("PCM OUT native frame count is %s.",
 				getNativeFrameCount());
 		}
 	}

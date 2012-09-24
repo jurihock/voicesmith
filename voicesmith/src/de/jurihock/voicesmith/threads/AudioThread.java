@@ -50,7 +50,7 @@ public abstract class AudioThread implements Runnable, Disposable
 	{
 		stop();
 
-		Utils.log("Disposing an audio thread.");
+		new Utils(context).log("Disposing an audio thread.");
 	}
 
 	public boolean isRunning()
@@ -79,7 +79,7 @@ public abstract class AudioThread implements Runnable, Disposable
 		}
 		catch (InterruptedException exception)
 		{
-			Utils.log(exception);
+			new Utils(context).log(exception);
 		}
 		finally
 		{

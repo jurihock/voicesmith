@@ -24,6 +24,8 @@
     <string name="SoundAmplificationPreference">Sound amplification</string>
     <string name="ReduceNoisePreference">Reduce noise</string>
     <string name="SampleRatePreference">Sample rate</string>
+    <string name="LoggingPreference">Debugging</string>
+    <string name="LoggingSummary">Send log output</string>
     <string name="ResetPreferences">Reset to default values</string>
 
     <!-- Services -->
