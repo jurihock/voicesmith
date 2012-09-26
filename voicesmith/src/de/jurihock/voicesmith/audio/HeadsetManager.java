@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.SystemClock;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Utils;
 
@@ -55,8 +56,6 @@ public final class HeadsetManager
 
 	private HeadsetManagerListener	listener						= null;
 	private BroadcastReceiver		headsetDetector					= null;
-
-	private boolean					bluetoothScoOn					= false;
 
 	public HeadsetManager(Context context)
 	{
@@ -148,7 +147,7 @@ public final class HeadsetManager
 
 				isHeadsetConnected = devices != null
 					&& devices.size() > 0;
-				
+
 				// TODO: Check device classes, what sort of devices it is
 			}
 		}
@@ -163,23 +162,52 @@ public final class HeadsetManager
 
 	public boolean isBluetoothScoOn()
 	{
-		return bluetoothScoOn;
+		return audio.isBluetoothScoOn();
 	}
 
 	public void setBluetoothScoOn(boolean on)
 	{
-		if (bluetoothScoOn == on) return;
+		if (audio.isBluetoothScoOn() == on) return;
 
-		if (bluetoothScoOn = on)
+		if (on)
 		{
-			new Utils(context).log("Start Bluetooth SCO");
+			new Utils(context).log("Starting Bluetooth SCO.");
 			audio.startBluetoothSco();
 		}
 		else
 		{
-			new Utils(context).log("Stop Bluetooth SCO");
+			new Utils(context).log("Stopping Bluetooth SCO.");
 			audio.stopBluetoothSco();
 		}
+	}
+
+	/**
+	 * Waits until Bluetooth SCO becomes available.
+	 * 
+	 * @param timeout
+	 *            Max timeout in seconds.
+	 * */
+	public boolean waitForBluetoothSco(int timeout)
+	{
+		final long max = 1000 * timeout;
+		final long start = SystemClock.elapsedRealtime();
+		long end = start;
+
+		while (!audio.isBluetoothScoOn())
+		{
+			end = SystemClock.elapsedRealtime();
+
+			if (end - start > max)
+			{
+				return false;
+			}
+		}
+
+		new Utils(context).log(
+			"Waited %s ms for Bluetooth SCO.",
+			end - start);
+
+		return true;
 	}
 
 	public void registerHeadsetDetector()
@@ -198,12 +226,23 @@ public final class HeadsetManager
 
 					if (isWiredHeadsetBroadcast)
 					{
-						boolean isWiredHeadsetOff =
-							intent.getIntExtra("state", 0) == 0;
+						boolean isWiredHeadsetPlugged =
+							intent.getIntExtra("state", 0) == 1;
 
-						if (isWiredHeadsetOff && listener != null)
+						if (isWiredHeadsetPlugged)
 						{
-							listener.onWiredHeadsetOff();
+							new Utils(context).log(
+								"Wired headset plugged.");
+						}
+						else
+						{
+							new Utils(context).log(
+								"Wired headset unplugged.");
+
+							if (listener != null)
+							{
+								listener.onWiredHeadsetOff();
+							}
 						}
 
 						// TODO: Maybe handle the microphone indicator too
@@ -224,16 +263,43 @@ public final class HeadsetManager
 						{
 						case BLUETOOTH_STATE_CONNECTING:
 						case BLUETOOTH_STATE_CONNECTED:
-							// Utils.log("Bluetooth connected");
+							new Utils(context).log(
+								"Bluetooth headset connecting or connected.");
 							break;
 						case BLUETOOTH_STATE_DISCONNECTED:
 						case BLUETOOTH_STATE_ERROR:
 						default:
-							new Utils(context).log("Bluetooth headset disconnected.");
+							new Utils(context).log(
+								"Bluetooth headset disconnected or error.");
 							if (listener != null)
 							{
 								listener.onBluetoothHeadsetOff();
 							}
+							break;
+						}
+					}
+
+					// BLUETOOTH SCO BROADCAST
+
+					boolean isBluetoothScoBroadcast = intent.getAction()
+						.equals(AudioManager.ACTION_SCO_AUDIO_STATE_CHANGED);
+
+					if (isBluetoothScoBroadcast)
+					{
+						int bluetoothScoState = intent.getIntExtra(
+							AudioManager.EXTRA_SCO_AUDIO_STATE,
+							AudioManager.SCO_AUDIO_STATE_ERROR);
+
+						switch (bluetoothScoState)
+						{
+						case AudioManager.SCO_AUDIO_STATE_CONNECTED:
+							new Utils(context).log(
+								"Bluetooth SCO connected.");
+							break;
+						case AudioManager.SCO_AUDIO_STATE_DISCONNECTED:
+						case AudioManager.SCO_AUDIO_STATE_ERROR:
+							new Utils(context).log(
+								"Bluetooth SCO disconnected or error.");
 							break;
 						}
 					}
@@ -244,6 +310,7 @@ public final class HeadsetManager
 			{
 				filter.addAction(Intent.ACTION_HEADSET_PLUG);
 				filter.addAction(ACTION_BLUETOOTH_STATE_CHANGED);
+				filter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_CHANGED);
 			}
 
 			context.registerReceiver(headsetDetector, filter);
