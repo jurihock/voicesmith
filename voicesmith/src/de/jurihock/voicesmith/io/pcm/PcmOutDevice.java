@@ -49,6 +49,7 @@ public final class PcmOutDevice extends PcmDevice
 
 		case BLUETOOTH_HEADSET:
 			setSampleRate(8000);
+			new Utils(context).log("Sample rate changed to 8000 Hz.");
 			setAudioSource(BLUETOOTH_HEADSET_SOURCE);
 			break;
 		default:

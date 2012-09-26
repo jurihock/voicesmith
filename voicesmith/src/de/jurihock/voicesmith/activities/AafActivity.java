@@ -82,8 +82,7 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 	@Override
 	protected void onServiceConnected()
 	{
-		new Utils(this).log("%s was connected to its service.",
-			this.getClass().getName());
+		new Utils(this).log("AafActivity founds the service.");
 
 		getService().setActivityVisible(true, this.getClass());
 		getService().setListener(this);
@@ -114,8 +113,7 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 	@Override
 	protected void onServiceDisconnected()
 	{
-		new Utils(this).log("%s was disconnected from its service.",
-			this.getClass().getName());
+		new Utils(this).log("AafActivity losts the service.");
 
 		if (!this.isFinishing())
 		{

@@ -82,8 +82,7 @@ public final class DafxActivity extends AudioServiceActivity<DafxService>
 	@Override
 	protected void onServiceConnected()
 	{
-		new Utils(this).log("%s was connected to its service.",
-			this.getClass().getName());
+		new Utils(this).log("DafxActivity founds the service.");
 
 		getService().setActivityVisible(true, this.getClass());
 		getService().setListener(this);
@@ -111,8 +110,7 @@ public final class DafxActivity extends AudioServiceActivity<DafxService>
 	@Override
 	protected void onServiceDisconnected()
 	{
-		new Utils(this).log("%s was disconnected from its service.",
-			this.getClass().getName());
+		new Utils(this).log("DafxActivity losts the service.");
 
 		if (!this.isFinishing())
 		{

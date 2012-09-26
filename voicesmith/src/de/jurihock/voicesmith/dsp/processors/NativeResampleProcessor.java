@@ -27,13 +27,11 @@ public class NativeResampleProcessor implements Disposable
 	public NativeResampleProcessor(int frameSizeIn, int frameSizeOut)
 	{
 		handle = alloc(frameSizeIn, frameSizeOut);
-//		Utils.log("NativeResampleProcessor was allocated.");
 	}
 
 	public void dispose()
 	{
 		free(handle);
-//		Utils.log("NativeResampleProcessor was freed.");
 	}
 
 	public void processFrame(float[] frameIn, float[] frameOut)

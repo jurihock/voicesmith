@@ -27,27 +27,21 @@ public final class KissFFT implements Disposable
 	public KissFFT(int size)
 	{
 		handle = alloc(size);
-		// Utils.log("KissFFT was allocated.");
 	}
 
 	public void dispose()
 	{
 		free(handle);
-		// Utils.log("KissFFT was freed.");
 	}
 
 	public void fft(float[] buffer)
 	{
-		// Utils.tic("fft");
 		fft(handle, buffer);
-		// Utils.toc("fft");
 	}
 
 	public void ifft(float[] buffer)
 	{
-		// Utils.tic("ifft");
 		ifft(handle, buffer);
-		// Utils.toc("ifft");
 	}
 
 	// JNI calls

@@ -33,7 +33,7 @@
             android:button="@null"
             android:gravity="center"
             android:tag="FastDAF"
-            android:text="DAF (fast)"
+            android:text="Fast DAF"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </TableRow>
 

@@ -35,11 +35,11 @@ import de.jurihock.voicesmith.R;
 public final class IntervalPicker extends LinearLayout implements
 	OnSeekBarChangeListener
 {
-	private final int					MAX_SEMITONES	= 24;
-	private int							interval;
+	private final int				MAX_SEMITONES	= 24;
+	private int						interval;
 
-	private TextView					viewSeekLabel	= null;
-	private SeekBar						viewSeekBar		= null;
+	private TextView				viewSeekLabel	= null;
+	private SeekBar					viewSeekBar		= null;
 
 	private PropertyChangeListener	listener		= null;
 

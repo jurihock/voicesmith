@@ -174,10 +174,6 @@ public final class TransposeThread extends AudioThread
 			final int synthesisFrameSize = (int) round(frameSize / tau);
 			final int analysisFrameSize = frameSize;
 
-			// Utils.log("Na %s Ha %s Ns %s Hs %s",
-			// analysisFrameSize, analysisHopSize,
-			// synthesisFrameSize, synthesisHopSize);
-
 			disposeProcessors();
 
 			preprocessor = new StftPreprocessor(input,

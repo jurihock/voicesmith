@@ -47,7 +47,7 @@ public abstract class AudioService extends Service implements
 	private Object[]		threadParams	= null;
 
 	// Headset stuff:
-	private HeadsetMode		mode			= HeadsetMode.WIRED_HEADSET;
+	private HeadsetMode		mode			= null;
 	private HeadsetManager	headset			= null;
 
 	private ServiceListener	listener		= null;
@@ -65,6 +65,8 @@ public abstract class AudioService extends Service implements
 	public void setHeadsetMode(HeadsetMode mode)
 	{
 		if (this.mode == mode) return;
+
+		new Preferences(this).setHeadsetMode(mode);
 
 		if (isThreadRunning())
 		{
@@ -134,6 +136,18 @@ public abstract class AudioService extends Service implements
 			&& !headset.isBluetoothScoOn())
 		{
 			headset.setBluetoothScoOn(true);
+
+			if (!headset.waitForBluetoothSco(5))
+			{
+				headset.setBluetoothScoOn(false);
+
+				if (listener != null)
+				{
+					listener.onServiceFailed();
+				}
+
+				return;
+			}
 		}
 
 		if (!initAudioDevices())
@@ -177,27 +191,26 @@ public abstract class AudioService extends Service implements
 			thread.dispose();
 			thread = null;
 		}
-		
+
 		disposeAudioDevices();
 	}
 
 	private boolean initAudioDevices()
 	{
-		new Utils(this).log("%s inits audio devices.",
-			this.getClass().getName());
+		new Utils(this).log("Initialising audio devices.");
 
 		try
 		{
 			if (input == null)
 			{
 				input = new PcmInDevice(this, getHeadsetMode());
-//				input = new FileInDevice(this, "dank.raw"); // TEST
+				// input = new FileInDevice(this, "test_in.raw"); // TEST
 			}
 
 			if (output == null)
 			{
 				output = new PcmOutDevice(this, getHeadsetMode());
-//				 output = new FileOutDevice(this, "dank_robot.raw"); // TEST
+				// output = new FileOutDevice(this, "test_out.raw"); // TEST
 			}
 		}
 		catch (IOException exception)
@@ -211,8 +224,7 @@ public abstract class AudioService extends Service implements
 
 	private void disposeAudioDevices()
 	{
-		new Utils(this).log("%s disposes audio devices.",
-			this.getClass().getName());
+		new Utils(this).log("Disposing audio devices.");
 
 		if (input != null)
 		{
@@ -257,10 +269,17 @@ public abstract class AudioService extends Service implements
 	@Override
 	public void onCreate()
 	{
-		new Utils(this).log("%s is created.",
-			this.getClass().getName());
+		new Utils(this).log("Creating service.");
 
 		super.onCreate();
+
+		Preferences preferences = new Preferences(getApplicationContext());
+		preferences.registerOnSharedPreferenceChangeListener(this);
+
+		if (mode == null)
+		{
+			mode = preferences.getHeadsetMode();
+		}
 
 		if (headset == null)
 		{
@@ -268,16 +287,12 @@ public abstract class AudioService extends Service implements
 			headset.setListener(this);
 			headset.registerHeadsetDetector();
 		}
-
-		new Preferences(getApplicationContext())
-			.registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
 	public void onDestroy()
 	{
-		new Utils(this).log("%s is destroyed.",
-			this.getClass().getName());
+		new Utils(this).log("Destroying service.");
 
 		stopThread(false);
 
@@ -296,7 +311,7 @@ public abstract class AudioService extends Service implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
 	{
-		new Utils(this).log("Preference changed => reinitialising service.");
+		new Utils(this).log("Preferences changed => reinitialising service.");
 
 		if (isThreadRunning())
 		{

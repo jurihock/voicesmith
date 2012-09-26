@@ -25,6 +25,7 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.preference.PreferenceManager;
+import de.jurihock.voicesmith.audio.HeadsetMode;
 
 public final class Preferences
 {
@@ -96,21 +97,65 @@ public final class Preferences
 			preferences.getString("SoundAmplification", "6"));
 	}
 
-	public boolean isReduceNoise()
-	{
-		return preferences.getBoolean("ReduceNoise", true);
-	}
-
 	public int getSampleRate()
 	{
 		return Integer.parseInt(
 			preferences.getString("SampleRate", "44100"));
 	}
 
+	public boolean isReduceNoise()
+	{
+		return preferences.getBoolean("ReduceNoise", true);
+	}
+
 	public boolean isLogging()
 	{
 		return preferences.getBoolean("Logging", false);
 	}
+
+	public HeadsetMode getHeadsetMode()
+	{
+		return HeadsetMode.valueOf(
+			preferences.getInt("HeadsetMode",
+				HeadsetMode.WIRED_HEADSET.ordinal()));
+	}
+
+	public boolean setHeadsetMode(HeadsetMode value)
+	{
+		return preferences.edit()
+			.putInt("HeadsetMode", value.ordinal())
+			.commit();
+	}
+
+	// TODO: Realise some other preferences
+
+	// public int getTransposeInterval()
+	// {
+	// return preferences.getInt("TransposeInterval", 0);
+	// }
+	//
+	// public boolean setTransposeInterval(int value)
+	// {
+	// if (value < -12 || 12 < value) return false;
+	//
+	// return preferences.edit()
+	// .putInt("TransposeInterval", value)
+	// .commit();
+	// }
+	//
+	// public int getFafInterval()
+	// {
+	// return preferences.getInt("FafInterval", 0);
+	// }
+	//
+	// public boolean setFafInterval(int value)
+	// {
+	// if (value < -12 || 12 < value) return false;
+	//
+	// return preferences.edit()
+	// .putInt("FafInterval", value)
+	// .commit();
+	// }
 
 	/**
 	 * Returns the optimal PCM buffer size in bytes. Because of output buffer

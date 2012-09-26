@@ -27,13 +27,11 @@ public final class NativeTimescaleProcessor implements Disposable
 	public NativeTimescaleProcessor(int frameSize, int analysisHopSize, int synthesisHopSize)
 	{
 		handle = alloc(frameSize, analysisHopSize, synthesisHopSize);
-//		Utils.log("NativeTimescaleProcessor was allocated.");
 	}
 	
 	public void dispose()
 	{
 		free(handle);
-//		Utils.log("NativeTimescaleProcessor was freed.");
 	}
 	
 	public void processFrame(float[] frame)
