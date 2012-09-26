@@ -24,9 +24,12 @@
     <string name="SoundAmplificationPreference">Sound amplification</string>
     <string name="ReduceNoisePreference">Reduce noise</string>
     <string name="SampleRatePreference">Sample rate</string>
-    <string name="LoggingPreference">Debugging</string>
-    <string name="LoggingSummary">Send log output</string>
+    <string name="LoggingPreference">Logging</string>
+    <string name="LoggingSummary">Dump LogCat output</string>
     <string name="ResetPreferences">Reset to default values</string>
+    <string name="VolumePreferences">Volume</string>
+    <string name="SoundPreferences">Sound quality</string>
+    <string name="MiscPreferences">Miscellaneous</string>
 
     <!-- Services -->
     <string name="DafxService">Voicesmith DAFX Service</string>
