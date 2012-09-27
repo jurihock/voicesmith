@@ -189,7 +189,9 @@ public final class HeadsetManager
 	 * */
 	public boolean waitForBluetoothSco(int timeout)
 	{
-		final long max = 1000 * timeout;
+		final long maxTime = 1000 * timeout;
+		final long sleepTime = 50;
+
 		final long start = SystemClock.elapsedRealtime();
 		long end = start;
 
@@ -197,9 +199,17 @@ public final class HeadsetManager
 		{
 			end = SystemClock.elapsedRealtime();
 
-			if (end - start > max)
+			if (end - start > maxTime)
 			{
 				return false;
+			}
+			
+			try
+			{
+				Thread.sleep(sleepTime);
+			}
+			catch (InterruptedException exception)
+			{
 			}
 		}
 
