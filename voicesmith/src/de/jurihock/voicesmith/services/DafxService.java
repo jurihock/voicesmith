@@ -41,6 +41,8 @@ public final class DafxService extends AudioService
 	{
 		if (this.dafx == dafx) return;
 
+		preferences.setDafx(dafx);
+
 		if (isThreadRunning())
 		{
 			stopThread(true);
@@ -55,6 +57,14 @@ public final class DafxService extends AudioService
 			this.dafx = dafx;
 			setThreadParams((Object[]) null);
 		}
+	}
+	
+	@Override
+	public void onCreate()
+	{
+		super.onCreate();
+
+		this.setDafx(preferences.getDafx());
 	}
 
 	@Override

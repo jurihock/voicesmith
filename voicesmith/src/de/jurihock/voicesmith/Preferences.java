@@ -116,14 +116,39 @@ public final class Preferences
 	public HeadsetMode getHeadsetMode()
 	{
 		return HeadsetMode.valueOf(
-			preferences.getInt("HeadsetMode",
-				HeadsetMode.WIRED_HEADSET.ordinal()));
+			preferences.getInt("HeadsetMode", 0));
 	}
 
 	public boolean setHeadsetMode(HeadsetMode value)
 	{
 		return preferences.edit()
 			.putInt("HeadsetMode", value.ordinal())
+			.commit();
+	}
+	
+	public DAFX getDafx()
+	{
+		return DAFX.valueOf(
+			preferences.getInt("DAFX", 0));
+	}
+
+	public boolean setDafx(DAFX value)
+	{
+		return preferences.edit()
+			.putInt("DAFX", value.ordinal())
+			.commit();
+	}
+	
+	public AAF getAaf()
+	{
+		return AAF.valueOf(
+			preferences.getInt("AAF", 0));
+	}
+
+	public boolean setAaf(AAF value)
+	{
+		return preferences.edit()
+			.putInt("AAF", value.ordinal())
 			.commit();
 	}
 

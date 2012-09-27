@@ -40,6 +40,8 @@ public final class AafService extends AudioService
 	public void setAaf(AAF aaf)
 	{
 		if (this.aaf == aaf) return;
+		
+		preferences.setAaf(aaf);
 
 		if (isThreadRunning())
 		{
@@ -55,6 +57,14 @@ public final class AafService extends AudioService
 			this.aaf = aaf;
 			setThreadParams((Object[]) null);
 		}
+	}
+	
+	@Override
+	public void onCreate()
+	{
+		super.onCreate();
+		
+		setAaf(preferences.getAaf());
 	}
 
 	@Override

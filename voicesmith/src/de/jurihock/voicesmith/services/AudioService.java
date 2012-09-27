@@ -52,6 +52,8 @@ public abstract class AudioService extends Service implements
 
 	private ServiceListener	listener		= null;
 
+	protected Preferences	preferences		= null;
+
 	public void setListener(ServiceListener listener)
 	{
 		this.listener = listener;
@@ -66,7 +68,7 @@ public abstract class AudioService extends Service implements
 	{
 		if (this.mode == mode) return;
 
-		new Preferences(this).setHeadsetMode(mode);
+		preferences.setHeadsetMode(mode);
 
 		if (isThreadRunning())
 		{
@@ -137,7 +139,7 @@ public abstract class AudioService extends Service implements
 		{
 			headset.setBluetoothScoOn(true);
 
-			if (!headset.waitForBluetoothSco(5))
+			if (!headset.waitForBluetoothSco(3))
 			{
 				headset.setBluetoothScoOn(false);
 
@@ -273,7 +275,7 @@ public abstract class AudioService extends Service implements
 
 		super.onCreate();
 
-		Preferences preferences = new Preferences(getApplicationContext());
+		preferences = new Preferences(getApplicationContext());
 		preferences.registerOnSharedPreferenceChangeListener(this);
 
 		if (mode == null)
