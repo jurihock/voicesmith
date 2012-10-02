@@ -183,14 +183,11 @@ public final class HeadsetManager
 
 	/**
 	 * Waits until Bluetooth SCO becomes available.
-	 * 
-	 * @param timeout
-	 *            Max timeout in seconds.
-	 * */
-	public boolean waitForBluetoothSco(int timeout)
+	 **/
+	public boolean waitForBluetoothSco()
 	{
-		final long maxTime = 1000 * timeout;
-		final long sleepTime = 50;
+		final long timeout = 1000 * 3;
+		final long idlePeriod = 50;
 
 		final long start = SystemClock.elapsedRealtime();
 		long end = start;
@@ -199,14 +196,14 @@ public final class HeadsetManager
 		{
 			end = SystemClock.elapsedRealtime();
 
-			if (end - start > maxTime)
+			if (end - start > timeout)
 			{
 				return false;
 			}
-			
+
 			try
 			{
-				Thread.sleep(sleepTime);
+				Thread.sleep(idlePeriod);
 			}
 			catch (InterruptedException exception)
 			{

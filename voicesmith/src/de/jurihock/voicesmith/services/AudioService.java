@@ -139,7 +139,7 @@ public abstract class AudioService extends Service implements
 		{
 			headset.setBluetoothScoOn(true);
 
-			if (!headset.waitForBluetoothSco(3))
+			if (!headset.waitForBluetoothSco())
 			{
 				headset.setBluetoothScoOn(false);
 
