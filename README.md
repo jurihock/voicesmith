@@ -30,7 +30,7 @@ Now if you have a lot of fun with the Voicesmith, feel free to rate, comment and
 Binaries
 --------
 
-A ready-to-use application is freely available on [Google Play](http://play.google.com/store/apps/details?id=de.jurihock.voicesmith), [F-Droid](http://f-droid.org/repository/browse/?fdid=de.jurihock.voicesmith) or [AndroidPIT](http://www.androidpit.com/en/android/market/apps/app/de.jurihock.voicesmith).
+A ready-to-use application is freely available on [Google Play](http://play.google.com/store/apps/details?id=de.jurihock.voicesmith), [F-Droid](http://f-droid.org/repository/browse/?fdid=de.jurihock.voicesmith), [AndroidPIT](http://www.androidpit.com/en/android/market/apps/app/de.jurihock.voicesmith) or [Amazon Appstore](http://www.amazon.com/gp/product/B009JBZ4X4).
 
 Source code and licensing
 -------------------------
