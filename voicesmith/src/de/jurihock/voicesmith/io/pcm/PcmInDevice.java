@@ -28,7 +28,7 @@ import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.audio.HeadsetMode;
 
-public final class PcmInDevice extends PcmDevice
+public class PcmInDevice extends PcmDevice
 {
 	private static final int	WIRED_HEADSET_SOURCE		= MediaRecorder.AudioSource.MIC;
 	private static final int	BLUETOOTH_HEADSET_SOURCE	= MediaRecorder.AudioSource.MIC;

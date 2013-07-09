@@ -18,6 +18,7 @@
     <!-- Widgets -->
     <string name="BluetoothHeadsetButton">Use Bluetooth if available</string>
     <string name="IntervalPickerLabel">Transpose by %s semitone(s)</string>
+    <string name="DelayPickerLabel">Delay by %s ms</string>
 
     <!-- Preferences -->
     <string name="VolumeLevelPreference">Volume level</string>
