@@ -1,3 +1,9 @@
+Changes in version 2.4 (10) from 2013-10-26
+===========================================
+
+ * Add wired headset fallback if no Bluetooth device available
+ * Make some small improvements
+
 Changes in version 2.3 (9) from 2012-09-26
 ==========================================
 
