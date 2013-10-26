@@ -97,9 +97,12 @@ public final class DafxActivity extends AudioServiceActivity<DafxService>
 		{
 			viewIntervalPicker.setVisibility(View.VISIBLE);
 
-			int interval = Integer.parseInt(
-				getService().getThreadParams()[0].toString());
-			viewIntervalPicker.setInterval(interval);
+			if(getService().getThreadParams() != null)
+			{
+				int interval = Integer.parseInt(
+					getService().getThreadParams()[0].toString());
+				viewIntervalPicker.setInterval(interval);
+			}
 		}
 		else
 		{

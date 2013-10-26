@@ -64,7 +64,7 @@ public final class DafxService extends AudioService
 	{
 		super.onCreate();
 
-		this.setDafx(preferences.getDafx());
+		setDafx(preferences.getDafx());
 	}
 
 	@Override

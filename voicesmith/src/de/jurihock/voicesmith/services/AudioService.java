@@ -111,7 +111,10 @@ public abstract class AudioService extends Service implements
 	public void startThread()
 	{
 		if (isThreadRunning()) return;
+		
+		HeadsetMode fallbackMode = getHeadsetMode();
 
+		// Return if wired headset mode is set but no device available
 		if (getHeadsetMode() == HeadsetMode.WIRED_HEADSET
 			&& !headset.isWiredHeadsetOn())
 		{
@@ -123,26 +126,31 @@ public abstract class AudioService extends Service implements
 			return;
 		}
 
-		if (getHeadsetMode() == HeadsetMode.BLUETOOTH_HEADSET
-			&& !headset.isBluetoothHeadsetOn())
+		// Return if Bluetooth headset mode is set but no device available,
+		// wired mode fallback impossible or Bluetooth initialization fails
+		if (getHeadsetMode() == HeadsetMode.BLUETOOTH_HEADSET)
 		{
-			if (listener != null)
+			if(headset.isBluetoothHeadsetOn())
 			{
-				listener.onServiceFailed();
+				if(!headset.isBluetoothScoOn())
+				{
+					headset.setBluetoothScoOn(true);
+
+					if (!headset.waitForBluetoothSco())
+					{
+						headset.setBluetoothScoOn(false);
+						fallbackMode = HeadsetMode.WIRED_HEADSET;
+					}
+				}
+			}
+			else
+			{
+				fallbackMode = HeadsetMode.WIRED_HEADSET;
 			}
 
-			return;
-		}
-
-		if (getHeadsetMode() == HeadsetMode.BLUETOOTH_HEADSET
-			&& !headset.isBluetoothScoOn())
-		{
-			headset.setBluetoothScoOn(true);
-
-			if (!headset.waitForBluetoothSco())
+			if(fallbackMode == HeadsetMode.WIRED_HEADSET
+				&& !headset.isWiredHeadsetOn())
 			{
-				headset.setBluetoothScoOn(false);
-
 				if (listener != null)
 				{
 					listener.onServiceFailed();
@@ -152,7 +160,7 @@ public abstract class AudioService extends Service implements
 			}
 		}
 
-		if (!initAudioDevices())
+		if (!initAudioDevices(fallbackMode))
 		{
 			if (listener != null)
 			{
@@ -197,7 +205,7 @@ public abstract class AudioService extends Service implements
 		disposeAudioDevices();
 	}
 
-	private boolean initAudioDevices()
+	private boolean initAudioDevices(HeadsetMode mode)
 	{
 		new Utils(this).log("Initialising audio devices.");
 
@@ -205,13 +213,13 @@ public abstract class AudioService extends Service implements
 		{
 			if (input == null)
 			{
-				input = new PcmInDevice(this, getHeadsetMode());
+				input = new PcmInDevice(this, mode);
 				// input = new FileInDevice(this, "test_in.raw"); // TEST
 			}
 
 			if (output == null)
 			{
-				output = new PcmOutDevice(this, getHeadsetMode());
+				output = new PcmOutDevice(this, mode);
 				// output = new FileOutDevice(this, "test_out.raw"); // TEST
 			}
 		}
