@@ -25,6 +25,7 @@ def vad(signal, windowSize, hopSize, sampleRate, hangoverTime):
             minEnergy = currentEnergy
             delta = 1
 
+        # TODO: find out the optimal min energy level
         if (minEnergy < 0.01):
             minEnergy = 0.01 # power(min(frame),2)
             delta = 1
@@ -44,7 +45,6 @@ def vad(signal, windowSize, hopSize, sampleRate, hangoverTime):
 
         minEnergy *= delta
         
-        #vadFlags[vadFlagIndex] = currentEnergy > threshold
         vadFlagIndex += 1
         
     return vadFlags

@@ -28,6 +28,6 @@ class Oscillator():
 
     def getBuffer(self, length):
         
-        buffer = range(0, length)
+        buffer = zeros(length)
         self.fillBuffer(buffer)
         return buffer
