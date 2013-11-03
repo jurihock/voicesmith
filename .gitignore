@@ -7,12 +7,13 @@ out/
 
 # Eclipse project files
 .settings/
-# .classpath
-# .project
+
+# IntelliJ IDEA project files
+.idea/
+*.[ei]ml
 
 # Miscellaneous files
 local.properties
-*.mg[cip]
 *.py[cdo]
 *.raw
 *.wav
