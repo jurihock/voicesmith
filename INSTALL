@@ -3,18 +3,19 @@ Voicesmith
 
 REQUIREMENTS:
 
-* Oracle JDK 6 (usually 32-bit)
+* Linux OS in the best case
+* Oracle JDK 6 (not the JRE!)
 * Android SDK (API Level 8)
 * Android NDK
+* Python, NumPy, SciPy, Matplotlib (if working with the sandbox)
 
 DEPENDENCIES:
 
-* Kiss FFT (Mark Borgerding) -- already included
-* GreenDroid (Cyril Mottier) -- git submodule -> separate forked repository
-* GreenDroid/GDPreferenceActivity (Julien Dupouy) -- pasted above
+* Kiss FFT C/C++ library -- already embedded in the source code
+* GreenDroid library fork with custom GDPreferenceActivity -- git submodule, already embedded in the source code but needs to be referenced in the IDE project
 
 HOW TO BUILD:
 
-Voicesmith repository contains Eclipse project files, an auto-generated Ant build script and a custom Makefile to handle the JNI source code.
+The Voicesmith repository already contains the Eclipse project file, an auto-generated Ant build script and a custom Makefile to compile APK related files from the command line.
 
-Feel free to setup an IDE of your choise, e.g. Eclipse. But don't forget to download (or check out) all dependencies and reference them in your project.
+Feel free to setup an IDE of your choise, e.g. Eclipse or IntelliJ IDEA. But don't forget to download (or check out) all dependencies and reference them in your project.
