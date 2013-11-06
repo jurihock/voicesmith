@@ -1,15 +1,17 @@
 from numpy import *
 
-def vad(signal, windowSize, hopSize, sampleRate, hangoverTime):
-    
-    hangoverThreshold = ceil(hangoverTime * sampleRate / hopSize)
+# See also "Dynamical Energy-Based Speech/Silence Detector for Speech Enhancement Applications" by K. Sakhnov et al.
 
-    delta = 1
-    threshold = 0
-    hangover = 0
+def vad(signal, windowSize, hopSize, sampleRate, noiseEnergy, hangoverTime):
+    
     minEnergy = 0
     maxEnergy = 0
-    
+
+    minEnergyDelta = 1
+
+    hangover = 0
+    hangoverThreshold = ceil(hangoverTime * sampleRate / hopSize)
+
     vadFlags = zeros(len(range(0, len(signal)-windowSize, hopSize)))
     vadFlagIndex = 0
 
@@ -17,23 +19,23 @@ def vad(signal, windowSize, hopSize, sampleRate, hangoverTime):
 
         frame = signal[n:n+windowSize]
         currentEnergy = rms(frame)
-        
+
+        # TODO: Check this routine again!
+
         if (currentEnergy > maxEnergy):
             maxEnergy = currentEnergy
         
         if (currentEnergy < minEnergy):
             minEnergy = currentEnergy
-            delta = 1
+            minEnergyDelta = 1
 
-        # TODO: find out the optimal min energy level
-        if (minEnergy < 0.01):
-            minEnergy = 0.01 # power(min(frame),2)
-            delta = 1
+        if (minEnergy <= noiseEnergy):
+            minEnergy = noiseEnergy
+            minEnergyDelta = 1
 
-        delta *= 1.0001
         _lambda_ = (maxEnergy - minEnergy) / maxEnergy
         threshold = (1 - _lambda_) * maxEnergy + _lambda_ * minEnergy
-        
+
         if(currentEnergy > threshold):
             hangover = 0
             vadFlags[vadFlagIndex] = 1
@@ -43,8 +45,9 @@ def vad(signal, windowSize, hopSize, sampleRate, hangoverTime):
             hangover += 1
             vadFlags[vadFlagIndex] = 1
 
-        minEnergy *= delta
-        
+        minEnergyDelta *= 1.0001
+        minEnergy *= minEnergyDelta
+
         vadFlagIndex += 1
         
     return vadFlags

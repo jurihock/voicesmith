@@ -9,10 +9,11 @@ x, sampleRate = wav.read("wav/tomsawyer.wav")
 # Set VAD parameters
 winSize = 1024*2      # in samples
 hopSize = winSize/4   # in samples
+noiseEnergy = 0.05    # in amplitude^2 TODO: dB --> RMS
 hangoverTime = 200e-3 # in seconds
 
 # Estimate silent frames
-vadFlags = vad(x, winSize, hopSize, sampleRate, hangoverTime)
+vadFlags = vad(x, winSize, hopSize, sampleRate, noiseEnergy, hangoverTime)
 
 # Plot results
 plot.figure()
