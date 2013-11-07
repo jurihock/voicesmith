@@ -11,9 +11,11 @@ x, sr = wav.read("wav/x1.wav")
 winSize = 1024*2      # in samples
 hopSize = winSize/4   # in samples
 hangoverTime = 200e-3 # in seconds
+noiseEnergy = 0.01    # in amplitude^2 TODO: dB --> RMS
+hangoverTime = 200e-3 # in seconds
 
 # Estimate silent frames
-vadFlags = vad(x, winSize, hopSize, sr, hangoverTime)
+vadFlags = vad(x, winSize, hopSize, sr, noiseEnergy, hangoverTime)
 
 # Get STFT frames
 frames = stft.stft(x, winSize, hopSize)
