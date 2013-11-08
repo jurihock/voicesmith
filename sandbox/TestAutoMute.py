@@ -3,18 +3,19 @@ import matplotlib.pyplot as plot
 import WAV as wav
 from VAD import vad, mute
 
+filename = "test_bh_raw.wav"
+
 # Load sample input
-#x, sr = wav.read("wav/x1.wav")
-x, sr = wav.read("wav/test/test_wh_raw.wav")
+x, sr = wav.read("wav/test/" + filename)
 
 # Set VAD parameters
 winSize = int(sr*20e-3)         # in samples (fs*s)
 hopSize = winSize               # in samples
-smoothGain = [0.2, 0.001]       # small numbers
+smoothingGain = [0.3, 0.001]    # small numbers
 triggerThresholds = [-25, -20]  # in dBFS
 
 # Estimate silent frames
-vadFlags = vad(x, winSize, hopSize, smoothGain, triggerThresholds)
+vadFlags = vad(x, winSize, hopSize, smoothingGain, triggerThresholds)
 
 # Mute silent frames
 y = mute(x, winSize, hopSize, vadFlags)
@@ -28,3 +29,6 @@ plot.show()
 # Write out results
 wav.write(x, sr, "wav/automute_input.wav")
 wav.write(y, sr, "wav/automute_output.wav")
+
+# plot.savefig("wav/test/Results/" + filename + ".pdf")
+# wav.write(y, sr, "wav/test/Results/" + filename)
