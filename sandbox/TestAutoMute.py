@@ -1,36 +1,28 @@
 from numpy import *
 import matplotlib.pyplot as plot
 import WAV as wav
-from VAD import vad
-import STFT as stft
+from VAD import vad, mute
 
 # Load sample input
-x, sr = wav.read("wav/x1.wav")
+#x, sr = wav.read("wav/x1.wav")
+x, sr = wav.read("wav/test/test_wh_raw.wav")
 
-# Set STFT/VAD parameters
-winSize = 1024*2      # in samples
-hopSize = winSize/4   # in samples
-hangoverTime = 200e-3 # in seconds
-noiseEnergy = 0.01    # in amplitude^2 TODO: dB --> RMS
-hangoverTime = 200e-3 # in seconds
+# Set VAD parameters
+winSize = int(sr*20e-3)         # in samples (fs*s)
+hopSize = winSize               # in samples
+smoothGain = [0.2, 0.001]       # small numbers
+triggerThresholds = [-25, -20]  # in dBFS
 
 # Estimate silent frames
-vadFlags = vad(x, winSize, hopSize, sr, noiseEnergy, hangoverTime)
+vadFlags = vad(x, winSize, hopSize, smoothGain, triggerThresholds)
 
-# Get STFT frames
-frames = stft.stft(x, winSize, hopSize)
-
-# Disable silent STFT frames
-for n in range(len(frames)):
-    frames[n] *= vadFlags[n]
-
-# Build output signal
-y = stft.istft(frames, winSize, hopSize)
+# Mute silent frames
+y = mute(x, winSize, hopSize, vadFlags)
 
 # Plot results
 plot.figure()
 plot.plot(y, "b")
-plot.plot(range(0, len(y)-winSize+1, hopSize), vadFlags/max(vadFlags)*max(y), "r")
+plot.plot(range(0, len(y)-winSize+1, hopSize), vadFlags*max(y), "r")
 plot.show()
 
 # Write out results

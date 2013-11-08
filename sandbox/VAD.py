@@ -1,18 +1,9 @@
 from numpy import *
 
-# See also "Dynamical Energy-Based Speech/Silence Detector for Speech Enhancement Applications" by K. Sakhnov et al.
+def vad(signal, windowSize, hopSize, smoothGain, triggerThresholds):
 
-def vad(signal, windowSize, hopSize, sampleRate, noiseEnergy, hangoverTime):
-
-    isFirstFrame = True
-
-    minEnergy = 0
-    maxEnergy = 0
-
-    minEnergyDelta = 1
-
-    hangover = 0
-    hangoverThreshold = ceil(hangoverTime * sampleRate / hopSize)
+    energyState = [0, 0]
+    triggerState = [0, 0]
 
     vadFlags = zeros(len(range(0, len(signal)-windowSize, hopSize)))
     vadFlagIndex = 0
@@ -20,59 +11,74 @@ def vad(signal, windowSize, hopSize, sampleRate, noiseEnergy, hangoverTime):
     for n in range(0, len(signal)-windowSize, hopSize):
 
         frame = signal[n:n+windowSize]
-        currentEnergy = rms(frame)
 
-        # TODO: Check this routine again!
+        currentEnergy = rms2dbfs(rms(frame))
+        energyState = smooth(energyState, currentEnergy, smoothGain)
+        currentDbfs = energyState[0]
+        triggerState = trigger(triggerState, currentDbfs, triggerThresholds)
 
-        if isFirstFrame:
-
-            if currentEnergy > noiseEnergy:
-                maxEnergy = currentEnergy
-                minEnergy = noiseEnergy
-            else:
-                maxEnergy = noiseEnergy * 2
-                minEnergy = currentEnergy
-
-            isFirstFrame = False
-
-        if currentEnergy > maxEnergy:
-            maxEnergy = currentEnergy
-        
-        if currentEnergy < minEnergy:
-
-            if currentEnergy == 0:
-
-                if noiseEnergy >= maxEnergy:
-                    minEnergy = maxEnergy * 0.1
-                else:
-                    minEnergy = noiseEnergy
-
-            else:
-                minEnergy = currentEnergy
-
-            minEnergyDelta = 1
-
-        _lambda_ = (maxEnergy - minEnergy) / maxEnergy
-        threshold = (1 - _lambda_) * maxEnergy + _lambda_ * minEnergy
-
-        if currentEnergy > threshold:
-            hangover = 0
-            vadFlags[vadFlagIndex] = 1
-        elif hangover == hangoverThreshold:
-            vadFlags[vadFlagIndex] = 0
-        else:
-            hangover += 1
-            vadFlags[vadFlagIndex] = 1
-
-        # Slightly inrease Emin to prevent low energy anomalies
-        minEnergyDelta *= 1.0001
-        minEnergy *= minEnergyDelta
-
-        #vadFlags[vadFlagIndex] = threshold # TEST
+        vadFlags[vadFlagIndex] = triggerState[0]
         vadFlagIndex += 1
         
     return vadFlags
 
+def mute(signal, windowSize, hopSize, vadFlags):
+
+    result = zeros(len(signal))
+
+    lastFlag = 0
+    i = 0
+
+    fadeIn  = linspace(0, 1, windowSize)
+    fadeOut = linspace(1, 0, windowSize)
+
+    for n in range(0, len(signal)-windowSize, hopSize):
+
+        frame = signal[n:n+windowSize]
+
+        currFlag = vadFlags[i]
+
+        if currFlag > lastFlag:
+            result[n:n+windowSize] = frame*fadeIn
+        elif currFlag < lastFlag:
+            result[n:n+windowSize] = frame*fadeOut
+        else:
+            result[n:n+windowSize] = frame*currFlag
+
+        lastFlag = currFlag
+        i += 1
+
+    return result
+
+def trigger(state, value, thresholds):
+
+    low = thresholds[0]
+    high = thresholds[1]
+
+    if value > state[1] and value > high:
+        state[0] = 1
+    elif value < state[1] and value < low:
+        state[0] = 0
+
+    state[1] = value
+
+    return state
+
+def rms2dbfs(value):
+
+    return 10*log10(value)
+
+def smooth(state, value, gain):
+
+    prediction = sum(state)
+    error = value - prediction
+
+    state[0] = prediction + gain[0]*error
+    state[1] = state[1] + gain[1]*error
+
+    return state
+
 def rms(frame):
 
-    return sqrt(sum(power(frame,2))/len(frame))
+    # TODO: check the meaning of removed mean
+    return sqrt(sum(power(frame-mean(frame),2))/len(frame))
