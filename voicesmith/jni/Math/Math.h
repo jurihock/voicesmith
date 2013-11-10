@@ -19,6 +19,14 @@ JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_pow
 
 /*
  * Class:     de_jurihock_voicesmith_dsp_Math
+ * Method:    log10
+ * Signature: (F)F
+ */
+JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_log10
+  (JNIEnv *, jclass, jfloat);
+
+/*
+ * Class:     de_jurihock_voicesmith_dsp_Math
  * Method:    min
  * Signature: (FF)F
  */

@@ -26,6 +26,12 @@ JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_pow
 	return powf(base, exponent);
 }
 
+JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_log10
+  (JNIEnv *, jclass, jfloat value)
+{
+	return log10f(value);
+}
+
 JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_min
   (JNIEnv *, jclass, jfloat a, jfloat b)
 {

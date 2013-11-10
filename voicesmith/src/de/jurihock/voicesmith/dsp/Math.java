@@ -29,6 +29,8 @@ public final class Math
 	
 	public static native float pow(float base, float exponent);
 
+	public static native float log10(float value);
+
 	public static native float min(float a, float b);
 	
 	public static native float max(float a, float b);
