@@ -3,10 +3,10 @@ import matplotlib.pyplot as plot
 import WAV as wav
 from VAD import vad, mute
 
-filename = "test_bh_raw.wav"
+filename = "tomsawyer.wav"
 
 # Load sample input
-x, sr = wav.read("wav/test/" + filename)
+x, sr = wav.read("wav/" + filename)
 
 # Set VAD parameters
 winSize = int(sr*20e-3)         # in samples (fs*s)
@@ -22,13 +22,15 @@ y = mute(x, winSize, hopSize, vadFlags)
 
 # Plot results
 plot.figure()
-plot.plot(y, "b")
-plot.plot(range(0, len(y)-winSize+1, hopSize), vadFlags*max(y), "r")
+plot.plot(x, "b")
+plot.plot(y, "r")
+plot.plot(range(0, len(y)-winSize+1, hopSize), vadFlags[:,1], "g--")
+plot.legend(("Input signal", "Output signal", "Signal offset"))
 plot.show()
 
 # Write out results
 wav.write(x, sr, "wav/automute_input.wav")
 wav.write(y, sr, "wav/automute_output.wav")
 
-# plot.savefig("wav/test/Results/" + filename + ".pdf")
+# plot.savefig("wav/test/Results/" + filename + ".pdf", dpi=600)
 # wav.write(y, sr, "wav/test/Results/" + filename)

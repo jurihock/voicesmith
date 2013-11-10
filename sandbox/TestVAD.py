@@ -4,7 +4,7 @@ import WAV as wav
 from VAD import vad
 
 # Load sample input
-x, sr = wav.read("wav/test/test_wh_raw.wav")
+x, sr = wav.read("wav/test/test_bh_raw.wav")
 
 # Set VAD parameters
 winSize = int(sr*20e-3)         # in samples (fs*s)
@@ -19,5 +19,5 @@ vadFlags = vad(x, winSize, hopSize, smoothingGain, triggerThresholds)
 plot.figure()
 plot.plot(x, "b")
 #plot.plot(range(0, len(x)-winSize, hopSize), vadFlags*max(x), "r")
-plot.plot(range(0, len(x)-winSize, hopSize), vadFlags, "r") # TEST
+plot.plot(range(0, len(x)-winSize, hopSize), vadFlags[:,1], "r", linewidth=2) # TEST
 plot.show()
