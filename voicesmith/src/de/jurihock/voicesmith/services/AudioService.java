@@ -47,7 +47,8 @@ public abstract class AudioService extends Service implements
 	private Object[]		threadParams	= null;
 
 	// Headset stuff:
-	private HeadsetMode		mode			= null;
+	private HeadsetMode     desiredMode     = null;
+    private HeadsetMode		actualMode	    = null;
 	private HeadsetManager	headset			= null;
 
 	private ServiceListener	listener		= null;
@@ -61,30 +62,37 @@ public abstract class AudioService extends Service implements
 
 	public HeadsetMode getHeadsetMode()
 	{
-		return mode;
+		return desiredMode;
 	}
 
 	public void setHeadsetMode(HeadsetMode mode)
 	{
-		if (this.mode == mode) return;
+		if (this.desiredMode == mode) return;
 
+        this.desiredMode = mode;
 		preferences.setHeadsetMode(mode);
 
 		if (isThreadRunning())
 		{
 			stopThread(true);
-
 			disposeAudioDevices();
-			this.mode = mode;
-
 			startThread();
 		}
 		else
 		{
 			disposeAudioDevices();
-			this.mode = mode;
 		}
 	}
+
+    private HeadsetMode getActualHeadsetMode()
+    {
+        return actualMode;
+    }
+
+    private void setActualHeadsetMode(HeadsetMode mode)
+    {
+        actualMode = mode;
+    }
 
 	protected abstract AudioThread createAudioThread(AudioDevice input, AudioDevice output);
 
@@ -111,24 +119,12 @@ public abstract class AudioService extends Service implements
 	public void startThread()
 	{
 		if (isThreadRunning()) return;
-		
-		HeadsetMode fallbackMode = getHeadsetMode();
 
-		// Return if wired headset mode is set but no device available
-		if (getHeadsetMode() == HeadsetMode.WIRED_HEADSET
-			&& !headset.isWiredHeadsetOn())
-		{
-			if (listener != null)
-			{
-				listener.onServiceFailed();
-			}
+        setActualHeadsetMode(getHeadsetMode());
 
-			return;
-		}
-
-		// Return if Bluetooth headset mode is set but no device available,
-		// wired mode fallback impossible or Bluetooth initialization fails
-		if (getHeadsetMode() == HeadsetMode.BLUETOOTH_HEADSET)
+		// Fallback to the wired mode if Bluetooth headset mode is set
+		// but no device available or Bluetooth initialization fails
+		if (getActualHeadsetMode() == HeadsetMode.BLUETOOTH_HEADSET)
 		{
 			if(headset.isBluetoothHeadsetOn())
 			{
@@ -139,28 +135,30 @@ public abstract class AudioService extends Service implements
 					if (!headset.waitForBluetoothSco())
 					{
 						headset.setBluetoothScoOn(false);
-						fallbackMode = HeadsetMode.WIRED_HEADSET;
+						setActualHeadsetMode(HeadsetMode.WIRED_HEADSET);
 					}
 				}
 			}
 			else
 			{
-				fallbackMode = HeadsetMode.WIRED_HEADSET;
-			}
-
-			if(fallbackMode == HeadsetMode.WIRED_HEADSET
-				&& !headset.isWiredHeadsetOn())
-			{
-				if (listener != null)
-				{
-					listener.onServiceFailed();
-				}
-
-				return;
+                setActualHeadsetMode(HeadsetMode.WIRED_HEADSET);
 			}
 		}
 
-		if (!initAudioDevices(fallbackMode))
+        // Return if wired headset mode is actually set but no device available
+        if (getActualHeadsetMode() == HeadsetMode.WIRED_HEADSET
+                && !headset.isWiredHeadsetOn())
+        {
+            if (listener != null)
+            {
+                listener.onServiceFailed();
+            }
+
+            return;
+        }
+
+        // Return if audio device initialization fails
+		if (!initAudioDevices(getActualHeadsetMode()))
 		{
 			if (listener != null)
 			{
@@ -170,7 +168,7 @@ public abstract class AudioService extends Service implements
 			return;
 		}
 
-		headset.restoreVolumeLevel(getHeadsetMode());
+		headset.restoreVolumeLevel(getActualHeadsetMode());
 
 		thread = createAudioThread(input, output);
 		if (threadParams != null)
@@ -189,7 +187,7 @@ public abstract class AudioService extends Service implements
 			new Utils(this).cancelAllNotifications();
 		}
 
-		headset.storeVolumeLevel(getHeadsetMode());
+		headset.storeVolumeLevel(getActualHeadsetMode());
 
 		if (headset.isBluetoothScoOn())
 		{
@@ -286,9 +284,9 @@ public abstract class AudioService extends Service implements
 		preferences = new Preferences(getApplicationContext());
 		preferences.registerOnSharedPreferenceChangeListener(this);
 
-		if (mode == null)
+		if (desiredMode == null)
 		{
-			mode = preferences.getHeadsetMode();
+			desiredMode = preferences.getHeadsetMode();
 		}
 
 		if (headset == null)
@@ -337,7 +335,7 @@ public abstract class AudioService extends Service implements
 
 	public void onWiredHeadsetOff()
 	{
-		if (getHeadsetMode() == HeadsetMode.WIRED_HEADSET
+		if (getActualHeadsetMode() == HeadsetMode.WIRED_HEADSET
 			&& isThreadRunning())
 		{
 			stopThread(false);
@@ -351,7 +349,7 @@ public abstract class AudioService extends Service implements
 
 	public void onBluetoothHeadsetOff()
 	{
-		if (getHeadsetMode() == HeadsetMode.BLUETOOTH_HEADSET
+		if (getActualHeadsetMode() == HeadsetMode.BLUETOOTH_HEADSET
 			&& isThreadRunning())
 		{
 			stopThread(false);
