@@ -11,22 +11,22 @@ help:
 	@echo "make clean:           Clean build/release files"
 
 jni:
-	GenerateHeaders.sh \
+	jni/GenerateHeaders.sh \
 		"Math" \
 		"de.jurihock.voicesmith.dsp" \
 		"de/jurihock/voicesmith/dsp" \
 		"Math"
-	GenerateHeaders.sh \
+	jni/GenerateHeaders.sh \
 		"KissFFT" \
 		"de.jurihock.voicesmith.dsp" \
 		"de/jurihock/voicesmith/dsp" \
 		"KissFFT"
-	GenerateHeaders.sh \
+	jni/GenerateHeaders.sh \
 		"NativeResampleProcessor" \
 		"de.jurihock.voicesmith.dsp.processors" \
 		"de/jurihock/voicesmith/dsp/processors" \
 		"Processors"
-	GenerateHeaders.sh \
+	jni/GenerateHeaders.sh \
 		"NativeTimescaleProcessor" \
 		"de.jurihock.voicesmith.dsp.processors" \
 		"de/jurihock/voicesmith/dsp/processors" \
