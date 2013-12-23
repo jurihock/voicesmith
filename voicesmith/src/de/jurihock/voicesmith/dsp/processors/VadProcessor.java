@@ -1,25 +1,47 @@
 package de.jurihock.voicesmith.dsp.processors;
 
-import static de.jurihock.voicesmith.dsp.Math.sqrt;
-import static de.jurihock.voicesmith.dsp.Math.max;
+import android.content.Context;
+import de.jurihock.voicesmith.Preferences;
+
+import static de.jurihock.voicesmith.dsp.Math.ceil;
+import static de.jurihock.voicesmith.dsp.Math.rms;
+import static de.jurihock.voicesmith.dsp.Math.mean;
 import static de.jurihock.voicesmith.dsp.Math.min;
-import static de.jurihock.voicesmith.dsp.Math.log10;
+import static de.jurihock.voicesmith.dsp.Math.rms2dbfs;
 import static de.jurihock.voicesmith.dsp.Math.round;
 
 public final class VadProcessor
 {
+    private final int sampleRate;
+
 	private final float windowTimeInterval = 20e-3F;
 	private final int windowSize;
 
-	private final float[] meanObserverGain = new float[] {0.01F, 0.001F};
-	private final float[] energyObserverGain = new float[] {0.3F, 0.001F};
+	private final float[] meanObserverGain = new float[] {0.025F, 0F};
+	private final float[] energyObserverGain = new float[] {0.3F, 0.02F};
 
 	private final LuenbergerObserver meanObserver;
 	private final LuenbergerObserver energyObserver;
 	private final SchmittTrigger trigger;
 
-	public VadProcessor(int sampleRate, int lowThreshold, int highThreshold)
+    private final float hangoverMaxDuration;
+    private float hangoverDuration;
+
+    private final boolean isEnabled;
+
+    public VadProcessor(int sampleRate, Context context)
+    {
+        this(sampleRate,
+            new Preferences(context).getAutoMuteHighThreshold(),
+            new Preferences(context).getAutoMuteLowThreshold(),
+            new Preferences(context).getAutoMuteHangover(),
+            new Preferences(context).isAutoMute());
+    }
+
+	public VadProcessor(int sampleRate, int lowThreshold, int highThreshold, int hangover, boolean enable)
 	{
+        this.sampleRate = sampleRate;
+
 		windowSize = round(sampleRate * windowTimeInterval);
 
 		final float initialDbfs = (lowThreshold + highThreshold) / 2F;
@@ -27,21 +49,31 @@ public final class VadProcessor
 		meanObserver = new LuenbergerObserver(0, 0, meanObserverGain);
 		energyObserver = new LuenbergerObserver(initialDbfs, 0, energyObserverGain);
 		trigger = new SchmittTrigger(false, initialDbfs, lowThreshold, highThreshold);
+
+        hangoverMaxDuration = hangover;
+        hangoverDuration = 0;
+
+        isEnabled = enable;
 	}
 
 	public void processFrame(short[] frame)
 	{
+        if(!isEnabled) return;
+
 		final int windowCount = frame.length / windowSize;
-		final int adaptedWindowSize = frame.length / windowCount;
+		final int adaptedWindowSize = windowCount > 0
+                ? (int)ceil((float)frame.length / (float)windowCount)
+                : frame.length;
+        final float windowDuration = (float)adaptedWindowSize / (float)sampleRate;
 
 		for (int i = 0; i < windowCount; i++)
 		{
 			final int windowOffset = i * adaptedWindowSize;
-			processFrameInternal(frame, windowOffset, adaptedWindowSize);
+			processFrameInternal(frame, windowOffset, adaptedWindowSize, windowDuration);
 		}
 	}
 
-	private void processFrameInternal(short[] frame, int offset, int length)
+	private void processFrameInternal(short[] frame, int offset, int length, float windowDuration)
 	{
 		short currentMean = mean(frame, offset, length);
 		float currentRms = rms(frame, offset, length, currentMean);
@@ -51,6 +83,19 @@ public final class VadProcessor
 		currentDbfs = energyObserver.smooth(currentDbfs);
 		boolean currentState = trigger.state(currentDbfs);
 
+        if(hangoverMaxDuration > 0)
+        {
+            if(!currentState)
+            {
+                hangoverDuration = min(hangoverMaxDuration, hangoverDuration + windowDuration);
+                currentState = hangoverDuration < hangoverMaxDuration;
+            }
+            else
+            {
+                hangoverDuration = 0;
+            }
+        }
+
 		if(!currentState)
 		{
 			for (int i = offset; i < length; i++)
@@ -58,42 +103,6 @@ public final class VadProcessor
 				frame[i] = currentMean;
 			}
 		}
-	}
-
-	private static short mean(short[] frame, int offset, int length)
-	{
-		long mean = 0;
-
-		for (int i = offset; i < length; i++)
-		{
-			mean += frame[i];
-		}
-
-		mean /= length;
-
-		return (short)mean;
-	}
-
-	private static float rms(short[] frame, int offset, int length, short mean)
-	{
-		float rms = 0;
-
-		for (int i = offset; i < length; i++)
-		{
-			float value = (frame[i] - mean) / 32767F;
-			rms += value * value;
-		}
-
-		rms = sqrt(rms / length);
-
-		return rms;
-	}
-
-	private static float rms2dbfs(float value)
-	{
-		value = min(max(value,1e-10F),1F);
-
-		return 10F*log10(value);
 	}
 
 	private final class LuenbergerObserver
@@ -110,15 +119,15 @@ public final class VadProcessor
 			this.gain = gain;
 		}
 
-		public float predict()
+		private float predict()
 		{
 			return value + velocity;
 		}
 
-		public float correct(float newValue)
+		private float correct(float newValue)
 		{
 			final float prediction = predict();
-			final float error = newValue - prediction;
+			final float error = newValue - value;
 
 			value = prediction + gain[0] * error;
 			velocity = velocity + gain[1] * error;
