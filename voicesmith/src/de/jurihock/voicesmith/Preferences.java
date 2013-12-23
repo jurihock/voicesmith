@@ -40,11 +40,9 @@ public final class Preferences
 	// public static final int PCM_OUT_SOURCE = AudioManager.STREAM_MUSIC;
 	// public static final int PCM_OUT_SOURCE = AudioManager.STREAM_VOICE_CALL;
 
-	public static final String		DATASTORE_DIR	= "Android/data/de.jurihock.voicesmith";
-	public static final String		VOICEBANK_DIR	= DATASTORE_DIR
-														+ "/voicebank";
-	public static final String		RECORDS_FILE	= VOICEBANK_DIR
-														+ "/records.xml";
+	// public static final String		DATASTORE_DIR	= "Android/data/de.jurihock.voicesmith";
+	// public static final String		VOICEBANK_DIR	= DATASTORE_DIR	+ "/voicebank";
+	// public static final String		RECORDS_FILE	= VOICEBANK_DIR + "/records.xml";
 
 	private final SharedPreferences	preferences;
 
@@ -107,6 +105,33 @@ public final class Preferences
 	{
 		return preferences.getBoolean("ReduceNoise", true);
 	}
+
+    public boolean isAutoMute()
+    {
+        return preferences.getBoolean("AutoMute", false);
+    }
+
+    public int getAutoMuteHighThreshold()
+    {
+        int high = Integer.parseInt(preferences.getString("AutoMuteHighThreshold", "-20"));
+        int low = Integer.parseInt(preferences.getString("AutoMuteLowThreshold", "-25"));
+
+        return Math.min(0, Math.max(high, low));
+    }
+
+    public int getAutoMuteLowThreshold()
+    {
+        int high = Integer.parseInt(preferences.getString("AutoMuteHighThreshold", "-20"));
+        int low = Integer.parseInt(preferences.getString("AutoMuteLowThreshold", "-25"));
+
+        return Math.min(0, Math.min(high, low));
+    }
+
+    public int getAutoMuteHangover()
+    {
+        return Integer.parseInt(
+            preferences.getString("AutoMuteHangover", "5"));
+    }
 
 	public boolean isLogging()
 	{

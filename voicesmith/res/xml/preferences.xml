@@ -24,11 +24,36 @@
             android:entryValues="@array/SampleRateValues"
             android:key="SampleRate"
             android:title="@string/SampleRatePreference" />
-
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="ReduceNoise"
             android:title="@string/ReduceNoisePreference" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/AutoMutePreferences" >
+        <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="AutoMute"
+                android:title="@string/AutoMuteStatePreference" />
+        <EditTextPreference
+                android:dependency="AutoMute"
+                android:numeric="integer"
+                android:defaultValue="-20"
+                android:key="AutoMuteHighThreshold"
+                android:title="@string/AutoMuteHighThresholdPreference" />
+        <EditTextPreference
+                android:dependency="AutoMute"
+                android:numeric="integer"
+                android:defaultValue="-25"
+                android:key="AutoMuteLowThreshold"
+                android:title="@string/AutoMuteLowThresholdPreference" />
+        <de.jurihock.voicesmith.widgets.SeekBarPreference
+                android:dependency="AutoMute"
+                android:defaultValue="5"
+                android:key="AutoMuteHangover"
+                android:title="@string/AutoMuteHangoverPreference"
+                voicesmith:maxValue="10"
+                voicesmith:minValue="0"
+                voicesmith:valueFormat="%ss" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/MiscPreferences" >
         <CheckBoxPreference

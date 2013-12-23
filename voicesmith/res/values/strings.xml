@@ -31,6 +31,11 @@
     <string name="VolumePreferences">Volume</string>
     <string name="SoundPreferences">Sound quality</string>
     <string name="MiscPreferences">Miscellaneous</string>
+    <string name="AutoMutePreferences">Auto mute</string>
+    <string name="AutoMuteStatePreference">Enable auto mute</string>
+    <string name="AutoMuteHighThresholdPreference">High threshold [dBFS]</string>
+    <string name="AutoMuteLowThresholdPreference">Low threshold [dBFS]</string>
+    <string name="AutoMuteHangoverPreference">Hangover period</string>
 
     <!-- Services -->
     <string name="DafxService">Voicesmith DAFX Service</string>
