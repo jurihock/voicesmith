@@ -137,6 +137,30 @@ JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_random
 JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_princarg
   (JNIEnv *, jclass, jfloat);
 
+/*
+ * Class:     de_jurihock_voicesmith_dsp_Math
+ * Method:    mean
+ * Signature: ([SII)S
+ */
+JNIEXPORT jshort JNICALL Java_de_jurihock_voicesmith_dsp_Math_mean
+  (JNIEnv *, jclass, jshortArray, jint, jint);
+
+/*
+ * Class:     de_jurihock_voicesmith_dsp_Math
+ * Method:    rms
+ * Signature: ([SIIS)F
+ */
+JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_rms
+  (JNIEnv *, jclass, jshortArray, jint, jint, jshort);
+
+/*
+ * Class:     de_jurihock_voicesmith_dsp_Math
+ * Method:    rms2dbfs
+ * Signature: (F)F
+ */
+JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_rms2dbfs
+  (JNIEnv *, jclass, jfloat);
+
 #ifdef __cplusplus
 }
 #endif
