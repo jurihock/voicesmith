@@ -86,7 +86,7 @@ public abstract class AudioService extends Service implements
 
     private HeadsetMode getActualHeadsetMode()
     {
-        return actualMode;
+        return (actualMode != null) ? actualMode : desiredMode;
     }
 
     private void setActualHeadsetMode(HeadsetMode mode)
