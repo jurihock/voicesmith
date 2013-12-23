@@ -8,6 +8,7 @@ help:
 	@echo "make release:         Make release APK"
 	@echo "make install:         Install released APK"
 	@echo "make uninstall:       Uninstall released APK"
+	@echo "make start:           Start main activity"
 	@echo "make clean:           Clean build/release files"
 
 jni:
@@ -46,6 +47,9 @@ install:
 
 uninstall:
 	adb uninstall de.jurihock.voicesmith
+
+start:
+	adb shell am start -n de.jurihock.voicesmith/.activities.HomeActivity
 
 clean:
 	ndk-build clean && rm -rfv libs obj
