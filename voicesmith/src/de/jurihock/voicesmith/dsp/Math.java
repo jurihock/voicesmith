@@ -58,4 +58,10 @@ public final class Math
 	public static native float random(float min, float max);
 
 	public static native float princarg(float phase);
+
+    public static native short mean(short[] buffer, int offset, int length);
+
+    public static native float rms(short[] buffer, int offset, int length, short mean);
+
+    public static native float rms2dbfs(float value);
 }
