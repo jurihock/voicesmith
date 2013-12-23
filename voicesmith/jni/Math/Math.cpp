@@ -120,3 +120,49 @@ JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_princarg
 {
 	return princargf(phase);
 }
+
+JNIEXPORT jshort JNICALL Java_de_jurihock_voicesmith_dsp_Math_mean
+  (JNIEnv *env, jclass, jshortArray _buffer, jint offset, jint length)
+{
+	short* buffer = (short*)env->GetPrimitiveArrayCritical(_buffer, 0);
+
+        long mean = 0;
+
+        for (int i = offset; i < length; i++)
+        {
+            mean += buffer[i];
+        }
+
+        mean /= length;
+
+	env->ReleasePrimitiveArrayCritical(_buffer, buffer, 0);
+        return (short)mean;
+}
+ 
+JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_rms
+  (JNIEnv *env, jclass, jshortArray _buffer, jint offset, jint length, jshort mean)
+{
+	short* buffer = (short*)env->GetPrimitiveArrayCritical(_buffer, 0);
+
+        float rms = 0;
+
+        for (int i = offset; i < length; i++)
+        {
+            float value = (buffer[i] - mean) / 32767.0f;
+            rms += value * value;
+        }
+
+        rms = sqrtf(rms / length);
+
+	env->ReleasePrimitiveArrayCritical(_buffer, buffer, 0);
+	return rms;
+}
+
+JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_rms2dbfs
+ (JNIEnv *, jclass, jfloat value)
+{
+	value = fmin(fmax(value,1e-10f),1.0f);
+
+	return 10.0f*log10f(value);
+}
+
