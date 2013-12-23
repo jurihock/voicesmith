@@ -42,7 +42,7 @@ release:
 	ant release
 
 install:
-	adb installr
+	adb install bin/Voicesmith-release.apk
 
 uninstall:
 	adb uninstall de.jurihock.voicesmith
