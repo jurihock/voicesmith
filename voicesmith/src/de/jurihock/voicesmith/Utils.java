@@ -157,7 +157,7 @@ public final class Utils
 	 * */
 	public void log(String message)
 	{
-		if (preferences.isLogging())
+		if (preferences.isLoggingOn())
 		{
 			Log.d(LOGCAT_TAG, message);
 		}

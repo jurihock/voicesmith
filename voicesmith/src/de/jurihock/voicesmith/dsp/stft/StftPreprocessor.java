@@ -76,7 +76,7 @@ public final class StftPreprocessor implements Disposable
 	public StftPreprocessor(AudioDevice audioDevice, int frameSize, int hopSize, boolean doForwardFFT)
 	{
 		this(audioDevice, frameSize, hopSize, doForwardFFT,
-			new Preferences(audioDevice.getContext()).isReduceNoise());
+			new Preferences(audioDevice.getContext()).isReduceNoiseOn());
 	}
 
 	public void dispose()

@@ -16,7 +16,7 @@ public final class OffsetProcessor
 
     public OffsetProcessor(Context context)
     {
-        this(new Preferences(context).isCorrectOffset());
+        this(new Preferences(context).isCorrectOffsetOn());
     }
 
     public OffsetProcessor(boolean enable)

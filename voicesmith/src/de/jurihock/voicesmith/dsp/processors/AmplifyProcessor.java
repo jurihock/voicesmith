@@ -28,7 +28,7 @@ public final class AmplifyProcessor
 
 	public AmplifyProcessor(Context context)
 	{
-		this(new Preferences(context).getSoundAmplification());
+		this(new Preferences(context).getSignalAmplificationFactor());
 	}
 
 	/**
