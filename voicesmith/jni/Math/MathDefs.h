@@ -22,6 +22,7 @@
 #include <math.h>
 
 const float PI = M_PI;
+const float SHRT_MAX_F = (float)SHRT_MAX;
 
 // MATLAB conform modulo implementation.
 static float modf(float x, float y)

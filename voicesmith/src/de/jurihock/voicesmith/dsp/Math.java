@@ -61,7 +61,9 @@ public final class Math
 
     public static native short mean(short[] buffer, int offset, int length);
 
+    public static native float rms(short[] buffer, int offset, int length);
+
     public static native float rms(short[] buffer, int offset, int length, short mean);
 
-    public static native float rms2dbfs(float value);
+    public static native float rms2dbfs(float value, float min, float max);
 }

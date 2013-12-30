@@ -128,7 +128,7 @@ JNIEXPORT jshort JNICALL Java_de_jurihock_voicesmith_dsp_Math_mean
 
         long mean = 0;
 
-        for (int i = offset; i < length; i++)
+        for (int i = offset; i < offset + length; i++)
         {
             mean += buffer[i];
         }
@@ -138,17 +138,36 @@ JNIEXPORT jshort JNICALL Java_de_jurihock_voicesmith_dsp_Math_mean
 	env->ReleasePrimitiveArrayCritical(_buffer, buffer, 0);
         return (short)mean;
 }
- 
-JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_rms
+
+JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_rms___3SII
+  (JNIEnv *env, jclass, jshortArray _buffer, jint offset, jint length)
+{
+	short* buffer = (short*)env->GetPrimitiveArrayCritical(_buffer, 0);
+
+        float rms = 0;
+
+        for (int i = offset; i < offset + length; i++)
+        {
+            float value = buffer[i] / SHRT_MAX_F;
+            rms += value * value;
+        }
+
+        rms = sqrtf(rms / length);
+
+	env->ReleasePrimitiveArrayCritical(_buffer, buffer, 0);
+	return rms;
+}
+
+JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_rms___3SIIS
   (JNIEnv *env, jclass, jshortArray _buffer, jint offset, jint length, jshort mean)
 {
 	short* buffer = (short*)env->GetPrimitiveArrayCritical(_buffer, 0);
 
         float rms = 0;
 
-        for (int i = offset; i < length; i++)
+        for (int i = offset; i < offset + length; i++)
         {
-            float value = (buffer[i] - mean) / 32767.0f;
+            float value = (buffer[i] - mean) / SHRT_MAX_F;
             rms += value * value;
         }
 
@@ -159,9 +178,9 @@ JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_rms
 }
 
 JNIEXPORT jfloat JNICALL Java_de_jurihock_voicesmith_dsp_Math_rms2dbfs
- (JNIEnv *, jclass, jfloat value)
+ (JNIEnv *, jclass, jfloat value, jfloat min, jfloat max)
 {
-	value = fmin(fmax(value,1e-10f),1.0f);
+	value = fmin(fmax(value,min),max);
 
 	return 10.0f*log10f(value);
 }
