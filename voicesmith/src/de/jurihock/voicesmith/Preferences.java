@@ -26,6 +26,7 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.preference.PreferenceManager;
 import de.jurihock.voicesmith.audio.HeadsetMode;
+import de.jurihock.voicesmith.threads.AudioThread;
 
 public final class Preferences
 {
@@ -89,10 +90,10 @@ public final class Preferences
 		return false;
 	}
 
-	public int getSoundAmplification()
+	public int getSignalAmplificationFactor()
 	{
 		return Integer.parseInt(
-			preferences.getString("SoundAmplification", "6"));
+			preferences.getString("SignalAmplification", "6"));
 	}
 
 	public int getSampleRate()
@@ -101,17 +102,17 @@ public final class Preferences
 			preferences.getString("SampleRate", "44100"));
 	}
 
-    public boolean isCorrectOffset()
+    public boolean isCorrectOffsetOn()
     {
         return preferences.getBoolean("CorrectOffset", true);
     }
 
-	public boolean isReduceNoise()
+	public boolean isReduceNoiseOn()
 	{
 		return preferences.getBoolean("ReduceNoise", true);
 	}
 
-    public boolean isAutoMute()
+    public boolean isAutoMuteOn()
     {
         return preferences.getBoolean("AutoMute", false);
     }
@@ -138,7 +139,7 @@ public final class Preferences
             preferences.getString("AutoMuteHangover", "5"));
     }
 
-	public boolean isLogging()
+	public boolean isLoggingOn()
 	{
 		return preferences.getBoolean("Logging", false);
 	}
@@ -182,35 +183,15 @@ public final class Preferences
 			.commit();
 	}
 
-	// TODO: Realise some other preferences
+    public String getAudioThreadPreferences(String threadName)
+    {
+        return preferences.getString(threadName, null);
+    }
 
-	// public int getTransposeInterval()
-	// {
-	// return preferences.getInt("TransposeInterval", 0);
-	// }
-	//
-	// public boolean setTransposeInterval(int value)
-	// {
-	// if (value < -12 || 12 < value) return false;
-	//
-	// return preferences.edit()
-	// .putInt("TransposeInterval", value)
-	// .commit();
-	// }
-	//
-	// public int getFafInterval()
-	// {
-	// return preferences.getInt("FafInterval", 0);
-	// }
-	//
-	// public boolean setFafInterval(int value)
-	// {
-	// if (value < -12 || 12 < value) return false;
-	//
-	// return preferences.edit()
-	// .putInt("FafInterval", value)
-	// .commit();
-	// }
+    public boolean setAudioThreadPreferences(String threadName, String value)
+    {
+        return preferences.edit().putString(threadName, value).commit();
+    }
 
 	/**
 	 * Returns the optimal PCM buffer size in bytes. Because of output buffer
