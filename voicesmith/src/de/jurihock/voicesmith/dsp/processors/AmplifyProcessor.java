@@ -22,7 +22,7 @@ import android.content.Context;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.dsp.Math;
 
-public class AmplifyProcessor
+public final class AmplifyProcessor
 {
 	private final float	ampFactor;
 
