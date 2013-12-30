@@ -22,11 +22,11 @@
 
     <!-- Preferences -->
     <string name="VolumeLevelPreference">Volume level</string>
-    <string name="SoundAmplificationPreference">Sound amplification</string>
+    <string name="SignalAmplificationPreference">Signal amplification</string>
     <string name="CorrectOffsetPreference">Correct signal offset</string>
-    <string name="ReduceNoisePreference">Reduce noise</string>
+    <string name="ReduceNoisePreference">Try to reduce noise</string>
     <string name="SampleRatePreference">Sample rate</string>
-    <string name="LoggingPreference">Dump LogCat output</string>
+    <string name="LoggingPreference">Dump debugging infos</string>
     <string name="ResetPreferences">Reset to default values</string>
     <string name="VolumePreferences">Volume</string>
     <string name="SoundPreferences">Sound quality</string>
