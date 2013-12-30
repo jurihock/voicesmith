@@ -101,6 +101,11 @@ public final class Preferences
 			preferences.getString("SampleRate", "44100"));
 	}
 
+    public boolean isCorrectOffset()
+    {
+        return preferences.getBoolean("CorrectOffset", true);
+    }
+
 	public boolean isReduceNoise()
 	{
 		return preferences.getBoolean("ReduceNoise", true);

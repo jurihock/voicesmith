@@ -23,18 +23,18 @@
     <!-- Preferences -->
     <string name="VolumeLevelPreference">Volume level</string>
     <string name="SoundAmplificationPreference">Sound amplification</string>
+    <string name="CorrectOffsetPreference">Correct signal offset</string>
     <string name="ReduceNoisePreference">Reduce noise</string>
     <string name="SampleRatePreference">Sample rate</string>
-    <string name="LoggingPreference">Logging</string>
-    <string name="LoggingSummary">Dump LogCat output</string>
+    <string name="LoggingPreference">Dump LogCat output</string>
     <string name="ResetPreferences">Reset to default values</string>
     <string name="VolumePreferences">Volume</string>
     <string name="SoundPreferences">Sound quality</string>
     <string name="MiscPreferences">Miscellaneous</string>
     <string name="AutoMutePreferences">Auto mute</string>
     <string name="AutoMuteStatePreference">Enable auto mute</string>
-    <string name="AutoMuteHighThresholdPreference">High threshold [dBFS]</string>
-    <string name="AutoMuteLowThresholdPreference">Low threshold [dBFS]</string>
+    <string name="AutoMuteHighThresholdPreference">High threshold</string>
+    <string name="AutoMuteLowThresholdPreference">Low threshold</string>
     <string name="AutoMuteHangoverPreference">Hangover period</string>
 
     <!-- Services -->

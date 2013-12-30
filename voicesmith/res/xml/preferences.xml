@@ -25,6 +25,10 @@
             android:key="SampleRate"
             android:title="@string/SampleRatePreference" />
         <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="CorrectOffset"
+                android:title="@string/CorrectOffsetPreference" />
+        <CheckBoxPreference
             android:defaultValue="true"
             android:key="ReduceNoise"
             android:title="@string/ReduceNoisePreference" />
@@ -34,18 +38,22 @@
                 android:defaultValue="false"
                 android:key="AutoMute"
                 android:title="@string/AutoMuteStatePreference" />
-        <EditTextPreference
+        <de.jurihock.voicesmith.widgets.SeekBarPreference
                 android:dependency="AutoMute"
-                android:numeric="integer"
                 android:defaultValue="-20"
                 android:key="AutoMuteHighThreshold"
-                android:title="@string/AutoMuteHighThresholdPreference" />
-        <EditTextPreference
+                android:title="@string/AutoMuteHighThresholdPreference"
+                voicesmith:maxValue="0"
+                voicesmith:minValue="-50"
+                voicesmith:valueFormat="%s dBFS" />
+        <de.jurihock.voicesmith.widgets.SeekBarPreference
                 android:dependency="AutoMute"
-                android:numeric="integer"
                 android:defaultValue="-25"
                 android:key="AutoMuteLowThreshold"
-                android:title="@string/AutoMuteLowThresholdPreference" />
+                android:title="@string/AutoMuteLowThresholdPreference"
+                voicesmith:maxValue="0"
+                voicesmith:minValue="-50"
+                voicesmith:valueFormat="%s dBFS" />
         <de.jurihock.voicesmith.widgets.SeekBarPreference
                 android:dependency="AutoMute"
                 android:defaultValue="5"
@@ -53,14 +61,16 @@
                 android:title="@string/AutoMuteHangoverPreference"
                 voicesmith:maxValue="10"
                 voicesmith:minValue="0"
-                voicesmith:valueFormat="%ss" />
+                voicesmith:valueFormat="%s s" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/MiscPreferences" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="Logging"
-            android:summary="@string/LoggingSummary"
             android:title="@string/LoggingPreference" />
+        <Preference
+            android:title="@string/ResetPreferences"
+            android:key="Reset"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
