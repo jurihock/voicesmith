@@ -2,12 +2,12 @@ package de.jurihock.voicesmith.dsp.processors;
 
 import android.content.Context;
 import de.jurihock.voicesmith.Preferences;
+import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.dsp.LuenbergerObserver;
 import de.jurihock.voicesmith.dsp.SchmittTrigger;
 
 import static de.jurihock.voicesmith.dsp.Math.ceil;
 import static de.jurihock.voicesmith.dsp.Math.rms;
-import static de.jurihock.voicesmith.dsp.Math.mean;
 import static de.jurihock.voicesmith.dsp.Math.min;
 import static de.jurihock.voicesmith.dsp.Math.rms2dbfs;
 import static de.jurihock.voicesmith.dsp.Math.round;
@@ -29,13 +29,20 @@ public final class VadProcessor
 
     private final boolean isEnabled;
 
+    // Special variables for debugging
+    private Utils utils = null;
+    private boolean lastState = false;
+
     public VadProcessor(int sampleRate, Context context)
     {
         this(sampleRate,
             new Preferences(context).getAutoMuteHighThreshold(),
             new Preferences(context).getAutoMuteLowThreshold(),
             new Preferences(context).getAutoMuteHangover(),
-            new Preferences(context).isAutoMute());
+            new Preferences(context).isAutoMuteOn());
+
+        if(new Preferences(context).isLoggingOn())
+            utils = new Utils(context);
     }
 
 	public VadProcessor(int sampleRate, int lowThreshold, int highThreshold, int hangover, boolean enable)
@@ -43,6 +50,7 @@ public final class VadProcessor
         this.sampleRate = sampleRate;
 
 		windowSize = round(sampleRate * windowTimeInterval);
+        if (utils != null) utils.log("VAD desired window size is %s.", windowSize);
 
 		final float initialDbfs = (lowThreshold + highThreshold) / 2F;
 
@@ -61,8 +69,8 @@ public final class VadProcessor
 
 		final int windowCount = frame.length / windowSize;
 		final int adaptedWindowSize = windowCount > 0
-                ? (int)ceil((float)frame.length / (float)windowCount) // TODO: make it simpler
-                : frame.length;
+                ? (int)ceil((float)frame.length / (float)windowCount) // round up division result, if numbers are odd
+                : frame.length; // if the window is smaller than frame, so make it just bigger
         final float windowDuration = (float)adaptedWindowSize / (float)sampleRate;
 
 		for (int i = 0; i < windowCount; i++)
@@ -99,6 +107,14 @@ public final class VadProcessor
             {
                 frame[i] = 0;
             }
+        }
+
+        // Log state changes
+        if (utils != null && lastState != currentState)
+        {
+            if (currentState) utils.log("Voice activity detected.");
+            else utils.log("Voice inactivity detected.");
+            lastState = currentState;
         }
 	}
 }
