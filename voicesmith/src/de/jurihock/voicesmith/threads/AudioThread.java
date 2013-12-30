@@ -39,7 +39,7 @@ public abstract class AudioThread implements Runnable, Disposable
 		this.output = output;
 	}
 
-	public void configure(Object... params)
+	public void configure(String value)
 	{
 		// ReentrantLock lock = new ReentrantLock(true);
 		// lock.lock();

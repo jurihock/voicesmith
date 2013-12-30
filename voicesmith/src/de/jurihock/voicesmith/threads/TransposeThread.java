@@ -124,21 +124,13 @@ public final class TransposeThread extends AudioThread
 	}
 
 	@Override
-	public void configure(Object... params)
+	public void configure(String value)
 	{
-		int semitones = 0;
-
-		if (params != null)
+		if (value != null && value.length() > 0)
 		{
-			new Utils(context).assertTrue(params.length == 1,
-				"%s expected only one parameter, the interval!",
-				this.getClass().getName());
-			
-			semitones = Integer.parseInt(
-				params[0].toString());
+			int semitones = Integer.parseInt(value);
+            setSemitones(semitones);
 		}
-
-		setSemitones(semitones);
 	}
 
 	/**
