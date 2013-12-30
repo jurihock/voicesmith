@@ -11,8 +11,8 @@
             voicesmith:valueFormat="%s%%" />
         <de.jurihock.voicesmith.widgets.SeekBarPreference
             android:defaultValue="6"
-            android:key="SoundAmplification"
-            android:title="@string/SoundAmplificationPreference"
+            android:key="SignalAmplification"
+            android:title="@string/SignalAmplificationPreference"
             voicesmith:maxValue="12"
             voicesmith:minValue="0"
             voicesmith:valueFormat="%s dB" />
