@@ -18,6 +18,7 @@
 
 package de.jurihock.voicesmith.activities;
 
+import android.preference.Preference;
 import greendroid.app.GDPreferenceActivity;
 import greendroid.widget.ActionBar;
 import greendroid.widget.ActionBarItem;
@@ -66,40 +67,33 @@ public final class PreferenceActivity extends GDPreferenceActivity
 				}
 			}
 		}
-	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		MenuInflater inflater = this.getMenuInflater();
-		inflater.inflate(R.menu.preferences, menu);
-		return true;
-	}
+        // Reset preferences to defaults
+        Preference buttonReset = getPreferenceManager().findPreference("Reset");
+        if(buttonReset != null)
+        {
+            buttonReset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override
+                public boolean onPreferenceClick(Preference _preference)
+                {
+                    preferences.reset();
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch (item.getItemId())
-		{
-		case R.id.ResetPreferences:
+                    // Refresh this activity
+                    // http://stackoverflow.com/questions/6380658/refreshing-views-of-preferences-when-using-preferenceactivity
+                    Intent intent = getIntent();
+                    {
+                        overridePendingTransition(0, 0);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        finish();
+                        overridePendingTransition(0, 0);
+                    }
+                    startActivity(intent);
 
-			preferences.reset();
-
-			// Refresh this activity
-			// http://stackoverflow.com/questions/6380658/refreshing-views-of-preferences-when-using-preferenceactivity
-			Intent intent = getIntent();
-			{
-				overridePendingTransition(0, 0);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-				finish();
-				overridePendingTransition(0, 0);
-			}
-			startActivity(intent);
-
-			break;
-		}
-
-		return true;
+                    return true;
+                }
+            });
+        }
 	}
 
 	@Override
