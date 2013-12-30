@@ -26,15 +26,21 @@
             android:text="DAF"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
+    </TableRow>
+
+    <TableRow>
+
         <RadioButton
+            android:layout_span="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_on_off"
             android:button="@null"
             android:gravity="center"
             android:tag="FastDAF"
-            android:text="Fast DAF"
+            android:text="Unprocessed DAF"
             android:textAppearance="?android:attr/textAppearanceSmall" />
+
     </TableRow>
 
 </TableLayout>

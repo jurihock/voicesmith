@@ -34,7 +34,7 @@ public enum AAF
 	DAF,
 
 	/**
-	 * Delayed Auditory Feedback (min. possible delay)
+	 * Delayed Auditory Feedback (min. possible delay, raw signal pumping)
 	 * */
 	FastDAF;
 
