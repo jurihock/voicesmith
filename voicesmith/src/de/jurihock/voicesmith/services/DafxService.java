@@ -29,8 +29,8 @@ import de.jurihock.voicesmith.threads.AudioThread;
  * */
 public final class DafxService extends AudioService
 {
-	// The DAFX type
-	private DAFX	dafx	= DAFX.valueOf(0);
+    // FIXME: If init with default value, loading prefs in setter may be ignored during first call
+	private DAFX	dafx	= null; // DAFX.valueOf(0);
 
 	public DAFX getDafx()
 	{
@@ -41,21 +41,25 @@ public final class DafxService extends AudioService
 	{
 		if (this.dafx == dafx) return;
 
-		preferences.setDafx(dafx);
-
 		if (isThreadRunning())
 		{
 			stopThread(true);
-			
+
 			this.dafx = dafx;
-			setThreadParams((Object[]) null);
-			
+            preferences.setDafx(dafx);
+            setThreadName("Thread_" + dafx.toString());
+            setThreadPreferences(preferences.getAudioThreadPreferences(getThreadName()));
+
 			startThread();
 		}
 		else
 		{
+            stopThread(false); // FIXME: Find more elegant way to save current preferences
+
 			this.dafx = dafx;
-			setThreadParams((Object[]) null);
+            preferences.setDafx(dafx);
+            setThreadName("Thread_" + dafx.toString());
+            setThreadPreferences(preferences.getAudioThreadPreferences(getThreadName()));
 		}
 	}
 	

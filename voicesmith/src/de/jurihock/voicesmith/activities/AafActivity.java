@@ -28,11 +28,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import de.jurihock.voicesmith.AAF;
+import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.R;
 import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.audio.HeadsetMode;
 import de.jurihock.voicesmith.services.AafService;
 import de.jurihock.voicesmith.services.ServiceListener;
+import de.jurihock.voicesmith.threads.TransposeThread;
 import de.jurihock.voicesmith.widgets.AafPicker;
 import de.jurihock.voicesmith.widgets.ColoredToggleButton;
 import de.jurihock.voicesmith.widgets.IntervalPicker;
@@ -97,10 +99,9 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 		{
 			viewIntervalPicker.setVisibility(View.VISIBLE);
 
-			if(getService().getThreadParams() != null)
+			if(getService().hasThreadPreferences())
 			{
-				int interval = Integer.parseInt(
-					getService().getThreadParams()[0].toString());
+				int interval = Integer.parseInt(getService().getThreadPreferences());
 				viewIntervalPicker.setInterval(interval);
 			}
 		}
@@ -171,8 +172,11 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 			{
 				viewIntervalPicker.setVisibility(View.VISIBLE);
 
-				getService().setThreadParams(
-					viewIntervalPicker.getInterval());
+                if(getService().hasThreadPreferences())
+                {
+                    int interval = Integer.parseInt(getService().getThreadPreferences());
+                    viewIntervalPicker.setInterval(interval);
+                }
 			}
 			else
 			{
@@ -182,8 +186,7 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 		else if (event.getSource().equals(viewIntervalPicker))
 		{
 			int interval = viewIntervalPicker.getInterval();
-
-			getService().setThreadParams(interval);
+			getService().setThreadPreferences(Integer.toString(interval));
 		}
 	}
 	

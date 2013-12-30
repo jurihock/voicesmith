@@ -29,8 +29,8 @@ import de.jurihock.voicesmith.threads.AudioThread;
  * */
 public final class AafService extends AudioService
 {
-	// The AAF type
-	private AAF	aaf	= AAF.valueOf(0);
+    // FIXME: If init with default value, loading prefs in setter may be ignored during first call
+	private AAF	aaf	= null; // AAF.valueOf(0);
 
 	public AAF getAaf()
 	{
@@ -40,22 +40,26 @@ public final class AafService extends AudioService
 	public void setAaf(AAF aaf)
 	{
 		if (this.aaf == aaf) return;
-		
-		preferences.setAaf(aaf);
 
 		if (isThreadRunning())
 		{
 			stopThread(true);
-			
+
 			this.aaf = aaf;
-			setThreadParams((Object[]) null);
-			
+            preferences.setAaf(aaf);
+            setThreadName("Thread_" + aaf.toString());
+            setThreadPreferences(preferences.getAudioThreadPreferences(getThreadName()));
+
 			startThread();
 		}
 		else
 		{
+            stopThread(false); // FIXME: Find more elegant way to save current preferences
+
 			this.aaf = aaf;
-			setThreadParams((Object[]) null);
+            preferences.setAaf(aaf);
+            setThreadName("Thread_" + aaf.toString());
+            setThreadPreferences(preferences.getAudioThreadPreferences(getThreadName()));
 		}
 	}
 	

@@ -43,8 +43,9 @@ public abstract class AudioService extends Service implements
 	private AudioDevice		output			= null;
 
 	// Audio thread and its parameters:
-	private AudioThread		thread			= null;
-	private Object[]		threadParams	= null;
+	private AudioThread		thread			  = null;
+    private String          threadName        = null;
+	private String          threadPreferences = null;
 
 	// Headset stuff:
 	private HeadsetMode     desiredMode     = null;
@@ -96,18 +97,33 @@ public abstract class AudioService extends Service implements
 
 	protected abstract AudioThread createAudioThread(AudioDevice input, AudioDevice output);
 
-	public Object[] getThreadParams()
+    public String getThreadName()
+    {
+        return threadName;
+    }
+
+    public void setThreadName(String threadName)
+    {
+        this.threadName = threadName;
+    }
+
+	public String getThreadPreferences()
 	{
-		return threadParams;
+		return threadPreferences;
 	}
 
-	public void setThreadParams(Object... threadParams)
+    public boolean hasThreadPreferences()
+    {
+        return threadPreferences != null && threadPreferences.length() > 0;
+    }
+
+	public void setThreadPreferences(String threadPreferences)
 	{
-		this.threadParams = threadParams;
+		this.threadPreferences = threadPreferences;
 
 		if (thread != null)
 		{
-			thread.configure(threadParams);
+			thread.configure(threadPreferences);
 		}
 	}
 
@@ -171,10 +187,7 @@ public abstract class AudioService extends Service implements
 		headset.restoreVolumeLevel(getActualHeadsetMode());
 
 		thread = createAudioThread(input, output);
-		if (threadParams != null)
-		{
-			thread.configure(threadParams);
-		}
+        thread.configure(threadPreferences);
 		thread.start();
 	}
 
@@ -194,6 +207,9 @@ public abstract class AudioService extends Service implements
 			headset.setBluetoothScoOn(false);
 		}
 
+        preferences.setAudioThreadPreferences(
+                threadName, threadPreferences);
+
 		if (thread != null)
 		{
 			thread.dispose();
@@ -212,13 +228,17 @@ public abstract class AudioService extends Service implements
 			if (input == null)
 			{
 				input = new PcmInDevice(this, mode);
-				// input = new FileInDevice(this, "test_in.raw"); // TEST
+
+                // TEST: Read input signal from file
+				// input = new FileInDevice(this, "voicesmith_input.raw");
 			}
 
 			if (output == null)
 			{
 				output = new PcmOutDevice(this, mode);
-				// output = new FileOutDevice(this, "test_out.raw"); // TEST
+
+                // TEST: Write output signal to file
+				// output = new FileOutDevice(this, "voicesmith_output.raw");
 			}
 		}
 		catch (IOException exception)
@@ -301,6 +321,8 @@ public abstract class AudioService extends Service implements
 	public void onDestroy()
 	{
 		new Utils(this).log("Destroying service.");
+
+        preferences.unregisterOnSharedPreferenceChangeListener(this);
 
 		stopThread(false);
 
