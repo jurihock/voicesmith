@@ -2,6 +2,8 @@ package de.jurihock.voicesmith.dsp.processors;
 
 import android.content.Context;
 import de.jurihock.voicesmith.Preferences;
+import de.jurihock.voicesmith.dsp.LuenbergerObserver;
+import de.jurihock.voicesmith.dsp.SchmittTrigger;
 
 import static de.jurihock.voicesmith.dsp.Math.ceil;
 import static de.jurihock.voicesmith.dsp.Math.rms;
@@ -17,10 +19,8 @@ public final class VadProcessor
 	private final float windowTimeInterval = 20e-3F;
 	private final int windowSize;
 
-	private final float[] meanObserverGain = new float[] {0.025F, 0F};
 	private final float[] energyObserverGain = new float[] {0.3F, 0.02F};
 
-	private final LuenbergerObserver meanObserver;
 	private final LuenbergerObserver energyObserver;
 	private final SchmittTrigger trigger;
 
@@ -46,7 +46,6 @@ public final class VadProcessor
 
 		final float initialDbfs = (lowThreshold + highThreshold) / 2F;
 
-		meanObserver = new LuenbergerObserver(0, 0, meanObserverGain);
 		energyObserver = new LuenbergerObserver(initialDbfs, 0, energyObserverGain);
 		trigger = new SchmittTrigger(false, initialDbfs, lowThreshold, highThreshold);
 
@@ -62,7 +61,7 @@ public final class VadProcessor
 
 		final int windowCount = frame.length / windowSize;
 		final int adaptedWindowSize = windowCount > 0
-                ? (int)ceil((float)frame.length / (float)windowCount)
+                ? (int)ceil((float)frame.length / (float)windowCount) // TODO: make it simpler
                 : frame.length;
         final float windowDuration = (float)adaptedWindowSize / (float)sampleRate;
 
@@ -75,11 +74,9 @@ public final class VadProcessor
 
 	private void processFrameInternal(short[] frame, int offset, int length, float windowDuration)
 	{
-		short currentMean = mean(frame, offset, length);
-		float currentRms = rms(frame, offset, length, currentMean);
-		float currentDbfs = rms2dbfs(currentRms);
+		float currentRms = rms(frame, offset, length);
+		float currentDbfs = rms2dbfs(currentRms, 1e-10F, 1F);
 
-		currentMean = (short)meanObserver.smooth(currentMean);
 		currentDbfs = energyObserver.smooth(currentDbfs);
 		boolean currentState = trigger.state(currentDbfs);
 
@@ -97,81 +94,11 @@ public final class VadProcessor
         }
 
 		if(!currentState)
-		{
-			for (int i = offset; i < length; i++)
-			{
-				frame[i] = currentMean;
-			}
-		}
-	}
-
-	private final class LuenbergerObserver
-	{
-		private float value;
-		private float velocity;
-
-		private final float[] gain;
-
-		public LuenbergerObserver(float value, float velocity, float[] gain)
-		{
-			this.value = value;
-			this.velocity = velocity;
-			this.gain = gain;
-		}
-
-		private float predict()
-		{
-			return value + velocity;
-		}
-
-		private float correct(float newValue)
-		{
-			final float prediction = predict();
-			final float error = newValue - value;
-
-			value = prediction + gain[0] * error;
-			velocity = velocity + gain[1] * error;
-
-			return value;
-		}
-
-		public float smooth(float newValue)
-		{
-			correct(newValue);
-			return predict();
-		}
-	}
-
-	private final class SchmittTrigger
-	{
-		private boolean state;
-		private float value;
-
-		private final float lowThreshold;
-		private final float highThreshold;
-
-		public SchmittTrigger(boolean state, float value, float lowThreshold, float highThreshold)
-		{
-			this.state = state;
-			this.value = value;
-			this.lowThreshold = lowThreshold;
-			this.highThreshold = highThreshold;
-		}
-
-		public boolean state(float newValue)
-		{
-			if((newValue > value) && (newValue > highThreshold))
-			{
-				state = true;
-			}
-			else if((newValue < value) && (newValue < lowThreshold))
-			{
-				state = false;
-			}
-
-			value = newValue;
-
-			return state;
-		}
+        {
+            for (int i = offset; i < offset + length; i++)
+            {
+                frame[i] = 0;
+            }
+        }
 	}
 }
