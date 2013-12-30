@@ -108,8 +108,7 @@ public final class TransposeThread extends AudioThread
 				preprocessor.processFrame(analysisFrameBuffer);
 				timescaler.processFrame(analysisFrameBuffer);
 				fft.ifft(analysisFrameBuffer);
-				resampler.processFrame(analysisFrameBuffer,
-					synthesisFrameBuffer);
+				resampler.processFrame(analysisFrameBuffer, synthesisFrameBuffer);
 				postprocessor.processFrame(synthesisFrameBuffer);
 			}
 			finally
