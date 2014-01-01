@@ -39,5 +39,6 @@ public class ChangeLog extends AlertDialog.Builder
         }
 
         return null;
+        // return super.show(); // TEST: show changelog always
     }
 }
