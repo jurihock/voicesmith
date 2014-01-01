@@ -28,7 +28,7 @@ public final class Application extends GDApplication
 	{
 		super.onCreate();
 
-		new Utils(this).loadNativeLibrary();
+		Utils.loadNativeLibrary();
 	}
 
 	@Override
