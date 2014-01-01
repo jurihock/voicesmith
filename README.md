@@ -37,7 +37,7 @@ Voicesmith is an open source project licensed under the [GPL v3](http://www.gnu.
 Donate
 ------
 
-Do you want support this project? Great! :-) Please make a [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RDZAFKVYQJYFA) donation, transfer Bitcoins on `1LcS1r9f88sYkB3cTmPtuvvMiRoZAy8mFB` or take a look at my [Amazon.de](http://www.amazon.de/registry/wishlist/32GEAFNKPX67Y) wishlist. Thank you!
+Do you want support this project? Great! :-) Please make a [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RDZAFKVYQJYFA) donation, transfer Bitcoins to `1LcS1r9f88sYkB3cTmPtuvvMiRoZAy8mFB` or take a look at my [Amazon.de](http://www.amazon.de/registry/wishlist/32GEAFNKPX67Y) wishlist. Thank you!
 
 Thanks
 ------
