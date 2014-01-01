@@ -3,7 +3,7 @@ Voicesmith
 
 Voicesmith app records an audio signal from the built-in microphone, processes it in some way and plays it back through the earphones in real-time. You need to plug in wired earphones or connect the Bluetooth headset to hear the sound.
 
-IMPORTANT! If the app crashes on your smartphone, please be nice -- write me an email and describe what happens. Some of the Android OS releases and smartphone hardwares have their specific nuances. I can only help you, if I receive a detailed error report from you (see below). Giving a bad rating does not help anyone!
+IMPORTANT! If the app crashes on your smartphone, please be nice -- write me an email and describe what happens. Some of the Android OS releases and smartphone hardwares have their specific nuances. I can only help you, if I receive a detailed error report from you (see the email address below). Just giving a bad rating is useless!
 
 There are some of the classical Phase Vocoder effects available. Raise or lower your voice pitch up to 12 semitones, make it sound like a robot, make it detuned or hoarse. Feel free to experiment with this app. Just try to alter your own voice or of somebody else.
 
@@ -37,7 +37,7 @@ Voicesmith is an open source project licensed under the [GPL v3](http://www.gnu.
 Donate
 ------
 
-Do you want support this project? Great! :-) Please make a [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RDZAFKVYQJYFA) donation or take a look at my [Amazon.de](http://www.amazon.de/registry/wishlist/32GEAFNKPX67Y) or [Amazon.com](http://www.amazon.com/registry/wishlist/24L7URDMP4U2N) wishlist. Thanks!
+Do you want support this project? Great! :-) Please make a [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RDZAFKVYQJYFA) donation, transfer Bitcoins on `1LcS1r9f88sYkB3cTmPtuvvMiRoZAy8mFB` or take a look at my [Amazon.de](http://www.amazon.de/registry/wishlist/32GEAFNKPX67Y) wishlist. Thank you!
 
 Thanks
 ------
