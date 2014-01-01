@@ -35,26 +35,6 @@ public class AboutApplicationActivity extends Activity
 		setContentView(R.layout.about);
 
 		TextView viewVersion = (TextView)findViewById(R.id.viewVersion);
-		viewVersion.setText(getVersionString());
-	}
-
-	private String getVersionString()
-	{
-		try
-		{
-			PackageInfo info = getPackageManager()
-				.getPackageInfo(getPackageName(), 0);
-
-			return String.format(
-				"Version %s Release %s",
-				info.versionName,
-				info.versionCode);
-		}
-		catch (PackageManager.NameNotFoundException exception)
-		{
-			new Utils(this).log(exception);
-		}
-
-		return null;
+		viewVersion.setText(new Utils(this).getVersionString("Version %s (%s)"));
 	}
 }
