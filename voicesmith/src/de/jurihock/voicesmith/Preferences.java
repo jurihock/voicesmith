@@ -71,6 +71,16 @@ public final class Preferences
 		preferences.edit().clear().commit();
 	}
 
+    public boolean isChangeLogShowed()
+    {
+        return preferences.getBoolean("ChangeLog", false);
+    }
+
+    public boolean setChangeLogShowed(boolean value)
+    {
+        return preferences.edit().putBoolean("ChangeLog", value).commit();
+    }
+
 	public int getVolumeLevel()
 	{
 		return Integer.parseInt(
