@@ -20,14 +20,15 @@ package de.jurihock.voicesmith.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import de.jurihock.voicesmith.R;
 
 public class AboutLicenseActivity extends Activity
 {
-	private static final String LICENSE_URL = "file:///android_asset/license.html";
+	private static final String HTML_URL = "file:///android_asset/license.html";
 
-	private WebView viewLicense;
+	private WebView viewHtml;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -37,9 +38,10 @@ public class AboutLicenseActivity extends Activity
 		final int margin = (int) getResources()
 			.getDimension(R.dimen.LayoutMargin);
 		
-		viewLicense = new WebView(this);
-		viewLicense.setPadding(margin, margin, margin, margin);
-		setContentView(viewLicense);
+		viewHtml = new WebView(this);
+		viewHtml.setPadding(margin, margin, margin, margin);
+        viewHtml.getSettings().setTextSize(WebSettings.TextSize.NORMAL);
+		setContentView(viewHtml);
 	}
 
 	@Override
@@ -47,9 +49,9 @@ public class AboutLicenseActivity extends Activity
 	{
 		super.onStart();
 
-		if(viewLicense.getUrl() == null || !viewLicense.getUrl().equals(LICENSE_URL))
+		if(viewHtml.getUrl() == null || !viewHtml.getUrl().equals(HTML_URL))
 		{
-			viewLicense.loadUrl(LICENSE_URL);
+			viewHtml.loadUrl(HTML_URL);
 		}
 	}
 }
