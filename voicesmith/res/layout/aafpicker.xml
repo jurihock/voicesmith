@@ -38,7 +38,7 @@
             android:button="@null"
             android:gravity="center"
             android:tag="FastDAF"
-            android:text="Unprocessed DAF"
+            android:text="Unprocessed Feedback"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </TableRow>
