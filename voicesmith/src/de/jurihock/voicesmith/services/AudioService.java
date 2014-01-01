@@ -207,8 +207,11 @@ public abstract class AudioService extends Service implements
 			headset.setBluetoothScoOn(false);
 		}
 
-        preferences.setAudioThreadPreferences(
-                threadName, threadPreferences);
+        if (threadName != null && threadName.length() > 0)
+        {
+            preferences.setAudioThreadPreferences(
+                    threadName, threadPreferences);
+        }
 
 		if (thread != null)
 		{
