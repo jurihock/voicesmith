@@ -31,6 +31,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.util.Log;
@@ -59,7 +61,7 @@ public final class Utils
 	/**
 	 * Loads the native library.
 	 * */
-	public void loadNativeLibrary()
+	public static void loadNativeLibrary()
 	{
 		try
 		{
@@ -67,9 +69,36 @@ public final class Utils
 		}
 		catch (UnsatisfiedLinkError exception)
 		{
-			log("Native library %s could not be loaded!", NATIVELIB_NAME);
+            Log.d(LOGCAT_TAG, String.format(
+                    "Native library %s could not be loaded!",
+                    NATIVELIB_NAME));
 		}
 	}
+
+    public String getVersionString(int formatResId)
+    {
+        return getVersionString(context.getString(formatResId));
+    }
+
+    public String getVersionString(String format)
+    {
+        try
+        {
+            PackageInfo info = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+
+            return String.format(
+                    format,
+                    info.versionName,
+                    info.versionCode);
+        }
+        catch (PackageManager.NameNotFoundException exception)
+        {
+            new Utils(context).log(exception);
+        }
+
+        return null;
+    }
 
 	/**
 	 * Checks if a local service is just running.
