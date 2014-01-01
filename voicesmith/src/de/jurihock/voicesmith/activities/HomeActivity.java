@@ -18,10 +18,12 @@
 
 package de.jurihock.voicesmith.activities;
 
+import de.jurihock.voicesmith.ChangeLog;
 import greendroid.app.GDListActivity;
 import greendroid.widget.ActionBar;
 import greendroid.widget.ItemAdapter;
 import greendroid.widget.item.Item;
+import greendroid.widget.item.SeparatorItem;
 import greendroid.widget.item.TextItem;
 import android.content.Context;
 import android.content.Intent;
@@ -67,11 +69,23 @@ public final class HomeActivity extends GDListActivity
 				R.string.PreferenceActivity,
 				PreferenceActivity.class));
 
+            items.add(new SeparatorItem("Help"));
+
+            items.add(newMenuItem(
+                    R.string.SupportActivity,
+                    SupportActivity.class));
+
+            items.add(newMenuItem(
+                    R.string.ContributionActivity,
+                    ContributionActivity.class));
+
 			items.add(newMenuItem(
 				R.string.AboutActivity,
 				AboutActivity.class));
 		}
 		setListAdapter(items);
+
+        new ChangeLog(this).show();
 	}
 
 	@Override
