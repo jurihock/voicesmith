@@ -3,20 +3,35 @@
 
     <!-- Application -->
     <string name="ApplicationName">Voicesmith</string>
-    <string name="ApplicationDescription">Real-time voice changer and Altered Auditory Feedback (DAF &amp; FAF) application for Android devices</string>
+    <string name="ApplicationDescription">Android compatible real-time voice changer and Altered Auditory Feedback (DAF + FAF) app</string>
     <string name="ApplicationLink">http://voicesmith.jurihock.de</string>
+    <string name="ChangeLogTitle" formatted="false">New in version %s (%s)</string>
+    <string name="ChangeLogMessage">
+        New signal processing routines:
+        \n
+        \n- Ability to auto mute signal based on the voice activity detection
+        \n- Continuous signal offset correction
+        \n
+        \n(see global preferences to enable or disable this functions)
+        \n
+        \nIndividual preferences like transposition will be restored on the next use.
+        \n
+        \nVarious user interface changes and new activities unter the \"Help\" section.
+    </string>
 
     <!-- Activities -->
     <string name="HomeActivity">Voicesmith</string>
     <string name="DafxActivity">Real-time voice changer</string>
-    <string name="AafActivity">Altered Auditory Feedback</string>
-    <string name="PreferenceActivity">Preferences</string>
+    <string name="AafActivity">Altered auditory feedback</string>
+    <string name="PreferenceActivity">Global preferences</string>
+    <string name="SupportActivity">It doesn\'t work!</string>
+    <string name="ContributionActivity">I\'m just happy!</string>
     <string name="AboutActivity">About Voicesmith</string>
     <string name="AboutApplicationActivity">About</string>
     <string name="AboutLicenseActivity">License</string>
 
     <!-- Widgets -->
-    <string name="BluetoothHeadsetButton">Bluetooth headset routing (disable if you use wired headphones)</string>
+    <string name="BluetoothHeadsetButton">Bluetooth headset support</string>
     <string name="IntervalPickerLabel">Transpose by %s semitone(s)</string>
     <string name="DelayPickerLabel">Delay by %s ms</string>
 
