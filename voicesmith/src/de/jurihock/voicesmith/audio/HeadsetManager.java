@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.SystemClock;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Utils;
@@ -88,18 +89,26 @@ public final class HeadsetManager
 			source = WIRED_HEADSET_SOURCE;
 		}
 
-		// VOL = VOL% * (MAX / 100)
-		double volumeLevel = audio
-			.getStreamMaxVolume(source) / 100D;
-		volumeLevel *= new Preferences(context).getVolumeLevel();
+        try
+        {
+            // VOL = VOL% * (MAX / 100)
+            double volumeLevel = audio
+                .getStreamMaxVolume(source) / 100D;
+            volumeLevel *= new Preferences(context).getVolumeLevel();
 
-		audio.setStreamVolume(
-			source,
-			(int) Math.round(volumeLevel),
-			// Display the volume dialog
-			// AudioManager.FLAG_SHOW_UI);
-			// Display nothing
-			AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+            audio.setStreamVolume(
+                source,
+                (int) Math.round(volumeLevel),
+                // Display the volume dialog
+                // AudioManager.FLAG_SHOW_UI);
+                // Display nothing
+                AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        }
+        catch (Exception exception)
+        {
+            new Utils(context).log("Cannot get or set audio stream volume!");
+            new Utils(context).log(exception);
+        }
 	}
 
 	public void storeVolumeLevel(HeadsetMode headsetMode)
@@ -120,13 +129,21 @@ public final class HeadsetManager
 			source = WIRED_HEADSET_SOURCE;
 		}
 
-		// VOL% = VOL * (100 / MAX)
-		double volumeLevel = 100D
-			/ audio.getStreamMaxVolume(source);
-		volumeLevel *= audio.getStreamVolume(source);
+        try
+        {
+            // VOL% = VOL * (100 / MAX)
+            double volumeLevel = 100D
+                / audio.getStreamMaxVolume(source);
+            volumeLevel *= audio.getStreamVolume(source);
 
-		new Preferences(context).setVolumeLevel(
-			(int) Math.round(volumeLevel));
+            new Preferences(context).setVolumeLevel(
+                (int) Math.round(volumeLevel));
+        }
+        catch (Exception exception)
+        {
+            new Utils(context).log("Cannot get or set audio stream volume!");
+            new Utils(context).log(exception);
+        }
 	}
 
 	public boolean isWiredHeadsetOn()
@@ -286,8 +303,9 @@ public final class HeadsetManager
 						}
 					}
 
-					// BLUETOOTH SCO BROADCAST
+					// BLUETOOTH SCO BROADCAST (Build.VERSION.SDK_INT < 14)
 
+                    /*
 					boolean isBluetoothScoBroadcast = intent.getAction()
 						.equals(AudioManager.ACTION_SCO_AUDIO_STATE_CHANGED);
 
@@ -310,6 +328,7 @@ public final class HeadsetManager
 							break;
 						}
 					}
+					*/
 				}
 			};
 
@@ -317,7 +336,9 @@ public final class HeadsetManager
 			{
 				filter.addAction(Intent.ACTION_HEADSET_PLUG);
 				filter.addAction(ACTION_BLUETOOTH_STATE_CHANGED);
-				filter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_CHANGED);
+
+                // Build.VERSION.SDK_INT < 14
+				// filter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_CHANGED);
 			}
 
 			context.registerReceiver(headsetDetector, filter);
