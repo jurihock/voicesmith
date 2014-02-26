@@ -184,7 +184,10 @@ public abstract class AudioService extends Service implements
 			return;
 		}
 
-		headset.restoreVolumeLevel(getActualHeadsetMode());
+        if (preferences.isForceVolumeLevel())
+        {
+		    headset.restoreVolumeLevel(getActualHeadsetMode());
+        }
 
 		thread = createAudioThread(input, output);
         thread.configure(threadPreferences);
@@ -200,7 +203,8 @@ public abstract class AudioService extends Service implements
 			new Utils(this).cancelAllNotifications();
 		}
 
-		headset.storeVolumeLevel(getActualHeadsetMode());
+        // FIXME: Don't store volume level if no audio device was found!
+		// headset.storeVolumeLevel(getActualHeadsetMode());
 
 		if (headset.isBluetoothScoOn())
 		{

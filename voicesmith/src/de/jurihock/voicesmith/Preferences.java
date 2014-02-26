@@ -69,6 +69,9 @@ public final class Preferences
 	public void reset()
 	{
 		preferences.edit().clear().commit();
+
+        // There are no needs to show the Change Log again after reset
+        this.setChangeLogShowed(true);
 	}
 
     public boolean isChangeLogShowed()
@@ -81,20 +84,43 @@ public final class Preferences
         return preferences.edit().putBoolean("ChangeLog", value).commit();
     }
 
-	public int getVolumeLevel()
+    public boolean isForceVolumeLevel()
+    {
+        return preferences.getBoolean("ForceVolumeLevel", true);
+    }
+
+	public int getVolumeLevel(HeadsetMode mode)
 	{
-		return Integer.parseInt(
-			preferences.getString("VolumeLevel", "50"));
+        if(mode == HeadsetMode.BLUETOOTH_HEADSET)
+        {
+            return Integer.parseInt(
+                preferences.getString("BluetoothVolumeLevel", "100"));
+        }
+        else
+        {
+            return Integer.parseInt(
+                preferences.getString("WireVolumeLevel", "30"));
+        }
 	}
 
-	public boolean setVolumeLevel(int value)
+	public boolean setVolumeLevel(HeadsetMode mode, int value)
 	{
 		if ((0 <= value) && (value <= 100))
 		{
-			return preferences.edit()
-				.putString("VolumeLevel",
-					Integer.toString(value))
-				.commit();
+            if(mode == HeadsetMode.BLUETOOTH_HEADSET)
+            {
+                return preferences.edit()
+                    .putString("BluetoothVolumeLevel",
+                        Integer.toString(value))
+                    .commit();
+            }
+            else
+            {
+                return preferences.edit()
+                    .putString("WireVolumeLevel",
+                        Integer.toString(value))
+                    .commit();
+            }
 		}
 
 		return false;

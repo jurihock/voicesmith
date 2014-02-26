@@ -7,16 +7,9 @@
     <string name="ApplicationLink">http://voicesmith.jurihock.de</string>
     <string name="ChangeLogTitle" formatted="false">New in version %s (%s)</string>
     <string name="ChangeLogMessage">
-        New signal processing routines:
-        \n
-        \n- Ability to auto mute signal based on the voice activity detection
-        \n- Continuous signal offset correction
-        \n
-        \n(see global preferences to enable or disable this functions)
-        \n
-        \nIndividual preferences like transposition will be restored on the next use.
-        \n
-        \nVarious user interface changes and new activities unter the \"Help\" section.
+        - Revised volume level preferences \n\n
+        - More optional sample rate values \n\n
+        - Some cosmetic changes
     </string>
 
     <!-- Activities -->
@@ -36,21 +29,23 @@
     <string name="DelayPickerLabel">Delay by %s ms</string>
 
     <!-- Preferences -->
-    <string name="VolumeLevelPreference">Volume level</string>
-    <string name="SignalAmplificationPreference">Signal amplification</string>
+    <string name="ForceVolumeLevelPreference">Force volume level</string>
+    <string name="WireVolumeLevelPreference">Wire volume level</string>
+    <string name="BluetoothVolumeLevelPreference">Bluetooth volume level</string>
+    <string name="SignalAmplificationPreference">Extra amplification</string>
     <string name="CorrectOffsetPreference">Correct signal offset</string>
     <string name="ReduceNoisePreference">Try to reduce noise</string>
     <string name="SampleRatePreference">Sample rate</string>
     <string name="LoggingPreference">Dump debugging infos</string>
     <string name="ResetPreferences">Reset to default values</string>
-    <string name="VolumePreferences">Volume</string>
+    <string name="VolumePreferences">Sound volume</string>
     <string name="SoundPreferences">Sound quality</string>
     <string name="MiscPreferences">Miscellaneous</string>
     <string name="AutoMutePreferences">Auto mute</string>
     <string name="AutoMuteStatePreference">Enable auto mute</string>
-    <string name="AutoMuteHighThresholdPreference">High threshold</string>
-    <string name="AutoMuteLowThresholdPreference">Low threshold</string>
-    <string name="AutoMuteHangoverPreference">Hangover period</string>
+    <string name="AutoMuteHighThresholdPreference">High threshold (speech)</string>
+    <string name="AutoMuteLowThresholdPreference">Low threshold (noise)</string>
+    <string name="AutoMuteHangoverPreference">Hang-over time</string>
 
     <!-- Services -->
     <string name="DafxService">Voicesmith DAFX Service</string>

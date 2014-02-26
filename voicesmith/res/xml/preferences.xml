@@ -2,20 +2,33 @@
     xmlns:voicesmith="http://voicesmith.jurihock.de" >
 
     <PreferenceCategory android:title="@string/VolumePreferences" >
+        <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="ForceVolumeLevel"
+                android:title="@string/ForceVolumeLevelPreference" />
         <de.jurihock.voicesmith.widgets.SeekBarPreference
-            android:defaultValue="50"
-            android:key="VolumeLevel"
-            android:title="@string/VolumeLevelPreference"
+            android:dependency="ForceVolumeLevel"
+            android:defaultValue="30"
+            android:key="WireVolumeLevel"
+            android:title="@string/WireVolumeLevelPreference"
             voicesmith:maxValue="100"
             voicesmith:minValue="0"
             voicesmith:valueFormat="%s%%" />
         <de.jurihock.voicesmith.widgets.SeekBarPreference
-            android:defaultValue="6"
-            android:key="SignalAmplification"
-            android:title="@string/SignalAmplificationPreference"
-            voicesmith:maxValue="12"
-            voicesmith:minValue="0"
-            voicesmith:valueFormat="%s dB" />
+                android:dependency="ForceVolumeLevel"
+                android:defaultValue="100"
+                android:key="BluetoothVolumeLevel"
+                android:title="@string/BluetoothVolumeLevelPreference"
+                voicesmith:maxValue="100"
+                voicesmith:minValue="0"
+                voicesmith:valueFormat="%s%%" />
+        <de.jurihock.voicesmith.widgets.SeekBarPreference
+                android:defaultValue="6"
+                android:key="SignalAmplification"
+                android:title="@string/SignalAmplificationPreference"
+                voicesmith:maxValue="12"
+                voicesmith:minValue="0"
+                voicesmith:valueFormat="%s dB" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/SoundPreferences" >
         <de.jurihock.voicesmith.widgets.ListPreference

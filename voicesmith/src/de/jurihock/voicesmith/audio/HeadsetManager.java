@@ -94,7 +94,7 @@ public final class HeadsetManager
             // VOL = VOL% * (MAX / 100)
             double volumeLevel = audio
                 .getStreamMaxVolume(source) / 100D;
-            volumeLevel *= new Preferences(context).getVolumeLevel();
+            volumeLevel *= new Preferences(context).getVolumeLevel(headsetMode);
 
             audio.setStreamVolume(
                 source,
@@ -106,13 +106,15 @@ public final class HeadsetManager
         }
         catch (Exception exception)
         {
-            new Utils(context).log("Cannot get or set audio stream volume!");
+            new Utils(context).log("Cannot set audio stream volume!");
             new Utils(context).log(exception);
         }
 	}
 
+    // FIXME: See AudioService.stopThread() issue.
 	public void storeVolumeLevel(HeadsetMode headsetMode)
 	{
+        /*
 		int source;
 
 		switch (headsetMode)
@@ -141,9 +143,10 @@ public final class HeadsetManager
         }
         catch (Exception exception)
         {
-            new Utils(context).log("Cannot get or set audio stream volume!");
+            new Utils(context).log("Cannot get audio stream volume!");
             new Utils(context).log(exception);
         }
+        */
 	}
 
 	public boolean isWiredHeadsetOn()
