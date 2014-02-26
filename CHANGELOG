@@ -1,3 +1,10 @@
+Changes in version 2.6 (12) from 2014-02-26
+===========================================
+
+ * Revise volume level preference
+ * Append more optional sample rate values
+ * Make some cosmetic changes
+
 Changes in version 2.5 (11) from 2014-01-01
 ===========================================
 
