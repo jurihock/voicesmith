@@ -32,8 +32,9 @@ import android.widget.ToggleButton;
 public final class ColoredToggleButton extends ToggleButton implements
 	OnCheckedChangeListener
 {
-	private static final int	COLOR_BACKGROUND_ON	= Color.RED;
-	private static final int	COLOR_ICON			= Color.WHITE;
+	private static final int	COLOR_BACKGROUND_ON	    = Color.rgb(255, 0, 0);
+    private static final int	COLOR_BACKGROUND_OFF    = Color.rgb(0, 150, 0);
+	private static final int	COLOR_ICON			    = Color.WHITE;
 
 	public ColoredToggleButton(Context context, AttributeSet attrs, int defStyle)
 	{
@@ -75,6 +76,9 @@ public final class ColoredToggleButton extends ToggleButton implements
 		}
 		else
 		{
+            background.setColorFilter(COLOR_BACKGROUND_OFF,
+                PorterDuff.Mode.SRC_ATOP);
+
 			icon.setColorFilter(COLOR_ICON,
 				PorterDuff.Mode.SRC_IN);
 		}
