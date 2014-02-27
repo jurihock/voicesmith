@@ -29,11 +29,10 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
 
-public final class ColoredToggleButton extends ToggleButton implements
-	OnCheckedChangeListener
+public final class ColoredToggleButton extends ToggleButton implements OnCheckedChangeListener
 {
-	private static final int	COLOR_BACKGROUND_ON	    = Color.rgb(255, 0, 0);
-    private static final int	COLOR_BACKGROUND_OFF    = Color.rgb(0, 150, 0);
+	private static final int	COLOR_BACKGROUND_ON	    = Color.rgb(255, 25, 0); // red
+    private static final int	COLOR_BACKGROUND_OFF    = Color.rgb(0, 184, 44); // green
 	private static final int	COLOR_ICON			    = Color.WHITE;
 
 	public ColoredToggleButton(Context context, AttributeSet attrs, int defStyle)
