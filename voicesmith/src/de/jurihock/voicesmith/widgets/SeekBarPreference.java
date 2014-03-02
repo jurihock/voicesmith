@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import de.jurihock.voicesmith.R;
+import de.jurihock.voicesmith.Utils;
 
 public class SeekBarPreference extends DialogPreference implements
 	OnSeekBarChangeListener
@@ -37,15 +38,18 @@ public class SeekBarPreference extends DialogPreference implements
 
 	private static final String	MIN_VALUE_ATTR		= "minValue";
 	private static final String	MAX_VALUE_ATTR		= "maxValue";
+    private static final String	INC_VALUE_ATTR		= "incValue";
 	private static final String	DEFAULT_VALUE_ATTR	= "defaultValue";
 	private static final String	VALUE_FORMAT_ATTR	= "valueFormat";
 
 	private static final int	DEFAULT_MIN_VALUE	= 0;
 	private static final int	DEFAULT_MAX_VALUE	= 100;
+    private static final int	DEFAULT_INC_VALUE	= 1;
 	private static final int	DEFAULT_VALUE		= 0;
 
 	private final int			minValue;
 	private final int			maxValue;
+    private final int			incValue;
 	private final int			defaultValue;
 	private final String		valueFormat;
 	private int					currentValue;
@@ -61,6 +65,8 @@ public class SeekBarPreference extends DialogPreference implements
 			VOICESMITH_NS, MIN_VALUE_ATTR, DEFAULT_MIN_VALUE);
 		maxValue = attrs.getAttributeIntValue(
 			VOICESMITH_NS, MAX_VALUE_ATTR, DEFAULT_MAX_VALUE);
+        incValue = attrs.getAttributeIntValue(
+            VOICESMITH_NS, INC_VALUE_ATTR, DEFAULT_INC_VALUE);
 		defaultValue = attrs.getAttributeIntValue(
 			ANDROID_NS, DEFAULT_VALUE_ATTR, DEFAULT_VALUE);
 		valueFormat = attrs.getAttributeValue(
@@ -76,6 +82,8 @@ public class SeekBarPreference extends DialogPreference implements
 			VOICESMITH_NS, MIN_VALUE_ATTR, DEFAULT_MIN_VALUE);
 		maxValue = attrs.getAttributeIntValue(
 			VOICESMITH_NS, MAX_VALUE_ATTR, DEFAULT_MAX_VALUE);
+        incValue = attrs.getAttributeIntValue(
+            VOICESMITH_NS, INC_VALUE_ATTR, DEFAULT_INC_VALUE);
 		defaultValue = attrs.getAttributeIntValue(
 			ANDROID_NS, DEFAULT_VALUE_ATTR, DEFAULT_VALUE);
 		valueFormat = attrs.getAttributeValue(
@@ -157,6 +165,12 @@ public class SeekBarPreference extends DialogPreference implements
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	{
 		currentValue = progress + minValue;
+
+        if (fromUser && (incValue > 1))
+        {
+            currentValue = (currentValue / incValue) * incValue;
+            seekBar.setProgress(currentValue - minValue);
+        }
 
 		label.setText(format(Integer.toString(currentValue)));
 	}
