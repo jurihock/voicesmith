@@ -83,7 +83,7 @@ public abstract class AudioServiceActivity<T extends AudioService> extends
 		{
 			if (startService(serviceIntent) == null)
 			{
-				new Utils(this).toast("Unable to start service %s!",
+				new Utils(this).toast("Unable to start audio service %s!",
 					serviceClass.getName());
 			}
 		}
