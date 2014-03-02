@@ -41,11 +41,11 @@ public final class StftPreprocessor implements Disposable
 	private final int				frameSize;
 	private final int				hopSize;
 	private final boolean			doForwardFFT;
-	private final boolean			doDenoise;
 
     private final OffsetProcessor   deoffset;
 	private final VadProcessor 		vad;
     private final AmplifyProcessor	amplifier;
+    private final DenoiseProcessor  denoiser;
 
 	private KissFFT					fft	= null;
 	private final float[]			window;
@@ -53,17 +53,17 @@ public final class StftPreprocessor implements Disposable
 	private final short[]			prevFrame, nextFrame;
 	private int						frameCursor;
 
-	public StftPreprocessor(AudioDevice input, int frameSize, int hopSize, boolean doForwardFFT, boolean doDenoise)
+	public StftPreprocessor(AudioDevice input, int frameSize, int hopSize, boolean doForwardFFT)
 	{
 		this.input = input;
 		this.frameSize = frameSize;
 		this.hopSize = hopSize;
 		this.doForwardFFT = doForwardFFT;
-		this.doDenoise = doDenoise;
 
         deoffset = new OffsetProcessor(input.getContext());
 		vad = new VadProcessor(input.getSampleRate(), input.getContext());
 		amplifier = new AmplifyProcessor(input.getContext());
+        denoiser = new DenoiseProcessor(input.getSampleRate(), input.getContext());
 
 		fft = new KissFFT(frameSize);
 		window = new Window(frameSize, true).hann();
@@ -71,12 +71,6 @@ public final class StftPreprocessor implements Disposable
 		prevFrame = new short[frameSize];
 		nextFrame = new short[frameSize];
 		frameCursor = -1;
-	}
-
-	public StftPreprocessor(AudioDevice audioDevice, int frameSize, int hopSize, boolean doForwardFFT)
-	{
-		this(audioDevice, frameSize, hopSize, doForwardFFT,
-			new Preferences(audioDevice.getContext()).isReduceNoiseOn());
 	}
 
 	public void dispose()
@@ -133,9 +127,11 @@ public final class StftPreprocessor implements Disposable
 			frameCursor,
 			window);
 
-		if (doForwardFFT) fft.fft(frame);
-
-		if (doForwardFFT && doDenoise) DenoiseProcessor.processFrame(frame);
+		if (doForwardFFT)
+        {
+            fft.fft(frame);
+            denoiser.processFrame(frame);
+        }
 
 		// Increment frame cursor
 		frameCursor += hopSize;
