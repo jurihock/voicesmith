@@ -16,30 +16,46 @@
         android:layout_weight="1"
         android:orientation="vertical" >
 
-        <CheckBox
-            android:id="@+id/viewBluetoothHeadset"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/LayoutMargin"
-            android:gravity="center"
-            android:text="@string/BluetoothHeadsetButton"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
         <de.jurihock.voicesmith.widgets.IntervalPicker
             android:id="@+id/viewIntervalPicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/LayoutMargin"
             android:visibility="visible" />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="@dimen/LayoutMargin" >
+
+        <CheckBox
+                android:id="@+id/viewBluetoothHeadset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/BluetoothHeadsetButton"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <CheckBox
+                android:id="@+id/viewInternalMic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/InternalMicButton"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
     </LinearLayout>
 
     <de.jurihock.voicesmith.widgets.ColoredToggleButton
-        android:id="@+id/viewStartStopButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/LayoutMargin"
-        android:background="@drawable/button_microphone"
-        android:textOff=""
-        android:textOn="" />
+            android:id="@+id/viewStartStopButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/LayoutMargin"
+            android:background="@drawable/button_microphone"
+            android:textOff=""
+            android:textOn="" />
 
 </LinearLayout>

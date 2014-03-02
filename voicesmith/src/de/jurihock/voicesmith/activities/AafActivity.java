@@ -28,13 +28,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import de.jurihock.voicesmith.AAF;
-import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.R;
 import de.jurihock.voicesmith.Utils;
-import de.jurihock.voicesmith.audio.HeadsetMode;
 import de.jurihock.voicesmith.services.AafService;
 import de.jurihock.voicesmith.services.ServiceListener;
-import de.jurihock.voicesmith.threads.TransposeThread;
 import de.jurihock.voicesmith.widgets.AafPicker;
 import de.jurihock.voicesmith.widgets.ColoredToggleButton;
 import de.jurihock.voicesmith.widgets.IntervalPicker;
@@ -48,6 +45,7 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 	private AafPicker			viewAafPicker			= null;
 	private IntervalPicker		viewIntervalPicker		= null;
 	private CheckBox			viewBluetoothHeadset	= null;
+    private CheckBox            viewInternalMic         = null;
 	private ColoredToggleButton	viewStartStopButton		= null;
 
 	public AafActivity()
@@ -75,24 +73,27 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 			R.id.viewBluetoothHeadset);
 		viewBluetoothHeadset.setOnCheckedChangeListener(this);
 
+        viewInternalMic = (CheckBox) this.findViewById(
+                R.id.viewInternalMic);
+        viewInternalMic.setOnCheckedChangeListener(this);
+
 		viewStartStopButton = (ColoredToggleButton) this.findViewById(
 			R.id.viewStartStopButton);
-		// set red if checked otherwise white
 		viewStartStopButton.setOnClickListener(this);
 	}
 
 	@Override
 	protected void onServiceConnected()
 	{
-		new Utils(this).log("AafActivity founds the service.");
+		new Utils(this).log("AafActivity founds the audio service.");
 
 		getService().setActivityVisible(true, this.getClass());
 		getService().setListener(this);
 
 		// Update widgets
 		viewAafPicker.setAaf(getService().getAaf());
-		viewBluetoothHeadset.setChecked(getService().getHeadsetMode()
-			== HeadsetMode.BLUETOOTH_HEADSET);
+		viewBluetoothHeadset.setChecked(getService().isBluetoothHeadsetSupportOn());
+        viewInternalMic.setChecked(getService().isInternalMicSupportOn());
 		viewStartStopButton.setChecked(getService().isThreadRunning());
 
 		if (getService().getAaf() == AAF.FAF)
@@ -114,7 +115,7 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 	@Override
 	protected void onServiceDisconnected()
 	{
-		new Utils(this).log("AafActivity losts the service.");
+		new Utils(this).log("AafActivity losts the audio service.");
 
 		if (!this.isFinishing())
 		{
@@ -145,18 +146,22 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 		viewStartStopButton.performHapticFeedback(0);
 	}
 
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+	public void onCheckedChanged(CompoundButton view, boolean value)
 	{
-		if (isChecked && getService().getHeadsetMode()
-				== HeadsetMode.WIRED_HEADSET)
-		{
-			getService().setHeadsetMode(HeadsetMode.BLUETOOTH_HEADSET);
-		}
-		else if (!isChecked && getService().getHeadsetMode()
-				== HeadsetMode.BLUETOOTH_HEADSET)
-		{
-			getService().setHeadsetMode(HeadsetMode.WIRED_HEADSET);
-		}
+        if (view == viewBluetoothHeadset)
+        {
+            if (getService().isBluetoothHeadsetSupportOn() != value)
+            {
+                getService().setBluetoothHeadsetSupport(value);
+            }
+        }
+        else if (view == viewInternalMic)
+        {
+            if (getService().isInternalMicSupportOn() != value)
+            {
+                getService().setInternalMicSupport(value);
+            }
+        }
 	}
 
 	@Override
