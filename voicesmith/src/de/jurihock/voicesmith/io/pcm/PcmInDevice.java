@@ -30,8 +30,9 @@ import de.jurihock.voicesmith.audio.HeadsetMode;
 
 public class PcmInDevice extends PcmDevice
 {
-	private static final int	WIRED_HEADSET_SOURCE		= MediaRecorder.AudioSource.MIC;
-	private static final int	BLUETOOTH_HEADSET_SOURCE	= MediaRecorder.AudioSource.MIC;
+    private static final int	WIRED_HEADPHONES_SOURCE		= MediaRecorder.AudioSource.CAMCORDER;
+	private static final int	WIRED_HEADSET_SOURCE		= MediaRecorder.AudioSource.DEFAULT; // or MIC
+	private static final int	BLUETOOTH_HEADSET_SOURCE	= MediaRecorder.AudioSource.DEFAULT; // or MIC
 
 	private AudioRecord			input						= null;
 
@@ -42,10 +43,12 @@ public class PcmInDevice extends PcmDevice
 
 		switch (headsetMode)
 		{
+        case WIRED_HEADPHONES:
+            setAudioSource(WIRED_HEADPHONES_SOURCE);
+            break;
 		case WIRED_HEADSET:
 			setAudioSource(WIRED_HEADSET_SOURCE);
 			break;
-
 		case BLUETOOTH_HEADSET:
 			setSampleRate(8000);
 			new Utils(context).log("Sample rate changed to 8000 Hz.");

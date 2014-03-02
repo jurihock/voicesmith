@@ -33,6 +33,9 @@ import android.os.SystemClock;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Utils;
 
+// TODO: Study following Bluetooth sample code
+// https://github.com/android/platform_packages_apps_settings/blob/7247d75a741609bcf498d24073260cf24ab9b08c/src/com/android/settings/widget/SettingsAppWidgetProvider.java
+
 /**
  * Provides headset management routines.
  */
@@ -77,10 +80,10 @@ public final class HeadsetManager
 
 		switch (headsetMode)
 		{
+        case WIRED_HEADPHONES:
 		case WIRED_HEADSET:
 			source = WIRED_HEADSET_SOURCE;
 			break;
-
 		case BLUETOOTH_HEADSET:
 			source = BLUETOOTH_HEADSET_SOURCE;
 			break;
@@ -109,44 +112,6 @@ public final class HeadsetManager
             new Utils(context).log("Cannot set audio stream volume!");
             new Utils(context).log(exception);
         }
-	}
-
-    // FIXME: See AudioService.stopThread() issue.
-	public void storeVolumeLevel(HeadsetMode headsetMode)
-	{
-        /*
-		int source;
-
-		switch (headsetMode)
-		{
-		case WIRED_HEADSET:
-			source = WIRED_HEADSET_SOURCE;
-			break;
-
-		case BLUETOOTH_HEADSET:
-			source = BLUETOOTH_HEADSET_SOURCE;
-			break;
-		default:
-			new Utils(context).log(new IOException("Unknown HeadsetMode!"));
-			source = WIRED_HEADSET_SOURCE;
-		}
-
-        try
-        {
-            // VOL% = VOL * (100 / MAX)
-            double volumeLevel = 100D
-                / audio.getStreamMaxVolume(source);
-            volumeLevel *= audio.getStreamVolume(source);
-
-            new Preferences(context).setVolumeLevel(
-                (int) Math.round(volumeLevel));
-        }
-        catch (Exception exception)
-        {
-            new Utils(context).log("Cannot get audio stream volume!");
-            new Utils(context).log(exception);
-        }
-        */
 	}
 
 	public boolean isWiredHeadsetOn()

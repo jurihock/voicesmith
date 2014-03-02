@@ -21,13 +21,7 @@ package de.jurihock.voicesmith.audio;
 
 public enum HeadsetMode
 {
+    WIRED_HEADPHONES,
 	WIRED_HEADSET,
-	BLUETOOTH_HEADSET;
-	
-	private static final HeadsetMode[] headsetModes = HeadsetMode.values();
-
-	public static HeadsetMode valueOf(int ordinal)
-	{
-		return headsetModes[ordinal];
-	}
+	BLUETOOTH_HEADSET
 }
