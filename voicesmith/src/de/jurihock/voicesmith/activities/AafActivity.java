@@ -31,6 +31,7 @@ import de.jurihock.voicesmith.AAF;
 import de.jurihock.voicesmith.R;
 import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.services.AafService;
+import de.jurihock.voicesmith.services.ServiceFailureReason;
 import de.jurihock.voicesmith.services.ServiceListener;
 import de.jurihock.voicesmith.widgets.AafPicker;
 import de.jurihock.voicesmith.widgets.ColoredToggleButton;
@@ -195,7 +196,7 @@ public final class AafActivity extends AudioServiceActivity<AafService>
 		}
 	}
 	
-	public void onServiceFailed()
+	public void onServiceFailed(ServiceFailureReason reason)
 	{
 		if (viewStartStopButton.isChecked())
 			viewStartStopButton.setChecked(false);

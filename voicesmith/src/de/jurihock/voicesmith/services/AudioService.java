@@ -204,7 +204,7 @@ public abstract class AudioService extends Service implements
         {
             if (listener != null)
             {
-                listener.onServiceFailed();
+                listener.onServiceFailed(ServiceFailureReason.InitialHeadsetAvailability);
             }
 
             return;
@@ -215,7 +215,7 @@ public abstract class AudioService extends Service implements
 		{
 			if (listener != null)
 			{
-				listener.onServiceFailed();
+				listener.onServiceFailed(ServiceFailureReason.AudioDeviceInitialization);
 			}
 
 			return;
@@ -400,7 +400,7 @@ public abstract class AudioService extends Service implements
 
 			if (listener != null)
 			{
-				listener.onServiceFailed();
+				listener.onServiceFailed(ServiceFailureReason.WiredHeadsetAvailability);
 			}
 		}
 	}
@@ -414,7 +414,7 @@ public abstract class AudioService extends Service implements
 
 			if (listener != null)
 			{
-				listener.onServiceFailed();
+				listener.onServiceFailed(ServiceFailureReason.BluetoothHeadsetAvailability);
 			}
 		}
 	}

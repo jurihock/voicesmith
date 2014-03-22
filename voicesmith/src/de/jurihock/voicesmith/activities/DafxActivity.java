@@ -31,6 +31,7 @@ import de.jurihock.voicesmith.DAFX;
 import de.jurihock.voicesmith.R;
 import de.jurihock.voicesmith.Utils;
 import de.jurihock.voicesmith.services.DafxService;
+import de.jurihock.voicesmith.services.ServiceFailureReason;
 import de.jurihock.voicesmith.services.ServiceListener;
 import de.jurihock.voicesmith.widgets.ColoredToggleButton;
 import de.jurihock.voicesmith.widgets.DafxPicker;
@@ -195,7 +196,7 @@ public final class DafxActivity extends AudioServiceActivity<DafxService>
 		}
 	}
 	
-	public void onServiceFailed()
+	public void onServiceFailed(ServiceFailureReason reason)
 	{
 		if (viewStartStopButton.isChecked())
 			viewStartStopButton.setChecked(false);
