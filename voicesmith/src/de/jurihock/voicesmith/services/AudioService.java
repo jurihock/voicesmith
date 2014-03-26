@@ -27,12 +27,11 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.R;
 import de.jurihock.voicesmith.Utils;
+import de.jurihock.voicesmith.audio.AudioDeviceManager;
 import de.jurihock.voicesmith.audio.HeadsetManager;
-import de.jurihock.voicesmith.audio.HeadsetManager.HeadsetManagerListener;
+import de.jurihock.voicesmith.audio.HeadsetManagerListener;
 import de.jurihock.voicesmith.audio.HeadsetMode;
 import de.jurihock.voicesmith.io.AudioDevice;
-import de.jurihock.voicesmith.io.pcm.PcmInDevice;
-import de.jurihock.voicesmith.io.pcm.PcmOutDevice;
 import de.jurihock.voicesmith.threads.AudioThread;
 
 public abstract class AudioService extends Service implements
@@ -43,10 +42,11 @@ public abstract class AudioService extends Service implements
     private ServiceListener	listener		= null;
 
     // Headset stuff:
-    private Boolean         bluetoothHeadsetSupport = null;
-    private Boolean         internalMicSupport      = null;
-    private HeadsetMode     actualHeadsetMode       = null;
-    private HeadsetManager	headset			        = null;
+    private Boolean            bluetoothHeadsetSupport = null;
+    private Boolean            internalMicSupport      = null;
+    private HeadsetMode        actualHeadsetMode       = null;
+    private HeadsetManager     headsetManager          = null;
+    private AudioDeviceManager deviceManager           = null;
 
 	// Audio thread and its parameters:
 	private AudioThread		thread			  = null;
@@ -94,7 +94,7 @@ public abstract class AudioService extends Service implements
         preferences.setInternalMicSupport(internalMicSupport);
     }
 
-    private HeadsetMode getActualHeadsetMode()
+    public HeadsetMode getActualHeadsetMode()
     {
         return actualHeadsetMode;
     }
@@ -166,15 +166,15 @@ public abstract class AudioService extends Service implements
 		// but no device available or Bluetooth initialization fails
 		if (getActualHeadsetMode() == HeadsetMode.BLUETOOTH_HEADSET)
 		{
-			if(headset.isBluetoothHeadsetOn())
+			if(headsetManager.isBluetoothHeadsetOn())
 			{
-				if(!headset.isBluetoothScoOn())
+				if(!headsetManager.isBluetoothScoOn())
 				{
-					headset.setBluetoothScoOn(true);
+					headsetManager.setBluetoothScoOn(true);
 
-					if (!headset.waitForBluetoothSco())
+					if (!headsetManager.waitForBluetoothSco())
 					{
-						headset.setBluetoothScoOn(false);
+						headsetManager.setBluetoothScoOn(false);
 
 						setActualHeadsetMode(isInternalMicSupportOn()
                             ? HeadsetMode.WIRED_HEADPHONES
@@ -200,7 +200,7 @@ public abstract class AudioService extends Service implements
 
         // Return if wired headset mode is actually set but no device available
         if (getActualHeadsetMode() != HeadsetMode.BLUETOOTH_HEADSET
-                && !headset.isWiredHeadsetOn())
+                && !headsetManager.isWiredHeadsetOn())
         {
             if (listener != null)
             {
@@ -223,13 +223,18 @@ public abstract class AudioService extends Service implements
 
         if (preferences.isForceVolumeLevelOn())
         {
-		    headset.restoreVolumeLevel(getActualHeadsetMode());
+		    headsetManager.restoreVolumeLevel(getActualHeadsetMode());
         }
 
 		thread = createAudioThread(input, output);
         thread.configure(threadPreferences);
 		thread.start();
 	}
+
+    public void stopThread()
+    {
+        stopThread(false);
+    }
 
 	public void stopThread(boolean restarting)
 	{
@@ -240,9 +245,9 @@ public abstract class AudioService extends Service implements
 			new Utils(this).cancelAllNotifications();
 		}
 
-		if (headset.isBluetoothScoOn())
+		if (headsetManager.isBluetoothScoOn())
 		{
-			headset.setBluetoothScoOn(false);
+			headsetManager.setBluetoothScoOn(false);
 		}
 
         if (threadName != null && threadName.length() > 0)
@@ -268,18 +273,12 @@ public abstract class AudioService extends Service implements
 		{
 			if (input == null)
 			{
-				input = new PcmInDevice(this, mode);
-
-                // TEST: Read input signal from file
-				// input = new FileInDevice(this, "voicesmith_input.raw");
+				input = deviceManager.getInputDevice(mode);
 			}
 
 			if (output == null)
 			{
-				output = new PcmOutDevice(this, mode);
-
-                // TEST: Write output signal to file
-				// output = new FileOutDevice(this, "voicesmith_output.raw");
+				output = deviceManager.getOutputDevice(mode);
 			}
 		}
 		catch (IOException exception)
@@ -345,12 +344,17 @@ public abstract class AudioService extends Service implements
 		preferences = new Preferences(getApplicationContext());
 		preferences.registerOnSharedPreferenceChangeListener(this);
 
-		if (headset == null)
+		if (headsetManager == null)
 		{
-			headset = new HeadsetManager(this.getApplicationContext());
-			headset.setListener(this);
-			headset.registerHeadsetDetector();
+			headsetManager = new HeadsetManager(this.getApplicationContext());
+			headsetManager.setListener(this);
+			headsetManager.registerHeadsetDetector();
 		}
+
+        if (deviceManager == null)
+        {
+            deviceManager = new AudioDeviceManager(this.getApplicationContext());
+        }
 	}
 
 	@Override
@@ -362,12 +366,17 @@ public abstract class AudioService extends Service implements
 
 		stopThread(false);
 
-		if (headset != null)
+		if (headsetManager != null)
 		{
-			headset.unregisterHeadsetDetector();
-			headset.setListener(null);
-			headset = null;
+			headsetManager.unregisterHeadsetDetector();
+			headsetManager.setListener(null);
+			headsetManager = null;
 		}
+
+        if (deviceManager != null)
+        {
+            deviceManager = null;
+        }
 
 		disposeAudioDevices();
 

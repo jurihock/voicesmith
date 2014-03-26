@@ -28,7 +28,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.SystemClock;
 import de.jurihock.voicesmith.Preferences;
 import de.jurihock.voicesmith.Utils;
@@ -38,8 +37,9 @@ import de.jurihock.voicesmith.Utils;
 
 /**
  * Provides headset management routines.
+ * Can be mocked for testing purposes.
  */
-public final class HeadsetManager
+public class HeadsetManager
 {
 	private static final int		WIRED_HEADSET_SOURCE			= AudioManager.STREAM_MUSIC;
 	private static final int		BLUETOOTH_HEADSET_SOURCE		= 6;
@@ -56,7 +56,7 @@ public final class HeadsetManager
 	private static final int		BLUETOOTH_STATE_CONNECTED		= 2;
 
 	private final Context			context;
-	private final AudioManager		audio;
+	private final AudioManager      audioManager;
 
 	private HeadsetManagerListener	listener						= null;
 	private BroadcastReceiver		headsetDetector					= null;
@@ -65,7 +65,7 @@ public final class HeadsetManager
 	{
 		this.context = context;
 
-		audio = (AudioManager)
+		audioManager = (AudioManager)
 			context.getSystemService(Context.AUDIO_SERVICE);
 	}
 
@@ -95,17 +95,17 @@ public final class HeadsetManager
         try
         {
             // VOL = VOL% * (MAX / 100)
-            double volumeLevel = audio
+            double volumeLevel = audioManager
                 .getStreamMaxVolume(source) / 100D;
             volumeLevel *= new Preferences(context).getVolumeLevel(headsetMode);
 
-            audio.setStreamVolume(
-                source,
-                (int) Math.round(volumeLevel),
-                // Display the volume dialog
-                // AudioManager.FLAG_SHOW_UI);
-                // Display nothing
-                AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+            audioManager.setStreamVolume(
+                    source,
+                    (int) Math.round(volumeLevel),
+                    // Display the volume dialog
+                    // AudioManager.FLAG_SHOW_UI);
+                    // Display nothing
+                    AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         }
         catch (Exception exception)
         {
@@ -116,7 +116,7 @@ public final class HeadsetManager
 
 	public boolean isWiredHeadsetOn()
 	{
-		return audio.isWiredHeadsetOn();
+		return audioManager.isWiredHeadsetOn();
 	}
 
 	public boolean isBluetoothHeadsetOn()
@@ -142,27 +142,27 @@ public final class HeadsetManager
 		}
 
 		return isHeadsetConnected
-			&& audio.isBluetoothScoAvailableOffCall();
+			&& audioManager.isBluetoothScoAvailableOffCall();
 	}
 
 	public boolean isBluetoothScoOn()
 	{
-		return audio.isBluetoothScoOn();
+		return audioManager.isBluetoothScoOn();
 	}
 
 	public void setBluetoothScoOn(boolean on)
 	{
-		if (audio.isBluetoothScoOn() == on) return;
+		if (audioManager.isBluetoothScoOn() == on) return;
 
 		if (on)
 		{
 			new Utils(context).log("Starting Bluetooth SCO.");
-			audio.startBluetoothSco();
+			audioManager.startBluetoothSco();
 		}
 		else
 		{
 			new Utils(context).log("Stopping Bluetooth SCO.");
-			audio.stopBluetoothSco();
+			audioManager.stopBluetoothSco();
 		}
 	}
 
@@ -177,7 +177,7 @@ public final class HeadsetManager
 		final long start = SystemClock.elapsedRealtime();
 		long end = start;
 
-		while (!audio.isBluetoothScoOn())
+		while (!audioManager.isBluetoothScoOn())
 		{
 			end = SystemClock.elapsedRealtime();
 
@@ -320,12 +320,5 @@ public final class HeadsetManager
 			context.unregisterReceiver(headsetDetector);
 			headsetDetector = null;
 		}
-	}
-
-	public interface HeadsetManagerListener
-	{
-		void onWiredHeadsetOff();
-
-		void onBluetoothHeadsetOff();
 	}
 }
