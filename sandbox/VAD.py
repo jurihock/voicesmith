@@ -9,10 +9,13 @@ def vad(signal, windowSize, hopSize, smoothingGain, triggerThresholds):
     energyState  = [initialDbfs, 0, 0]   # [rms, velocity, error]
     triggerState = [0, initialDbfs]      # [flag, rms]
 
-    vadFlags = zeros((len(range(0, len(signal)-windowSize, hopSize)), 3)) # [trigger, offset, rms]
+    frameMarkers = range(0, len(signal)-windowSize, hopSize)
+    frameCount = len(frameMarkers)
+
+    vadFlags = zeros((frameCount, 3)) # [trigger, offset, rms]
     i = 0
 
-    for n in range(0, len(signal)-windowSize, hopSize):
+    for n in frameMarkers:
 
         frame = signal[n:n+windowSize]
 
@@ -22,7 +25,7 @@ def vad(signal, windowSize, hopSize, smoothingGain, triggerThresholds):
         energyState = smooth(energyState, currentEnergy, smoothingGain)
         currentEnergy = energyState[0]
 
-        offsetState = smooth(offsetState, currentOffset, [0.01, 0.001])
+        offsetState = smooth(offsetState, currentOffset, [0.025, 0])
         currentOffset = offsetState[0]
 
         triggerState = trigger(triggerState, currentEnergy, triggerThresholds)
@@ -40,13 +43,15 @@ def mute(signal, windowSize, hopSize, vadFlags):
 
     result = zeros(len(signal))
 
+    frameMarkers = range(0, len(signal)-windowSize, hopSize)
+
     lastFlag = 0
     i = 0
 
     fadeIn  = linspace(0, 1, windowSize)
     fadeOut = linspace(1, 0, windowSize)
 
-    for n in range(0, len(signal)-windowSize, hopSize):
+    for n in frameMarkers:
 
         frame = signal[n:n+windowSize]
 
@@ -90,14 +95,11 @@ def smooth(state, value, gain):
     # Double state Luenberger observer to smooth
     # and if necessary to predict a single value
 
-    prediction = state[0] # get predicted value from the last call
-    error = value - prediction
+    error = value - state[0]
 
-    state[0] = prediction + gain[0]*error
-    state[1] = state[1] + gain[1]*error
+    state[0] += state[1] + gain[0]*error
+    state[1] += gain[1]*error
     state[2] = error
-
-    state[0] = sum(state[0:1]) # predict value for the next call
 
     return state
 
