@@ -58,25 +58,6 @@ public final class Utils
 		this.preferences = new Preferences(context);
 	}
 
-    /**
-     * Checks if the app is running in an unit test harness.
-     * */
-    public boolean isRunningInTestHarness()
-    {
-        boolean result = true;
-
-        try
-        {
-            Class.forName("de.jurihock.voicesmith.UtilsTest");
-        }
-        catch (ClassNotFoundException e)
-        {
-            result = false;
-        }
-
-        return result;
-    }
-
 	/**
 	 * Loads the native library.
 	 * */
