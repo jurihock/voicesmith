@@ -43,8 +43,38 @@
                 android:title="@string/CorrectOffsetPreference" />
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="ReduceNoise"
-            android:title="@string/ReduceNoisePreference" />
+            android:key="SpectralNoiseGate"
+            android:title="@string/SpectralNoiseGatePreference" />
+        <de.jurihock.voicesmith.widgets.SeekBarPreference
+            android:dependency="SpectralNoiseGate"
+            android:defaultValue="3"
+            android:key="NoiseGateCoeffExponent"
+            android:title="@string/NoiseGateCoeffExponentPreference"
+            voicesmith:maxValue="5"
+            voicesmith:minValue="1"
+            voicesmith:valueFormat="1e-%s" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="BandpassFilter"
+            android:title="@string/BandpassFilterPreference" />
+        <de.jurihock.voicesmith.widgets.SeekBarPreference
+            android:dependency="BandpassFilter"
+            android:defaultValue="100"
+            android:key="BandpassLowerFreq"
+            android:title="@string/BandpassLowerFreqPreference"
+            voicesmith:maxValue="100"
+            voicesmith:minValue="0"
+            voicesmith:incValue="10"
+            voicesmith:valueFormat="%s Hz" />
+        <de.jurihock.voicesmith.widgets.SeekBarPreference
+            android:dependency="BandpassFilter"
+            android:defaultValue="8000"
+            android:key="BandpassUpperFreq"
+            android:title="@string/BandpassUpperFreqPreference"
+            voicesmith:maxValue="8000"
+            voicesmith:minValue="1000"
+            voicesmith:incValue="1000"
+            voicesmith:valueFormat="%s Hz" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/AutoMutePreferences" >
         <CheckBoxPreference

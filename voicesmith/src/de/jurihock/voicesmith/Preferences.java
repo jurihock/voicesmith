@@ -84,7 +84,7 @@ public final class Preferences
         return preferences.edit().putBoolean("ChangeLog", value).commit();
     }
 
-    public boolean isForceVolumeLevel()
+    public boolean isForceVolumeLevelOn()
     {
         return preferences.getBoolean("ForceVolumeLevel", true);
     }
@@ -143,10 +143,33 @@ public final class Preferences
         return preferences.getBoolean("CorrectOffset", true);
     }
 
-	public boolean isReduceNoiseOn()
+	public boolean isSpectralNoiseGateOn()
 	{
-		return preferences.getBoolean("ReduceNoise", true);
+		return preferences.getBoolean("SpectralNoiseGate", true);
 	}
+
+    public int getNoiseGateCoeffExponent()
+    {
+        return Integer.parseInt(
+                preferences.getString("NoiseGateCoeffExponent", "3"));
+    }
+
+    public boolean isBandpassFilterOn()
+    {
+        return preferences.getBoolean("BandpassFilter", false);
+    }
+
+    public int getBandpassLowerFreq()
+    {
+        return Integer.parseInt(
+                preferences.getString("BandpassLowerFreq", "100"));
+    }
+
+    public int getBandpassUpperFreq()
+    {
+        return Integer.parseInt(
+                preferences.getString("BandpassUpperFreq", "8000"));
+    }
 
     public boolean isAutoMuteOn()
     {
@@ -180,19 +203,26 @@ public final class Preferences
 		return preferences.getBoolean("Logging", false);
 	}
 
-	public HeadsetMode getHeadsetMode()
-	{
-		return HeadsetMode.valueOf(
-			preferences.getInt("HeadsetMode", 0));
-	}
+    public boolean isInternalMicSupportOn()
+    {
+        return preferences.getBoolean("InternalMicSupport", false);
+    }
 
-	public boolean setHeadsetMode(HeadsetMode value)
-	{
-		return preferences.edit()
-			.putInt("HeadsetMode", value.ordinal())
-			.commit();
-	}
-	
+    public boolean setInternalMicSupport(boolean internalMicSupport)
+    {
+        return preferences.edit().putBoolean("InternalMicSupport", internalMicSupport).commit();
+    }
+
+    public boolean isBluetoothHeadsetSupportOn()
+    {
+        return preferences.getBoolean("BluetoothHeadsetSupport", false);
+    }
+
+    public boolean setBluetoothHeadsetSupport(boolean bluetoothHeadsetSupport)
+    {
+        return preferences.edit().putBoolean("BluetoothHeadsetSupport", bluetoothHeadsetSupport).commit();
+    }
+
 	public DAFX getDafx()
 	{
 		return DAFX.valueOf(

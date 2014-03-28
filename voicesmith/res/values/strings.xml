@@ -24,33 +24,38 @@
     <string name="AboutLicenseActivity">License</string>
 
     <!-- Widgets -->
-    <string name="BluetoothHeadsetButton">Bluetooth headset support</string>
+    <string name="BluetoothHeadsetButton">Prefer Bluetooth headset</string>
+    <string name="InternalMicButton">Try camcorder mic otherwise</string>
     <string name="IntervalPickerLabel">Transpose by %s semitone(s)</string>
     <string name="DelayPickerLabel">Delay by %s ms</string>
 
     <!-- Preferences -->
+    <string name="VolumePreferences">Sound volume</string>
     <string name="ForceVolumeLevelPreference">Force volume level</string>
     <string name="WireVolumeLevelPreference">Wire volume level</string>
     <string name="BluetoothVolumeLevelPreference">Bluetooth volume level</string>
     <string name="SignalAmplificationPreference">Extra amplification</string>
-    <string name="CorrectOffsetPreference">Correct signal offset</string>
-    <string name="ReduceNoisePreference">Try to reduce noise</string>
-    <string name="SampleRatePreference">Sample rate</string>
-    <string name="LoggingPreference">Dump debugging infos</string>
-    <string name="ResetPreferences">Reset to default values</string>
-    <string name="VolumePreferences">Sound volume</string>
     <string name="SoundPreferences">Sound quality</string>
-    <string name="MiscPreferences">Miscellaneous</string>
+    <string name="SampleRatePreference">Sample rate</string>
+    <string name="CorrectOffsetPreference">Correct signal offset</string>
+    <string name="SpectralNoiseGatePreference">Spectral noise gate</string>
+    <string name="NoiseGateCoeffExponentPreference">Noise gate coefficient</string>
+    <string name="BandpassFilterPreference">Bandpass filter</string>
+    <string name="BandpassLowerFreqPreference">Lower cutoff frequency</string>
+    <string name="BandpassUpperFreqPreference">Upper cutoff frequency</string>
     <string name="AutoMutePreferences">Auto mute</string>
     <string name="AutoMuteStatePreference">Enable auto mute</string>
     <string name="AutoMuteHighThresholdPreference">High threshold (speech)</string>
     <string name="AutoMuteLowThresholdPreference">Low threshold (noise)</string>
     <string name="AutoMuteHangoverPreference">Hang-over time</string>
+    <string name="MiscPreferences">Miscellaneous</string>
+    <string name="LoggingPreference">Dump debugging infos</string>
+    <string name="ResetPreferences">Reset to default values</string>
 
     <!-- Services -->
     <string name="DafxService">Voicesmith DAFX Service</string>
     <string name="AafService">Voicesmith AAF Service</string>
-    <string name="ServiceFailureMessage">Oops! Something went wrong. :-( Check if a wired or Bluetooth earphone/headset is plugged in. Maybe try it with a different sample rate again.</string>
+    <string name="ServiceFailureMessage">Check if a headset is plugged in. \n Otherwise change preferences.</string>
     <string name="ServiceNotificationTitle">Voicesmith runs in the background!</string>
     <string name="ServiceNotificationSubtitle">Touch here to see details.</string>
 
