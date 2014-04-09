@@ -21,6 +21,8 @@ package de.jurihock.voicesmith.audio;
 
 import android.content.Context;
 import de.jurihock.voicesmith.io.AudioDevice;
+import de.jurihock.voicesmith.io.file.FileInDevice;
+import de.jurihock.voicesmith.io.file.FileOutDevice;
 import de.jurihock.voicesmith.io.pcm.PcmInDevice;
 import de.jurihock.voicesmith.io.pcm.PcmOutDevice;
 
@@ -41,17 +43,18 @@ public class AudioDeviceManager
 
     public AudioDevice getInputDevice(HeadsetMode mode) throws IOException
     {
-        return new PcmInDevice(context, mode);
+        // TEST: Read input signal from file instead of mic device
+        // return new FileInDevice(context, "voicesmith_input.raw");
 
-        // TEST: Read input signal from file
-        // return new FileInDevice(this, "voicesmith_input.raw");
+        return new PcmInDevice(context, mode);
     }
 
     public AudioDevice getOutputDevice(HeadsetMode mode) throws IOException
     {
-        return new PcmOutDevice(context, mode);
+        // TEST: Write output signal to file instead of output jack
+        // (also enable WRITE_EXTERNAL_STORAGE permission in the manifest file)
+        // return new FileOutDevice(context, "voicesmith_output.raw");
 
-        // TEST: Write output signal to file
-        // new FileOutDevice(this, "voicesmith_output.raw");
+        return new PcmOutDevice(context, mode);
     }
 }
