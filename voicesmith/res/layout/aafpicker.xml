@@ -37,7 +37,7 @@
             android:background="@drawable/button_on_off"
             android:button="@null"
             android:gravity="center"
-            android:tag="FastDAF"
+            android:tag="UnprocessedFeedback"
             android:text="Unprocessed Feedback"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 

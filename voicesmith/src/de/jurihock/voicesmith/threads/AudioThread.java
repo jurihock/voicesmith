@@ -129,7 +129,7 @@ public abstract class AudioThread implements Runnable, Disposable
 			return new TransposeThread(context, input, output);
 		case DAF:
 			return new DelayThread(context, input, output);
-		case FastDAF:
+		case UnprocessedFeedback:
 			return new LowDelayThread(context, input, output);
 		default:
 			throw new IllegalArgumentException("Illegal AAF argument!");

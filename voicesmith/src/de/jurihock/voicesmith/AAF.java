@@ -25,19 +25,20 @@ package de.jurihock.voicesmith;
 public enum AAF
 {
 	/**
-	 * Frequency-shifted Auditory Feedback
+	 * Frequency-shifted Auditory Feedback.
 	 * */
 	FAF,
 
 	/**
-	 * Delayed Auditory Feedback
+	 * Delayed Auditory Feedback.
 	 * */
 	DAF,
 
 	/**
-	 * Delayed Auditory Feedback (min. possible delay, raw signal pumping)
+	 * Unprocessed Auditory Feedback (raw signal pumping from input directly to output).
+     * Comparable with DAF but min. possible delay possible.
 	 * */
-	FastDAF;
+    UnprocessedFeedback;
 
 	private static final AAF[] aafValues = AAF.values();
 
