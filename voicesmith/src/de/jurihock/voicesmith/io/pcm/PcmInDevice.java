@@ -108,6 +108,8 @@ public class PcmInDevice extends PcmDevice
 	@Override
 	public int read(short[] buffer, int offset, int count)
 	{
+        if (count == 0) return 0;
+
 		return input.read(buffer, offset, count);
 	}
 

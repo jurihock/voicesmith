@@ -63,6 +63,8 @@ public final class FileInDevice extends FileDevice
 	@Override
 	public int read(short[] buffer, int offset, int count)
 	{
+        if (count == 0) return 0;
+
 		int result = 0;
 
 		final boolean swapBytes =

@@ -65,6 +65,8 @@ public final class FileOutDevice extends FileDevice
 	@Override
 	public int write(short[] buffer, int offset, int count)
 	{
+        if (count == 0) return 0;
+
 		int result = 0;
 
 		final boolean swapBytes =

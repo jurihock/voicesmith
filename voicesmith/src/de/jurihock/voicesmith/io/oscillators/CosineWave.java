@@ -36,6 +36,8 @@ public final class CosineWave extends PhaseAccumulator
 
 	public int read(float[] buffer, int offset, int count)
 	{
+        if (count == 0) return 0;
+
 		for (int i = 0; i < count; i++)
 		{
 			buffer[i + offset] = cos(getNextPhase());
@@ -47,6 +49,8 @@ public final class CosineWave extends PhaseAccumulator
 	@Override
 	public int read(short[] buffer, int offset, int count)
 	{
+        if (count == 0) return 0;
+
 		final float amp = 32767F / 3; // TODO: Cosine amplitude getter/setter.
 		
 		for (int i = 0; i < count; i++)

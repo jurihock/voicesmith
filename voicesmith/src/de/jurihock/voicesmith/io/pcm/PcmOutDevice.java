@@ -108,6 +108,8 @@ public final class PcmOutDevice extends PcmDevice
 	@Override
 	public int write(short[] buffer, int offset, int count)
 	{
+        if (count == 0) return 0;
+
 		return output.write(buffer, offset, count);
 	}
 

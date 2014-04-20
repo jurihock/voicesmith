@@ -59,38 +59,48 @@ public abstract class AudioDevice implements Disposable
 
 	public int read(short[] buffer, int offset, int count)
 	{
-		return 0;
+		return -1;
 	}
 
 	public final boolean read(short[] buffer)
 	{
+        if (buffer == null) return false;
+        if (buffer.length == 0) return false;
+
 		int count = 0;
 
 		do
 		{
-			count += read(buffer, count, buffer.length - count);
+            int result = read(buffer, count, buffer.length - count);
+            if (result < 0) return false; // error on reading data
+			count += result;
 		}
 		while (count < buffer.length);
 
-		return (count == buffer.length);
+		return true;
 	}
 
 	public int write(short[] buffer, int offset, int count)
 	{
-		return 0;
+		return -1;
 	}
 
 	public final boolean write(short[] buffer)
 	{
+        if (buffer == null) return false;
+        if (buffer.length == 0) return false;
+
 		int count = 0;
 
 		do
 		{
-			count += write(buffer, count, buffer.length - count);
+            int result = write(buffer, count, buffer.length - count);
+            if (result < 0) return false; // error on writing data
+            count += result;
 		}
 		while (count < buffer.length);
 
-		return (count == buffer.length);
+        return true;
 	}
 
 	public void flush()
