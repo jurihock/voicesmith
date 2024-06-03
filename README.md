@@ -1,3 +1,7 @@
+> [!IMPORTANT]
+> This branch contains the legacy version of the Voicesmith app and is no longer maintained.
+> Please switch to the [main](https://github.com/jurihock/voicesmith/tree/main) branch for the latest code.
+
 Voicesmith
 ==========
 
