@@ -10,71 +10,71 @@ val jdk by extra(JavaVersion.VERSION_17)
 // https://developer.android.com/build/releases/gradle-plugin#compatibility
 
 plugins {
-    alias(libs.plugins.android.gradle.plugin)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.jetbrains.kotlin.compose)
+  alias(libs.plugins.android.gradle.plugin)
+  alias(libs.plugins.jetbrains.kotlin.android)
+  alias(libs.plugins.jetbrains.kotlin.compose)
 }
 
 android {
-    namespace = "de.jurihock.voicesmith"
+  namespace = "de.jurihock.voicesmith"
 
-    defaultConfig {
-        applicationId = "de.jurihock.voicesmith"
-        versionName = "3.0"
-        versionCode = 13
-        minSdk = sdk
-        targetSdk = sdk
-        ndk {
-            // restrict ABIs as supplied by Oboe
-            // see https://github.com/google/oboe/blob/main/build_all_android.sh
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-        }
-        externalNativeBuild {
-            cmake {
-                // restrict ABIs as supplied by Oboe
-                // see https://github.com/google/oboe/blob/main/build_all_android.sh
-                abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-                // force shared library variant of libc++ as required by Oboe
-                arguments += listOf("-DANDROID_STL=c++_shared")
-            }
-        }
+  defaultConfig {
+    applicationId = "de.jurihock.voicesmith"
+    versionName = "3.0"
+    versionCode = 13
+    minSdk = sdk
+    targetSdk = sdk
+    ndk {
+      // restrict ABIs as supplied by Oboe
+      // see https://github.com/google/oboe/blob/main/build_all_android.sh
+      abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
     }
-
-    compileSdk = sdk
-    compileOptions {
-        sourceCompatibility = jdk
-        targetCompatibility = jdk
-    }
-    kotlinOptions {
-        jvmTarget = jdk.toString()
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            isShrinkResources = false
-        }
-    }
-
-    buildFeatures {
-        // enable compose UI feature
-        compose = true
-        // enable import of prefab dependencies as required by Oboe
-        prefab = true
-    }
-
     externalNativeBuild {
-        cmake {
-            path = file("src/main/cpp/de/jurihock/voicesmith/CMakeLists.txt")
-        }
+      cmake {
+        // restrict ABIs as supplied by Oboe
+        // see https://github.com/google/oboe/blob/main/build_all_android.sh
+        abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+        // force shared library variant of libc++ as required by Oboe
+        arguments += listOf("-DANDROID_STL=c++_shared")
+      }
     }
+  }
+
+  compileSdk = sdk
+  compileOptions {
+    sourceCompatibility = jdk
+    targetCompatibility = jdk
+  }
+  kotlinOptions {
+    jvmTarget = jdk.toString()
+  }
+
+  buildTypes {
+    release {
+      isMinifyEnabled = false
+      isShrinkResources = false
+    }
+  }
+
+  buildFeatures {
+    // enable compose UI feature
+    compose = true
+    // enable import of prefab dependencies as required by Oboe
+    prefab = true
+  }
+
+  externalNativeBuild {
+    cmake {
+      path = file("src/main/cpp/de/jurihock/voicesmith/CMakeLists.txt")
+    }
+  }
 }
 
 dependencies {
-    implementation(libs.androidx.compose.activity)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.jetbrains.compose.runtime)
-    implementation(libs.jna) { artifact { type = "aar" } }
-    implementation(libs.oboe)
-    implementation(libs.timber)
+  implementation(libs.androidx.compose.activity)
+  implementation(libs.androidx.compose.material3)
+  implementation(libs.jetbrains.compose.runtime)
+  implementation(libs.jna) { artifact { type = "aar" } }
+  implementation(libs.oboe)
+  implementation(libs.timber)
 }
