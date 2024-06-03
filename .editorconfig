@@ -17,14 +17,14 @@ indent_size = 2
 indent_style = space
 indent_size = 2
 
-[*.yml]
-indent_style = space
-indent_size = 2
-
 [*.{gradle,kts}]
 indent_style = space
 indent_size = 2
 
 [*.xml]
 indent_style = space
-indent_size = 4
+indent_size = 2
+
+[*.yml]
+indent_style = space
+indent_size = 2

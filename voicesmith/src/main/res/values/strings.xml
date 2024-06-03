@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="delay">Delay</string>
-    <string name="input">Input</string>
-    <string name="milliseconds">ms</string>
-    <string name="output">Output</string>
-    <string name="permissions_rationale_dismiss">Dismiss</string>
-    <string name="permissions_rationale_settings">Settings</string>
-    <string name="permissions_rationale_text">Microphone permission must be granted in order to use Voicesmith!</string>
-    <string name="permissions_rationale_title">Permissions missing</string>
-    <string name="pitch">Pitch</string>
-    <string name="select_input_device">Select input device</string>
-    <string name="select_output_device">Select output device</string>
-    <string name="semitones">st</string>
-    <string name="service_notification_channel">Voicesmith status indicator</string>
-    <string name="service_notification_text">Hopefully the Voicesmith app is still running in the background…</string>
-    <string name="service_notification_title">Voicesmith</string>
-    <string name="start">START</string>
-    <string name="stop">STOP</string>
-    <string name="timbre">Timbre</string>
-    <string name="title">Voicesmith</string>
-    <string name="title_with_version">Voicesmith v%s</string>
+  <string name="delay">Delay</string>
+  <string name="input">Input</string>
+  <string name="milliseconds">ms</string>
+  <string name="output">Output</string>
+  <string name="permissions_rationale_dismiss">Dismiss</string>
+  <string name="permissions_rationale_settings">Settings</string>
+  <string name="permissions_rationale_text">Microphone permission must be granted in order to use Voicesmith!</string>
+  <string name="permissions_rationale_title">Permissions missing</string>
+  <string name="pitch">Pitch</string>
+  <string name="select_input_device">Select input device</string>
+  <string name="select_output_device">Select output device</string>
+  <string name="semitones">st</string>
+  <string name="service_notification_channel">Voicesmith status indicator</string>
+  <string name="service_notification_text">Hopefully the Voicesmith app is still running in the background…</string>
+  <string name="service_notification_title">Voicesmith</string>
+  <string name="start">START</string>
+  <string name="stop">STOP</string>
+  <string name="timbre">Timbre</string>
+  <string name="title">Voicesmith</string>
+  <string name="title_with_version">Voicesmith v%s</string>
 </resources>
