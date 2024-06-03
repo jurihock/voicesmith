@@ -1,0 +1,23 @@
+name: build.yml
+
+on: [push, pull_request]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+  steps:
+
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Setup
+      uses: actions/setup-java@master
+      with:
+        java-version: '17'
+        distribution: 'oracle'
+
+    - name: Build
+      run: ./gradlew build --no-daemon
