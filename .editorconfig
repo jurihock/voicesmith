@@ -1,0 +1,26 @@
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{h,c,cpp}]
+indent_style = space
+indent_size = 2
+
+[*.{java,kt}]
+indent_style = space
+indent_size = 2
+
+[{*.cmake,CMakeLists.txt}]
+indent_style = space
+indent_size = 2
+
+[*.{gradle,kts}]
+indent_style = space
+indent_size = 4
+
+[*.xml]
+indent_style = space
+indent_size = 4
