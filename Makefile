@@ -1,15 +1,16 @@
-.PHONY: help build clean dev con log
+.PHONY: help build clean dev pair log
 
 ADB = ~/Library/Android/sdk/platform-tools/adb
 
-HOST  = 192.168.178.32
-PORT ?= $(shell bash -c 'read -p "> " PORT; echo $$PORT')
+HOST ?= $(shell bash -c 'read -p "HOST> " HOST; echo 192.168.178.$$HOST')
+PORT ?= $(shell bash -c 'read -p "PORT> " PORT; echo $$PORT')
+CODE ?= $(shell bash -c 'read -p "CODE> " CODE; echo $$CODE')
 
 help:
 	@echo build
 	@echo clean
 	@echo dev
-	@echo con
+	@echo pair
 	@echo log
 
 build:
@@ -21,8 +22,8 @@ clean:
 dev:
 	@$(ADB) devices
 
-con:
-	@$(ADB) connect $(HOST):$(PORT)
+pair:
+	@$(ADB) pair $(HOST):$(PORT) $(CODE)
 
 log:
 	@$(ADB) logcat -v color voicesmith.java:D voicesmith.cpp:D *:S
