@@ -5,7 +5,8 @@ data class AudioDevice(val id: Int = 0,
                        val samplerates: List<Int> = emptyList()) {
 
   override fun toString(): String {
-    return "$id: $name (${samplerates.joinToString(",") { it.toString() }})"
+    val sr = samplerates.joinToString(",") { it.toString() }
+    return "$id: $name (${sr.ifEmpty { "n.a." }})"
   }
 
 }
