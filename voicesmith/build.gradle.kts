@@ -35,7 +35,7 @@ android {
         // see https://github.com/google/oboe/blob/main/build_all_android.sh
         abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
         // force shared library variant of libc++ as required by Oboe
-        arguments += listOf("-DANDROID_STL=c++_shared")
+        arguments += listOf("-DANDROID_STL=c++_shared", "-DCMAKE_BUILD_TYPE=Release")
       }
     }
   }
