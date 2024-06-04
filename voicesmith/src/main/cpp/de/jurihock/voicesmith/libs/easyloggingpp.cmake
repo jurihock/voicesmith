@@ -17,9 +17,6 @@ if(easyloggingpp_ADDED)
   target_include_directories(easyloggingpp
     PUBLIC "${easyloggingpp_SOURCE_DIR}/src")
 
-  target_compile_features(easyloggingpp
-    PRIVATE cxx_std_14)
-
   target_compile_definitions(easyloggingpp
     PUBLIC -DELPP_NO_DEFAULT_LOG_FILE)
 

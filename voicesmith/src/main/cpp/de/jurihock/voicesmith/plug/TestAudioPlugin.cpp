@@ -8,6 +8,7 @@
 #include <voicesmith/fx/BypassEffect.h>
 #include <voicesmith/fx/NoiseEffect.h>
 #include <voicesmith/fx/NullEffect.h>
+#include <voicesmith/fx/PitchTimbreShiftEffect.h>
 #include <voicesmith/fx/SineEffect.h>
 #include <voicesmith/fx/SweepEffect.h>
 
@@ -37,15 +38,16 @@ void TestAudioPlugin::start() {
   auto bypass = std::make_shared<BypassEffect>();
   auto noise = std::make_shared<NoiseEffect>(1.f);
   auto null = std::make_shared<NullEffect>();
+  auto shift = std::make_shared<PitchTimbreShiftEffect>(1024, 4);
   auto sine = std::make_shared<SineEffect>(1.f, 440.f);
   auto sweep = std::make_shared<SweepEffect>(1.f, std::make_pair(440.f, 2*440.f), 2.f);
 
-  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.buffersize, sweep);
+  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.buffersize, bypass);
   auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.buffersize);
 
   callback(!AudioPluginCallcode::Info, "START PIPE");
 
-  state.pipeline = std::make_shared<AudioPipeline>(source, sink, bypass);
+  state.pipeline = std::make_shared<AudioPipeline>(source, sink, shift);
   state.pipeline->open();
   state.pipeline->start();
 }
