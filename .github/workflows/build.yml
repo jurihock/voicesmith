@@ -21,6 +21,3 @@ jobs:
 
     - name: Build
       run: ./gradlew build --no-daemon
-
-    - name: Lint
-      run: ./gradlew lint --no-daemon

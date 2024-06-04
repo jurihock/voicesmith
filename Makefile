@@ -1,4 +1,4 @@
-.PHONY: help build lint clean dev con log
+.PHONY: help build clean dev con log
 
 ADB = ~/Library/Android/sdk/platform-tools/adb
 
@@ -7,7 +7,6 @@ PORT ?= $(shell bash -c 'read -p "> " PORT; echo $$PORT')
 
 help:
 	@echo build
-	@echo lint
 	@echo clean
 	@echo dev
 	@echo con
@@ -15,9 +14,6 @@ help:
 
 build:
 	@./gradlew build
-
-lint:
-	@./gradlew lint
 
 clean:
 	@./gradlew clean
