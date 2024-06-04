@@ -5,6 +5,10 @@ charset = utf-8
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+# Android Studio persistently ignores the following configuration.
+# As a workaround, explicitly change the C/C++ indentation style
+# from 4,4,8,0,4,4,4,0,4,0
+# to   2,2,2,0,2,2,2,0,2,0.
 [*.{h,c,cpp}]
 indent_style = space
 indent_size = 2
