@@ -24,8 +24,8 @@ void PitchTimbreShiftEffect::reset(const float samplerate, const size_t blocksiz
   std::fill(buffer.output.begin(), buffer.output.end(), 0);
 
   fft = std::make_shared<FFT>(std::get<0>(winsize));
-  stft = std::make_unique<stftpitchshift::STFT<stft_t>>(fft, winsize, hopsize);
-  core = std::make_unique<stftpitchshift::StftPitchShiftCore<stft_t>>(fft, winsize, hopsize, samplerate);
+  stft = std::make_unique<stftpitchshift::STFT<fft_t>>(fft, winsize, hopsize);
+  core = std::make_unique<stftpitchshift::StftPitchShiftCore<fft_t>>(fft, winsize, hopsize, samplerate);
 
   core->normalization(true);
   core->quefrency(0e-3);
@@ -48,7 +48,7 @@ void PitchTimbreShiftEffect::apply(const uint64_t index, const std::span<const f
     input.begin(),
     input.end(),
     buffer.input.begin() + analysis_window_size,
-    transform<float, stft_t>);
+    transform<float, fft_t>);
 
   // perform pitch shifting
   (*stft)(buffer.input, buffer.output, [&](auto dft) {
@@ -60,7 +60,7 @@ void PitchTimbreShiftEffect::apply(const uint64_t index, const std::span<const f
     (buffer.output.begin() + analysis_window_size) - synthesis_window_size,
     buffer.output.end() - synthesis_window_size,
     output.begin(),
-    transform<stft_t, float>);
+    transform<fft_t, float>);
 
   // shift output buffer
   std::copy(

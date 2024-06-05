@@ -19,8 +19,6 @@ public:
 
 private:
 
-  typedef float stft_t;
-
   struct {
     float samplerate;
     size_t blocksize;
@@ -31,13 +29,13 @@ private:
   } config;
 
   struct {
-    std::vector<stft_t> input;
-    std::vector<stft_t> output;
+    std::vector<fft_t> input;
+    std::vector<fft_t> output;
   } buffer;
 
   std::shared_ptr<FFT> fft;
-  std::unique_ptr<stftpitchshift::STFT<stft_t>> stft;
-  std::unique_ptr<stftpitchshift::StftPitchShiftCore<stft_t>> core;
+  std::unique_ptr<stftpitchshift::STFT<fft_t>> stft;
+  std::unique_ptr<stftpitchshift::StftPitchShiftCore<fft_t>> core;
 
   template<typename X, typename Y>
   inline static Y transform(const X x) { return static_cast<Y>(x); }

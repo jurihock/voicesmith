@@ -4,11 +4,11 @@
 
 #include <pffft.h>
 
-class FFT final : public stftpitchshift::FFT {
+class PrettyFastFFT final : public stftpitchshift::FFT {
 
 public:
 
-  FFT(const size_t blocksize) :
+  PrettyFastFFT(const size_t blocksize) :
     plan(pffft_new_setup(blocksize, PFFFT_REAL), pffft_destroy_setup),
     data(pffft_aligned_malloc_float(blocksize), pffft_aligned_free_float) {}
 

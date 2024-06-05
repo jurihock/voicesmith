@@ -4,11 +4,11 @@
 
 #include <pocketfft_hdronly.h>
 
-class FFT final : public stftpitchshift::FFT {
+class PocketFFT final : public stftpitchshift::FFT {
 
 public:
 
-  FFT(const size_t blocksize) {}
+  PocketFFT(const size_t blocksize) {}
 
   void fft(const std::span<const float> frame,
            const std::span<std::complex<float>> dft) override {

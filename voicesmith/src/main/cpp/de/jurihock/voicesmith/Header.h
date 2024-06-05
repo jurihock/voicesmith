@@ -22,5 +22,13 @@
 #include <string>
 #include <thread>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 #include <vector>
+
+/**
+ * Common data type that defines the FFT precision,
+ * e.g. float or double.
+ */
+
+typedef float fft_t;
