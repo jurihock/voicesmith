@@ -15,7 +15,7 @@ public:
     period(period) {
   }
 
-  void reset(const float samplerate, const size_t buffersize) override {
+  void reset(const float samplerate, const size_t blocksize) override {
     osc = Wobbulator<float>(frequencies, period, samplerate);
   }
 

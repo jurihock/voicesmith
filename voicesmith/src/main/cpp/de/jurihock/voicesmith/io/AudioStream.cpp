@@ -5,15 +5,15 @@
 AudioStream::AudioStream(const oboe::Direction direction,
                          const std::optional<int> device,
                          const std::optional<float> samplerate,
-                         const std::optional<size_t> buffersize) :
+                         const std::optional<size_t> blocksize) :
   direction(direction) {
   config.device.set = device;
   config.device.get = std::nullopt;
   config.samplerate.set = samplerate;
   config.samplerate.get = std::nullopt;
-  config.buffersize.set = buffersize;
-  config.buffersize.get = std::nullopt;
-  config.buffersize.max = std::nullopt;
+  config.blocksize.set = blocksize;
+  config.blocksize.get = std::nullopt;
+  config.blocksize.max = std::nullopt;
   config.timeout = std::nullopt;
 }
 
@@ -29,12 +29,12 @@ float AudioStream::samplerate() const {
   return config.samplerate.get.value();
 }
 
-size_t AudioStream::buffersize() const {
-  return config.buffersize.get.value();
+size_t AudioStream::blocksize() const {
+  return config.blocksize.get.value();
 }
 
-size_t AudioStream::maxbuffersize() const {
-  return config.buffersize.max.value();
+size_t AudioStream::maxblocksize() const {
+  return config.blocksize.max.value();
 }
 
 std::chrono::milliseconds AudioStream::timeout() const {
@@ -104,7 +104,7 @@ void AudioStream::open() {
 
   builder.setDeviceId(static_cast<int32_t>(config.device.set.value_or(oboe::Unspecified)));
   builder.setSampleRate(static_cast<int32_t>(config.samplerate.set.value_or(oboe::Unspecified)));
-  builder.setFramesPerDataCallback(static_cast<int32_t>(config.buffersize.set.value_or(oboe::Unspecified)));
+  builder.setFramesPerDataCallback(static_cast<int32_t>(config.blocksize.set.value_or(oboe::Unspecified)));
 
   builder.setChannelCount(oboe::ChannelCount::Mono);
   builder.setFormat(oboe::AudioFormat::Float);
@@ -133,8 +133,8 @@ void AudioStream::open() {
 
   config.device.get = state.stream->getDeviceId();
   config.samplerate.get = state.stream->getSampleRate();
-  config.buffersize.get = state.stream->getFramesPerDataCallback();
-  config.buffersize.max = state.stream->getBufferSizeInFrames();
+  config.blocksize.get = state.stream->getFramesPerDataCallback();
+  config.blocksize.max = state.stream->getBufferSizeInFrames();
 
   const double seconds = 1.0 * state.stream->getBufferSizeInFrames() / state.stream->getSampleRate();
   const double milliseconds = std::max(1.0, seconds * 1e+3);

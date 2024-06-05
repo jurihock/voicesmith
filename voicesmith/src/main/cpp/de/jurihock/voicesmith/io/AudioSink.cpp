@@ -4,16 +4,16 @@
 
 AudioSink::AudioSink(const std::optional<int> device,
                      const std::optional<float> samplerate,
-                     const std::optional<size_t> buffersize,
+                     const std::optional<size_t> blocksize,
                      const std::shared_ptr<AudioEffect> effect,
-                     const std::shared_ptr<AudioBufferQueue> queue) :
-  AudioStream(oboe::Direction::Output, device, samplerate, buffersize),
+                     const std::shared_ptr<AudioBlockQueue> queue) :
+  AudioStream(oboe::Direction::Output, device, samplerate, blocksize),
   effect(effect),
-  queue((queue != nullptr) ? queue : std::make_shared<AudioBufferQueue>()) {
+  queue((queue != nullptr) ? queue : std::make_shared<AudioBlockQueue>()) {
 
   if (effect) {
     onopen([this]() {
-      this->effect->reset(this->samplerate(), this->buffersize());
+      this->effect->reset(this->samplerate(), this->blocksize());
     });
   }
 
@@ -27,16 +27,16 @@ std::shared_ptr<AudioEffect> AudioSink::fx() const {
   return effect;
 }
 
-std::shared_ptr<AudioBufferQueue> AudioSink::fifo() const {
+std::shared_ptr<AudioBlockQueue> AudioSink::fifo() const {
   return queue;
 }
 
 void AudioSink::callback(const std::span<float> samples) {
-  const bool ok = queue->read([&](AudioBuffer& buffer) {
+  const bool ok = queue->read([&](AudioBlock& block) {
     if (effect) {
-      effect->apply(index.inner, buffer, samples);
+      effect->apply(index.inner, block, samples);
     } else {
-      buffer.copyto(samples);
+      block.copyto(samples);
     }
     ++index.inner;
   });

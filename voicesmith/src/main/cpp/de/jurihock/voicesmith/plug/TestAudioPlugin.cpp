@@ -23,11 +23,11 @@ TestAudioPlugin::~TestAudioPlugin() {
 void TestAudioPlugin::setup(const std::optional<int> input,
                             const std::optional<int> output,
                             const std::optional<float> samplerate,
-                            const std::optional<size_t> buffersize) {
+                            const std::optional<size_t> blocksize) {
   config.input = input;
   config.output = output;
   config.samplerate = samplerate;
-  config.buffersize = buffersize;
+  config.blocksize = blocksize;
 }
 
 void TestAudioPlugin::start() {
@@ -42,8 +42,8 @@ void TestAudioPlugin::start() {
   auto sine = std::make_shared<SineEffect>(1.f, 440.f);
   auto sweep = std::make_shared<SweepEffect>(1.f, std::make_pair(440.f, 2*440.f), 2.f);
 
-  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.buffersize, bypass);
-  auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.buffersize);
+  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize, bypass);
+  auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize);
 
   callback(!AudioPluginCallcode::Info, "START PIPE");
 

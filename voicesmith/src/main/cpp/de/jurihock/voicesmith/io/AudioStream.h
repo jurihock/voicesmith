@@ -15,14 +15,14 @@ public:
   AudioStream(const oboe::Direction direction,
               const std::optional<int> device = std::nullopt,
               const std::optional<float> samplerate = std::nullopt,
-              const std::optional<size_t> buffersize = std::nullopt);
+              const std::optional<size_t> blocksize = std::nullopt);
 
   virtual ~AudioStream();
 
   int device() const;
   float samplerate() const;
-  size_t buffersize() const;
-  size_t maxbuffersize() const;
+  size_t blocksize() const;
+  size_t maxblocksize() const;
   std::chrono::milliseconds timeout() const;
 
   void onopen();
@@ -73,7 +73,7 @@ private:
       std::optional<size_t> set;
       std::optional<size_t> get;
       std::optional<size_t> max;
-    } buffersize;
+    } blocksize;
 
     std::optional<std::chrono::milliseconds> timeout;
 

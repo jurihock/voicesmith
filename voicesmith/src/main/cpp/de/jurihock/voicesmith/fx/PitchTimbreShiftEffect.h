@@ -14,14 +14,14 @@ public:
 
   PitchTimbreShiftEffect(const size_t dftsize, const size_t overlap);
 
-  void reset(const float samplerate, const size_t buffersize) override;
+  void reset(const float samplerate, const size_t blocksize) override;
   void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override;
 
 private:
 
   struct {
     float samplerate;
-    size_t buffersize;
+    size_t blocksize;
     size_t dftsize;
     size_t overlap;
     size_t analysis_window_size;

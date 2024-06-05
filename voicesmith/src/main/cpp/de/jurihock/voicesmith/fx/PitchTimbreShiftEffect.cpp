@@ -7,18 +7,18 @@ PitchTimbreShiftEffect::PitchTimbreShiftEffect(const size_t dftsize, const size_
   config.overlap = overlap;
 }
 
-void PitchTimbreShiftEffect::reset(const float samplerate, const size_t buffersize) {
+void PitchTimbreShiftEffect::reset(const float samplerate, const size_t blocksize) {
   config.samplerate = samplerate;
-  config.buffersize = buffersize;
+  config.blocksize = blocksize;
   config.analysis_window_size = config.dftsize + config.dftsize;
-  config.synthesis_window_size = config.buffersize;
+  config.synthesis_window_size = config.blocksize;
 
   const auto winsize = std::make_tuple(config.analysis_window_size, config.synthesis_window_size);
   const auto hopsize = config.synthesis_window_size / config.overlap;
-  const auto total_buffer_size = config.analysis_window_size + config.synthesis_window_size;
+  const auto bufsize = config.analysis_window_size + config.synthesis_window_size;
 
-  buffer.input.resize(total_buffer_size);
-  buffer.output.resize(total_buffer_size);
+  buffer.input.resize(bufsize);
+  buffer.output.resize(bufsize);
 
   std::fill(buffer.input.begin(), buffer.input.end(), 0);
   std::fill(buffer.output.begin(), buffer.output.end(), 0);

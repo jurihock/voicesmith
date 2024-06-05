@@ -38,31 +38,31 @@ void AudioPipeline::open() {
                     source->samplerate(), sink->samplerate());
   }
 
-  if (source->buffersize() != sink->buffersize()) {
-    LOG(ERROR) << $("Unequal audio stream buffer size: {0} (source), {1} (sink)!",
-                    source->buffersize(), sink->buffersize());
+  if (source->blocksize() != sink->blocksize()) {
+    LOG(ERROR) << $("Unequal audio stream block size: {0} (source), {1} (sink)!",
+                    source->blocksize(), sink->blocksize());
   }
 
-  if (source->buffersize() == 0 || sink->buffersize() == 0) {
-    LOG(ERROR) << $("Invalid audio stream buffer size: {0} (source), {1} (sink)!",
-                    source->buffersize(), sink->buffersize());
+  if (source->blocksize() == 0 || sink->blocksize() == 0) {
+    LOG(ERROR) << $("Invalid audio stream block size: {0} (source), {1} (sink)!",
+                    source->blocksize(), sink->blocksize());
   }
 
-  if (source->maxbuffersize() == 0 || sink->maxbuffersize() == 0) {
-    LOG(ERROR) << $("Invalid audio stream max. buffer size: {0} (source), {1} (sink)!",
-                    source->maxbuffersize(), sink->maxbuffersize());
+  if (source->maxblocksize() == 0 || sink->maxblocksize() == 0) {
+    LOG(ERROR) << $("Invalid audio stream max. block size: {0} (source), {1} (sink)!",
+                    source->maxblocksize(), sink->maxblocksize());
   }
 
   if (effect) {
-    effect->reset(source->samplerate(), source->buffersize());
+    effect->reset(source->samplerate(), source->blocksize());
   }
 
   const size_t fifosize = 10 *
-    std::max(source->maxbuffersize(), sink->maxbuffersize()) /
-    std::min(source->buffersize(), sink->buffersize());
+    std::max(source->maxblocksize(), sink->maxblocksize()) /
+    std::min(source->blocksize(), sink->blocksize());
 
-  source->fifo()->resize(fifosize, source->buffersize());
-  sink->fifo()->resize(fifosize, sink->buffersize());
+  source->fifo()->resize(fifosize, source->blocksize());
+  sink->fifo()->resize(fifosize, sink->blocksize());
 
   source->onxrun([&](const int32_t count) {
     onxrun(oboe::Direction::Input, count);
@@ -128,11 +128,11 @@ void AudioPipeline::loop() {
   } timers;
 
   const auto dowork = [this](uint64_t& index, timers_t& timers, const std::chrono::milliseconds timeout) {
-    const bool ok = source->fifo()->read(timeout, [&](AudioBuffer& input) {
+    const bool ok = source->fifo()->read(timeout, [&](AudioBlock& input) {
       timers.outer.toc();
       timers.outer.tic();
 
-      const bool ok = sink->fifo()->write([&](AudioBuffer& output) {
+      const bool ok = sink->fifo()->write([&](AudioBlock& output) {
         timers.inner.tic();
 
         if (effect) {

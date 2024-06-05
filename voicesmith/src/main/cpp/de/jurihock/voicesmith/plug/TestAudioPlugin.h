@@ -17,7 +17,7 @@ public:
   void setup(const std::optional<int> input,
              const std::optional<int> output,
              const std::optional<float> samplerate,
-             const std::optional<size_t> buffersize) override;
+             const std::optional<size_t> blocksize) override;
 
   void start() override;
   void stop() override;
@@ -31,7 +31,7 @@ private:
     std::optional<int> input;
     std::optional<int> output;
     std::optional<float> samplerate;
-    std::optional<size_t> buffersize;
+    std::optional<size_t> blocksize;
 
   } config;
 

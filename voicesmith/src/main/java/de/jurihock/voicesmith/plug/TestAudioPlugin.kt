@@ -22,7 +22,7 @@ class TestAudioPlugin : AudioPlugin {
     }.onFailure { throw it }
     res.result {
       jna.voicesmith_plugin_setup(
-        Defaults.INPUT, Defaults.OUTPUT, Defaults.SAMPLERATE, Defaults.BUFFERSIZE,
+        Defaults.INPUT, Defaults.OUTPUT, Defaults.SAMPLERATE, Defaults.BLOCKSIZE,
         ref, it)
     }.onFailure { throw it }
   }
