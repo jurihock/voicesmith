@@ -1,5 +1,7 @@
 #pragma once
 
+#include <voicesmith/Header.h>
+
 #include <StftPitchShift/FFT.h>
 
 #include <pffft.h>
