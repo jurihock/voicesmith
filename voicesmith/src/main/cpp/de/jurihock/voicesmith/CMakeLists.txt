@@ -17,6 +17,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/libs/cpm.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/easyloggingpp.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/fmt.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/oboe.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/libs/pffft.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/pocketfft.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/readerwriterqueue.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/stftpitchshift.cmake")
@@ -27,6 +28,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
   fmt
   log
   oboe
+  pffft
   pocketfft
   readerwriterqueue
   stftpitchshift)
