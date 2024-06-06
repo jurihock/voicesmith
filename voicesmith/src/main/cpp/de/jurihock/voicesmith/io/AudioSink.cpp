@@ -9,19 +9,7 @@ AudioSink::AudioSink(const std::optional<int> device,
                      const std::shared_ptr<AudioBlockQueue> queue) :
   AudioStream(oboe::Direction::Output, device, samplerate, blocksize),
   effect(effect),
-  queue((queue != nullptr) ? queue : std::make_shared<AudioBlockQueue>()) {
-
-  if (effect) {
-    onopen([this]() {
-      this->effect->reset(this->samplerate(), this->blocksize());
-    });
-  }
-
-  onstart([this]() {
-    this->index = {0, 0};
-    this->underflows = {false, 0};
-  });
-}
+  queue((queue != nullptr) ? queue : std::make_shared<AudioBlockQueue>()) {}
 
 std::shared_ptr<AudioEffect> AudioSink::fx() const {
   return effect;
@@ -57,4 +45,15 @@ void AudioSink::callback(const std::span<float> samples) {
   }
 
   ++index.outer;
+}
+
+void AudioSink::onopen() {
+  if (effect) {
+    effect->reset(samplerate(), blocksize());
+  }
+}
+
+void AudioSink::onstart() {
+  index = {0, 0};
+  underflows = {false, 0};
 }

@@ -2,6 +2,9 @@ package de.jurihock.voicesmith.plug
 
 import de.jurihock.voicesmith.Defaults
 import de.jurihock.voicesmith.etc.Log
+import de.jurihock.voicesmith.io.toAudioEventCode
+import de.jurihock.voicesmith.io.toLogPriority
+import de.jurihock.voicesmith.io.onError
 import de.jurihock.voicesmith.jna.JnaPointerByReference
 import de.jurihock.voicesmith.jna.JnaResultByReference
 
@@ -54,8 +57,8 @@ class TestAudioPlugin : AudioPlugin {
   }
 
   override fun callback(code: Int, text: String) {
-    code.callcode?.let {
-      Log.log(it.logprio, "$name: $text")
+    code.toAudioEventCode?.let {
+      Log.log(it.toLogPriority, "$name: $text")
       it.onError {
         // TODO
       }

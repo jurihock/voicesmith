@@ -2,11 +2,12 @@
 
 #include <voicesmith/Header.h>
 
-#include <voicesmith/etc/Event.h>
+#include <voicesmith/io/AudioEvent.h>
 
 #include <oboe/Oboe.h>
 
-class AudioStream : public oboe::AudioStreamDataCallback,
+class AudioStream : public AudioEvent::Emitter,
+                    public oboe::AudioStreamDataCallback,
                     public oboe::AudioStreamErrorCallback,
                     public std::enable_shared_from_this<AudioStream> {
 
@@ -19,29 +20,13 @@ public:
 
   virtual ~AudioStream();
 
+  void subscribe(const AudioEvent::Callback& callback) override;
+
   int device() const;
   float samplerate() const;
   size_t blocksize() const;
   size_t maxblocksize() const;
   std::chrono::milliseconds timeout() const;
-
-  void onopen();
-  void onopen(const std::function<void()> callback);
-
-  void onclose();
-  void onclose(const std::function<void()> callback);
-
-  void onstart();
-  void onstart(const std::function<void()> callback);
-
-  void onstop();
-  void onstop(const std::function<void()> callback);
-
-  void onxrun();
-  void onxrun(const std::function<void(const int32_t count)> callback);
-
-  void onerror();
-  void onerror(const std::function<bool(const oboe::Result error)> callback);
 
   void open();
   void close();
@@ -52,6 +37,12 @@ public:
 protected:
 
   virtual void callback(const std::span<float> samples) = 0;
+
+  virtual void onopen() {}
+  virtual void onclose() {}
+
+  virtual void onstart() {}
+  virtual void onstop() {}
 
 private:
 
@@ -81,21 +72,12 @@ private:
 
   struct {
 
-    Event<void()> open = []() {};
-    Event<void()> close = []() {};
-    Event<void()> start = []() {};
-    Event<void()> stop = []() {};
-    Event<void(int32_t)> xrun = [](int32_t) {};
-    Event<bool(oboe::Result)> error = [](oboe::Result) { return false; };
-
-  } events;
-
-  struct {
-
     std::shared_ptr<oboe::AudioStream> stream;
     int32_t xruns;
 
   } state;
+
+  AudioEvent event;
 
   oboe::DataCallbackResult onAudioReady(oboe::AudioStream* stream, void* data, int32_t size) override;
   bool onError(oboe::AudioStream* stream, oboe::Result error) override;

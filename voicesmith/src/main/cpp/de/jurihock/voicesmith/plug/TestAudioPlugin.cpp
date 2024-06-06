@@ -44,10 +44,13 @@ void TestAudioPlugin::start() {
 
   auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize, bypass);
   auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize);
+  auto pipe = std::make_shared<AudioPipeline>(source, sink, shift);
 
-  callback(!AudioPluginCallcode::Info, "START PIPE");
+  pipe->subscribe([&](const AudioEventCode code, const std::string& text){
+    callback(!code, text.c_str());
+  });
 
-  state.pipeline = std::make_shared<AudioPipeline>(source, sink, shift);
+  state.pipeline = pipe;
   state.pipeline->open();
   state.pipeline->start();
 }
@@ -56,8 +59,6 @@ void TestAudioPlugin::stop() {
   if (state.pipeline == nullptr) {
     return;
   }
-
-  callback(!AudioPluginCallcode::Info, "STOP PIPE");
 
   state.pipeline->stop();
   state.pipeline->close();

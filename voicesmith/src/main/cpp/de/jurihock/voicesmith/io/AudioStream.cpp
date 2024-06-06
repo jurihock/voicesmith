@@ -21,6 +21,10 @@ AudioStream::~AudioStream() {
   close();
 }
 
+void AudioStream::subscribe(const AudioEvent::Callback& callback) {
+  event.append(callback);
+}
+
 int AudioStream::device() const {
   return config.device.get.value();
 }
@@ -39,54 +43,6 @@ size_t AudioStream::maxblocksize() const {
 
 std::chrono::milliseconds AudioStream::timeout() const {
   return config.timeout.value();
-}
-
-void AudioStream::onopen() {
-  events.open.reset();
-}
-
-void AudioStream::onopen(const std::function<void()> callback) {
-  events.open.set(callback);
-}
-
-void AudioStream::onclose() {
-  events.close.reset();
-}
-
-void AudioStream::onclose(const std::function<void()> callback) {
-  events.close.set(callback);
-}
-
-void AudioStream::onstart() {
-  events.start.reset();
-}
-
-void AudioStream::onstart(const std::function<void()> callback) {
-  events.start.set(callback);
-}
-
-void AudioStream::onstop() {
-  events.stop.reset();
-}
-
-void AudioStream::onstop(const std::function<void()> callback) {
-  events.stop.set(callback);
-}
-
-void AudioStream::onxrun() {
-  events.xrun.reset();
-}
-
-void AudioStream::onxrun(const std::function<void(const int32_t count)> callback) {
-  events.xrun.set(callback);
-}
-
-void AudioStream::onerror() {
-  events.error.reset();
-}
-
-void AudioStream::onerror(const std::function<bool(const oboe::Result error)> callback) {
-  events.error.set(callback);
 }
 
 void AudioStream::open() {
@@ -161,7 +117,7 @@ void AudioStream::open() {
   LOG(DEBUG) << "FramesPerDataCallback " << state.stream->getFramesPerDataCallback();
   LOG(DEBUG) << "Timeout " << config.timeout.value().count() << " ms";
 
-  events.open();
+  onopen();
 }
 
 void AudioStream::close() {
@@ -169,13 +125,21 @@ void AudioStream::close() {
     return;
   }
 
-  if (state.stream->getState() != oboe::StreamState::Closed) {
+  onclose();
+
+  const auto x = state.stream->getState();
+  const auto y = {
+    oboe::StreamState::Closing,
+    oboe::StreamState::Closed,
+    oboe::StreamState::Disconnected
+  };
+
+  if (std::none_of(y.begin(), y.end(), [x](auto y){ return x == y; })) {
     state.stream->stop();
     state.stream->close();
   }
 
   state.stream = nullptr;
-  events.close();
 }
 
 void AudioStream::start() {
@@ -183,7 +147,8 @@ void AudioStream::start() {
     return;
   }
 
-  events.start();
+  onstart();
+
   state.xruns = state.stream->getXRunCount().value();
   state.stream->start();
 }
@@ -193,8 +158,9 @@ void AudioStream::stop() {
     return;
   }
 
+  onstop();
+
   state.stream->stop();
-  events.stop();
 }
 
 oboe::DataCallbackResult AudioStream::onAudioReady(oboe::AudioStream* stream, void* data, int32_t size) {
@@ -208,12 +174,25 @@ oboe::DataCallbackResult AudioStream::onAudioReady(oboe::AudioStream* stream, vo
 
   if (state.xruns != xruns) {
     state.xruns = xruns;
-    events.xrun(state.xruns);
+
+    if (direction == oboe::Direction::Input) {
+      event(AudioEventCode::SourceOverrun, std::to_string(state.xruns));
+    } else if (direction == oboe::Direction::Output) {
+      event(AudioEventCode::SinkUnderrun, std::to_string(state.xruns));
+    }
   }
 
   return oboe::DataCallbackResult::Continue;
 }
 
 bool AudioStream::onError(oboe::AudioStream* stream, oboe::Result error) {
-  return events.error(error);
+  close();
+
+  if (direction == oboe::Direction::Input) {
+    event(AudioEventCode::SourceError, oboe::convertToText(error));
+  } else if (direction == oboe::Direction::Output) {
+    event(AudioEventCode::SinkError, oboe::convertToText(error));
+  }
+
+  return true;
 }

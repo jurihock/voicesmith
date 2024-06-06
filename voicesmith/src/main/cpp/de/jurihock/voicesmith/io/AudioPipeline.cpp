@@ -16,12 +16,8 @@ AudioPipeline::~AudioPipeline() {
   close();
 }
 
-void AudioPipeline::onerror() {
-  events.error.reset();
-}
-
-void AudioPipeline::onerror(std::function<void()> callback) {
-  events.error.set(callback);
+void AudioPipeline::subscribe(const AudioEvent::Callback& callback) {
+  event.append(callback);
 }
 
 void AudioPipeline::open() {
@@ -64,31 +60,17 @@ void AudioPipeline::open() {
   source->fifo()->resize(fifosize, source->blocksize());
   sink->fifo()->resize(fifosize, sink->blocksize());
 
-  source->onxrun([&](const int32_t count) {
-    onxrun(oboe::Direction::Input, count);
+  source->subscribe([&](const AudioEventCode code, const std::string& text) {
+    onevent(code, text);
   });
 
-  sink->onxrun([&](const int32_t count) {
-    onxrun(oboe::Direction::Output, count);
-  });
-
-  source->onerror([&](const oboe::Result error) {
-    return onerror(oboe::Direction::Input, error);
-  });
-
-  sink->onerror([&](const oboe::Result error) {
-    return onerror(oboe::Direction::Output, error);
+  source->subscribe([&](const AudioEventCode code, const std::string& text) {
+    onevent(code, text);
   });
 }
 
 void AudioPipeline::close() {
   stop();
-
-  source->onxrun();
-  sink->onxrun();
-
-  source->onerror();
-  sink->onerror();
 
   source->close();
   sink->close();
@@ -101,7 +83,7 @@ void AudioPipeline::start() {
   sink->start();
 
   state.loopthread = std::make_shared<std::thread>(
-    [&]() { loop(); });
+    [&]() { onloop(); });
 }
 
 void AudioPipeline::stop() {
@@ -121,7 +103,7 @@ void AudioPipeline::stop() {
   source->fifo()->flush();
 }
 
-void AudioPipeline::loop() {
+void AudioPipeline::onloop() {
   struct timers_t {
     Timer<std::chrono::milliseconds> outer;
     Timer<std::chrono::milliseconds> inner;
@@ -190,25 +172,12 @@ void AudioPipeline::loop() {
   }
 }
 
-void AudioPipeline::onxrun(const oboe::Direction direction, const int32_t count) {
-  switch (direction) {
-    case oboe::Direction::Input:
-      LOG(WARNING) << $("Audio source {0} overruns occured!", count);
-      break;
-    case oboe::Direction::Output:
-      LOG(WARNING) << $("Audio sink {0} underruns occured!", count);
-      break;
+void AudioPipeline::onevent(const AudioEventCode code, const std::string& text) {
+  if (code >= AudioEventCode::Error) {
+    LOG(WARNING) << $("Aborting audio pipeline due to error: {0}!", text);
+    std::unique_lock lock(eventmutex);
+    close();
   }
-}
 
-bool AudioPipeline::onerror(const oboe::Direction direction, const oboe::Result error) {
-  std::unique_lock lock(onerrormutex);
-
-  LOG(WARNING) << $("Aborting audio pipeline due to {0} error {1}!",
-                    oboe::convertToText(direction),
-                    oboe::convertToText(error));
-
-  close();
-  events.error();
-  return true;
+  event(code, text);
 }

@@ -9,18 +9,7 @@ AudioSource::AudioSource(const std::optional<int> device,
                          const std::shared_ptr<AudioBlockQueue> queue) :
   AudioStream(oboe::Direction::Input, device, samplerate, blocksize),
   effect(effect),
-  queue((queue != nullptr) ? queue : std::make_shared<AudioBlockQueue>()) {
-
-  if (effect) {
-    onopen([this]() {
-      this->effect->reset(this->samplerate(), this->blocksize());
-    });
-  }
-
-  onstart([this]() {
-    this->index = {0, 0};
-  });
-}
+  queue((queue != nullptr) ? queue : std::make_shared<AudioBlockQueue>()) {}
 
 std::shared_ptr<AudioEffect> AudioSource::fx() const {
   return effect;
@@ -45,4 +34,14 @@ void AudioSource::callback(const std::span<float> samples) {
   }
 
   ++index.outer;
+}
+
+void AudioSource::onopen() {
+  if (effect) {
+    effect->reset(samplerate(), blocksize());
+  }
+}
+
+void AudioSource::onstart() {
+  index = {0, 0};
 }

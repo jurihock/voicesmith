@@ -23,6 +23,9 @@ protected:
 
   void callback(const std::span<float> samples) override;
 
+  void onopen() override;
+  void onstart() override;
+
 private:
 
   const std::shared_ptr<AudioEffect> effect;

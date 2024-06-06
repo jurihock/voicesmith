@@ -15,6 +15,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror)
 
 include("${CMAKE_CURRENT_LIST_DIR}/libs/cpm.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/easyloggingpp.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/libs/eventpp.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/fmt.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/oboe.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/pffft.cmake")
@@ -25,6 +26,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/libs/stftpitchshift.cmake")
 target_link_libraries(${PROJECT_NAME} PRIVATE
   android
   easyloggingpp
+  eventpp
   fmt
   log
   oboe
