@@ -18,7 +18,9 @@ class Main : Application() {
   private fun features() {
     val features = AudioFeatures(this)
     Log.i("~ Features ~")
-    Log.i("Low Latency Feature ${if (features.hasLowLatencyFeature) ":)" else ":("} ")
+    Log.i("Default Samplerate ${features.samplerate}")
+    Log.i("Default Blocksize ${features.blocksize}")
+    Log.i("Low Latency Feature ${if (features.hasLowLatencyFeature) ":)" else ":("}")
     Log.i("Pro Feature ${if (features.hasProFeature) ":)" else ":("}")
   }
 

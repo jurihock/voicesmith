@@ -108,16 +108,19 @@ void AudioStream::open() {
   else if (direction == oboe::Direction::Output) {
     LOG(DEBUG) << "Usage " << oboe::convertToText(state.stream->getUsage());
   }
+  LOG(DEBUG) << "PerformanceHintEnabled " << (state.stream->isPerformanceHintEnabled() ? "true" : "false");
+  LOG(DEBUG) << "XRunCountSupported " << (state.stream->isXRunCountSupported() ? "true" : "false");
   LOG(DEBUG) << "SampleRate " << state.stream->getSampleRate();
+  LOG(DEBUG) << "HardwareSampleRate " << state.stream->getHardwareSampleRate();
   LOG(DEBUG) << "ChannelCount " << state.stream->getChannelCount();
+  LOG(DEBUG) << "HardwareChannelCount " << state.stream->getHardwareChannelCount();
   LOG(DEBUG) << "Format " << oboe::convertToText(state.stream->getFormat());
+  LOG(DEBUG) << "HardwareFormat " << oboe::convertToText(state.stream->getHardwareFormat());
   LOG(DEBUG) << "BufferCapacityInFrames " << state.stream->getBufferCapacityInFrames();
   LOG(DEBUG) << "BufferSizeInFrames " << state.stream->getBufferSizeInFrames();
   LOG(DEBUG) << "FramesPerBurst " << state.stream->getFramesPerBurst();
   LOG(DEBUG) << "FramesPerDataCallback " << state.stream->getFramesPerDataCallback();
   LOG(DEBUG) << "Timeout " << config.timeout.value().count() << " ms";
-  LOG(DEBUG) << "PerformanceHintEnabled " << (state.stream->isPerformanceHintEnabled() ? "true" : "false");
-  LOG(DEBUG) << "XRunCountSupported " << (state.stream->isXRunCountSupported() ? "true" : "false");
 
   onopen();
 }
