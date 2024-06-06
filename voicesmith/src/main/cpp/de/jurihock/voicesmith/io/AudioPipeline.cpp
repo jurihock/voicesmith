@@ -64,7 +64,7 @@ void AudioPipeline::open() {
     onevent(code, text);
   });
 
-  source->subscribe([&](const AudioEventCode code, const std::string& text) {
+  sink->subscribe([&](const AudioEventCode code, const std::string& text) {
     onevent(code, text);
   });
 }
