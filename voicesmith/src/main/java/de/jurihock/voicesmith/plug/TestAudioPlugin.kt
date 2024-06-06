@@ -56,9 +56,9 @@ class TestAudioPlugin : AudioPlugin {
     }.onFailure { throw it }
   }
 
-  override fun callback(code: Int, text: String) {
+  override fun callback(code: Int, data: String) {
     code.toAudioEventCode?.let {
-      Log.log(it.toLogPriority, "$name: $text")
+      Log.log(it.toLogPriority, "${name}: ${it} ${data}")
       it.onError {
         // TODO
       }

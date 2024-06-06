@@ -36,4 +36,6 @@ private:
     uint64_t outer;
   } index;
 
+  uint64_t overflows;
+
 };

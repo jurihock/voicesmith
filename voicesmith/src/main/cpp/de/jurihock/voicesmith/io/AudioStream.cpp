@@ -116,6 +116,8 @@ void AudioStream::open() {
   LOG(DEBUG) << "FramesPerBurst " << state.stream->getFramesPerBurst();
   LOG(DEBUG) << "FramesPerDataCallback " << state.stream->getFramesPerDataCallback();
   LOG(DEBUG) << "Timeout " << config.timeout.value().count() << " ms";
+  LOG(DEBUG) << "PerformanceHintEnabled " << (state.stream->isPerformanceHintEnabled() ? "true" : "false");
+  LOG(DEBUG) << "XRunCountSupported " << (state.stream->isXRunCountSupported() ? "true" : "false");
 
   onopen();
 }
@@ -170,15 +172,17 @@ oboe::DataCallbackResult AudioStream::onAudioReady(oboe::AudioStream* stream, vo
 
   callback(samples);
 
-  const int32_t xruns = stream->getXRunCount().value();
+  const auto xruns = stream->getXRunCount();
 
-  if (state.xruns != xruns) {
-    state.xruns = xruns;
+  if (!xruns) {
+    LOG(ERROR) << oboe::convertToText(xruns.error());
+  } else if (state.xruns != xruns.value()) {
+    state.xruns = xruns.value();
 
     if (direction == oboe::Direction::Input) {
-      event(AudioEventCode::SourceOverrun, std::to_string(state.xruns));
+      event(AudioEventCode::SourceOverrun, $("xruns={0}", state.xruns));
     } else if (direction == oboe::Direction::Output) {
-      event(AudioEventCode::SinkUnderrun, std::to_string(state.xruns));
+      event(AudioEventCode::SinkUnderrun, $("xruns={0}", state.xruns));
     }
   }
 

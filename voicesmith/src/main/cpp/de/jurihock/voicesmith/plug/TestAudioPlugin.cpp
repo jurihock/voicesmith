@@ -46,8 +46,8 @@ void TestAudioPlugin::start() {
   auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize);
   auto pipe = std::make_shared<AudioPipeline>(source, sink, shift);
 
-  pipe->subscribe([&](const AudioEventCode code, const std::string& text){
-    callback(!code, text.c_str());
+  pipe->subscribe([&](const AudioEventCode code, const std::string& data){
+    callback(!code, data.c_str());
   });
 
   state.pipeline = pipe;

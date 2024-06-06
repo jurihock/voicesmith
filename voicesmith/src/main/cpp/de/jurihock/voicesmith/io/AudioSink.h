@@ -36,9 +36,6 @@ private:
     uint64_t outer;
   } index;
 
-  struct {
-    bool accumulate;
-    uint64_t count;
-  } underflows;
+  uint64_t underflows;
 
 };

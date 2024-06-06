@@ -29,19 +29,14 @@ void AudioSink::callback(const std::span<float> samples) {
     ++index.inner;
   });
 
-  if (ok) {
-    if (underflows.accumulate) {
-      LOG(INFO) << $("Audio sink {0} passed callbacks", underflows.count);
-      underflows = {false, 0};
-    }
-  } else {
-    if (underflows.accumulate) {
-      ++underflows.count;
-    } else if (!index.outer) {
-      underflows = {true, 1};
-    } else {
-      LOG(WARNING) << $("Audio sink fifo underflow! #{0}", index.outer);
-    }
+  if (!ok) {
+    ++underflows;
+  } else if (underflows) {
+    event(
+      AudioEventCode::SinkUnderflow,
+      $("underflows={0} inner={1} outer={2}",
+        underflows, index.inner, index.outer));
+    underflows = 0;
   }
 
   ++index.outer;
@@ -55,5 +50,5 @@ void AudioSink::onopen() {
 
 void AudioSink::onstart() {
   index = {0, 0};
-  underflows = {false, 0};
+  underflows = 0;
 }

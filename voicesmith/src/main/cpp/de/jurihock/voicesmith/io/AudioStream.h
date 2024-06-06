@@ -36,6 +36,10 @@ public:
 
 protected:
 
+  const oboe::Direction direction;
+
+  AudioEvent event;
+
   virtual void callback(const std::span<float> samples) = 0;
 
   virtual void onopen() {}
@@ -45,8 +49,6 @@ protected:
   virtual void onstop() {}
 
 private:
-
-  const oboe::Direction direction;
 
   struct {
 
@@ -76,8 +78,6 @@ private:
     int32_t xruns;
 
   } state;
-
-  AudioEvent event;
 
   oboe::DataCallbackResult onAudioReady(oboe::AudioStream* stream, void* data, int32_t size) override;
   bool onError(oboe::AudioStream* stream, oboe::Result error) override;

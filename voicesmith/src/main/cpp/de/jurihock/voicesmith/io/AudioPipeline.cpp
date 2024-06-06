@@ -60,12 +60,12 @@ void AudioPipeline::open() {
   source->fifo()->resize(fifosize, source->blocksize());
   sink->fifo()->resize(fifosize, sink->blocksize());
 
-  source->subscribe([&](const AudioEventCode code, const std::string& text) {
-    onevent(code, text);
+  source->subscribe([&](const AudioEventCode code, const std::string& data) {
+    onevent(code, data);
   });
 
-  sink->subscribe([&](const AudioEventCode code, const std::string& text) {
-    onevent(code, text);
+  sink->subscribe([&](const AudioEventCode code, const std::string& data) {
+    onevent(code, data);
   });
 }
 
@@ -77,23 +77,26 @@ void AudioPipeline::close() {
 }
 
 void AudioPipeline::start() {
-  state.doloop = true;
+  stop();
 
-  source->start();
-  sink->start();
-
-  state.loopthread = std::make_shared<std::thread>(
+  state.thread = std::make_shared<std::thread>(
     [&]() { onloop(); });
+
+  sink->start();
+  source->start();
+
+  state.loop = true;
+  state.signal.notify_all();
 }
 
 void AudioPipeline::stop() {
-  state.doloop = false;
+  state.loop = false;
 
-  if (state.loopthread != nullptr) {
-    if (state.loopthread->joinable()) {
-      state.loopthread->join();
+  if (state.thread != nullptr) {
+    if (state.thread->joinable()) {
+      state.thread->join();
     }
-    state.loopthread = nullptr;
+    state.thread = nullptr;
   }
 
   sink->stop();
@@ -129,12 +132,12 @@ void AudioPipeline::onloop() {
       });
 
       if (!ok) {
-        LOG(WARNING) << $("Audio pipe fifo overflow!");
+        event(AudioEventCode::PipeWrite, $("index={0}", index));
       }
     });
 
     if (!ok) {
-      LOG(WARNING) << $("Audio pipe fifo underflow!");
+      event(AudioEventCode::PipeRead, $("index={0} timeout={1}ms", index, timeout.count()));
     }
   };
 
@@ -149,13 +152,22 @@ void AudioPipeline::onloop() {
   auto index = uint64_t(0);
   auto timestamp = now();
 
-  timers.outer.tic();
-
-  if (state.doloop) {
-    dowork(index, timers, source->timeout() * 2);
+  if (!state.loop) {
+    std::unique_lock lock(state.mutex);
+    state.signal.wait_for(lock, std::chrono::seconds(1));
   }
 
-  while (state.doloop) {
+  if (!state.loop) {
+    return;
+  }
+
+  timers.outer.tic();
+
+  if (state.loop) {
+    dowork(index, timers, source->timeout() * 3);
+  }
+
+  while (state.loop) {
     dowork(index, timers, source->timeout());
 
     if (millis(now() - timestamp) > 10000) {
@@ -172,12 +184,12 @@ void AudioPipeline::onloop() {
   }
 }
 
-void AudioPipeline::onevent(const AudioEventCode code, const std::string& text) {
-  if (code >= AudioEventCode::Error) {
-    LOG(WARNING) << $("Aborting audio pipeline due to error: {0}!", text);
+void AudioPipeline::onevent(const AudioEventCode code, const std::string& data) {
+  if (code >= AudioEventCode::ERROR) {
+    LOG(ERROR) << $("Aborting audio pipeline due to error: {0}!", data);
     std::unique_lock lock(eventmutex);
     close();
   }
 
-  event(code, text);
+  event(code, data);
 }

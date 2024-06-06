@@ -33,8 +33,10 @@ private:
 
   struct {
 
-    std::shared_ptr<std::thread> loopthread;
-    bool doloop;
+    std::shared_ptr<std::thread> thread;
+    std::condition_variable signal;
+    std::mutex mutex;
+    bool loop;
 
   } state;
 
@@ -42,6 +44,6 @@ private:
   std::mutex eventmutex;
 
   void onloop();
-  void onevent(const AudioEventCode code, const std::string& text);
+  void onevent(const AudioEventCode code, const std::string& data);
 
 };

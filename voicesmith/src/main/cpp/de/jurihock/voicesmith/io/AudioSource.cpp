@@ -30,7 +30,13 @@ void AudioSource::callback(const std::span<float> samples) {
   });
 
   if (!ok) {
-    LOG(WARNING) << $("Audio source fifo overflow! #{0}", index.outer);
+    ++overflows;
+  } else if (overflows) {
+    event(
+      AudioEventCode::SourceOverflow,
+      $("overflows={0} inner={1} outer={2}",
+        overflows, index.inner, index.outer));
+    overflows = 0;
   }
 
   ++index.outer;
@@ -44,4 +50,5 @@ void AudioSource::onopen() {
 
 void AudioSource::onstart() {
   index = {0, 0};
+  overflows = 0;
 }

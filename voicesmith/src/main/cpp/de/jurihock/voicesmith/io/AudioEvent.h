@@ -7,7 +7,7 @@
 
 #include <eventpp/callbacklist.h>
 
-class AudioEvent final : public eventpp::CallbackList<void(const AudioEventCode code, const std::string& text)> {
+class AudioEvent final : public eventpp::CallbackList<void(const AudioEventCode code, const std::string& data)> {
 
 public:
 

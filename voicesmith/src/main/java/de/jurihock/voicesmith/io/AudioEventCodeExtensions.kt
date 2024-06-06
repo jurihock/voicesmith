@@ -9,13 +9,13 @@ inline val Int.toAudioEventCode: AudioEventCode?
 
 inline val AudioEventCode.toLogPriority: Int
   get() = when {
-    this.ordinal >= AudioEventCode.Error.ordinal -> Log.ERROR
-    this.ordinal >= AudioEventCode.Warning.ordinal -> Log.WARN
+    this.ordinal >= AudioEventCode.ERROR.ordinal -> Log.ERROR
+    this.ordinal >= AudioEventCode.WARNING.ordinal -> Log.WARN
     else -> Log.INFO
   }
 
 inline fun AudioEventCode.onError(action: () -> Unit): AudioEventCode {
-  if (this.ordinal >= AudioEventCode.Error.ordinal) {
+  if (this.ordinal >= AudioEventCode.ERROR.ordinal) {
     action()
   }
   return this

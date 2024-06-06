@@ -1,11 +1,16 @@
 package de.jurihock.voicesmith.io
 
 enum class AudioEventCode {
-  Info,
-  Warning,
+  INFO,
+  WARNING,
+  SourceOverflow,
   SourceOverrun,
+  SinkUnderflow,
   SinkUnderrun,
-  Error,
+  PipeRead,
+  PipeWrite,
+  ERROR,
   SourceError,
   SinkError,
+  PipeError,
 }
