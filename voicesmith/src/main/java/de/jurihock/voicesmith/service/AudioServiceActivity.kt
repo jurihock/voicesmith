@@ -62,6 +62,7 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
 
   protected abstract fun onAudioServiceStarted()
   protected abstract fun onAudioServiceStopped()
+  protected abstract fun onAudioServiceFailed()
 
   fun onStartStopAudioService() {
     if (service == null) {
@@ -115,7 +116,7 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
 
     service?.onServiceError {
       Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
-      onAudioServiceStopped()
+      onAudioServiceFailed()
     }
 
     onStartStopAudioService()

@@ -101,6 +101,12 @@ class MainActivity : AudioServiceActivity() {
     vibrator.off()
   }
 
+  override fun onAudioServiceFailed() {
+    state.value = false
+    game.off()
+    vibrator.error()
+  }
+
   private fun onSelectInputDevice() {
     val devices = devices.inputs.map { it.name }.toTypedArray()
     with(AlertDialog.Builder(this)) {
