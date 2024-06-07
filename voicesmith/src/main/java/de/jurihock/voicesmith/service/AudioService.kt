@@ -9,32 +9,62 @@ import de.jurihock.voicesmith.plug.TestAudioPlugin
 
 class AudioService : Service() {
 
-  var plugin: AudioPlugin? = TestAudioPlugin()
+  private var callback: ((exception: Throwable) -> Unit)? = null
+  private var plugin: AudioPlugin? = TestAudioPlugin()
 
   val isStarted: Boolean
     get() = plugin?.isStarted ?: false
 
   fun start() {
     Log.i("Starting audio plugin")
-    plugin?.start()
+    plugin?.onError { onPluginError(it) }
+    try {
+      plugin?.start()
+    } catch (exception: Throwable) {
+      onPluginError(exception)
+    }
   }
 
   fun stop() {
     Log.i("Stopping audio plugin")
-    plugin?.stop()
+    try {
+      plugin?.stop()
+    } catch (exception: Throwable) {
+      Log.e(exception)
+    }
   }
 
   override fun onCreate() {
     Log.i("Creating audio service")
-    plugin?.stop()
+    try {
+      plugin?.stop()
+    } catch (exception: Throwable) {
+      Log.e(exception)
+    }
   }
 
   override fun onDestroy() {
     Log.i("Destroying audio service")
-    plugin?.close()
+    try {
+      plugin?.close()
+    } catch (exception: Throwable) {
+      Log.e(exception)
+    }
   }
 
   override fun onBind(intent: Intent?): IBinder = bindAudioService()
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = startAudioService()
+
+  fun onServiceError(callback: (exception: Throwable) -> Unit) {
+    this.callback = callback
+  }
+
+  private fun onPluginError(exception: Throwable) {
+    try {
+      plugin?.stop()
+    } finally {
+      callback?.invoke(exception)
+    }
+  }
 
 }

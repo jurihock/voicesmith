@@ -9,6 +9,7 @@ TestAudioPlugin* make_plugin(const std::string& name, jna_callback* callback) {
   if (name == "TestAudioPlugin") {
     return new TestAudioPlugin(callback);
   }
+
   throw std::runtime_error("Invalid plugin name " + name + "!");
 }
 

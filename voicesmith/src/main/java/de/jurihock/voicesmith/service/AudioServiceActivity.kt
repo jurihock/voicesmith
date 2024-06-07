@@ -7,6 +7,7 @@ import android.content.ServiceConnection
 import android.net.Uri
 import android.os.IBinder
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import de.jurihock.voicesmith.R
@@ -26,14 +27,14 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
   private val permissionRequest = registerForActivityResult(
     ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
       when {
-        permissions.getOrDefault(permissionToRecordAudio, false) -> {
+        permissions.getOrDefault(permissionToRecordAudio, false) == true -> {
           Log.i("Record audio permission has been granted")
           Log.i("Starting audio service")
           startAudioService()
           Log.i("Binding audio service")
           bindAudioService()
         }
-        !permissions.getOrDefault(permissionToRecordAudio, false) -> {
+        permissions.getOrDefault(permissionToRecordAudio, false) == false -> {
           Log.w("Record audio permission has been denied")
           with(AlertDialog.Builder(this)) {
             setTitle(getString(R.string.permissions_rationale_title))
@@ -111,6 +112,12 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
     }
 
     service = binder.service
+
+    service?.onServiceError {
+      Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+      onAudioServiceStopped()
+    }
+
     onStartStopAudioService()
   }
 
