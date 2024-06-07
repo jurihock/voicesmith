@@ -6,6 +6,8 @@
 #include <voicesmith/io/AudioPipeline.h>
 #include <voicesmith/plug/AudioPlugin.h>
 
+#include <voicesmith/fx/PitchTimbreShiftEffect.h>
+
 class TestAudioPlugin final : public AudioPlugin {
 
 public:
@@ -40,6 +42,10 @@ private:
   struct {
 
     std::shared_ptr<AudioPipeline> pipeline;
+
+    struct {
+      std::shared_ptr<PitchTimbreShiftEffect> shift;
+    } fx;
 
   } state;
 

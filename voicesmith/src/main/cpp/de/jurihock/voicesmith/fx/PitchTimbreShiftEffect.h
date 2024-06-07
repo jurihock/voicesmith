@@ -17,6 +17,9 @@ public:
   void reset(const float samplerate, const size_t blocksize) override;
   void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override;
 
+  void pitch(const std::string& value);
+  void timbre(const std::string& value);
+
 private:
 
   struct {
@@ -33,9 +36,20 @@ private:
     std::vector<fft_t> output;
   } buffer;
 
-  std::shared_ptr<FFT> fft;
-  std::unique_ptr<stftpitchshift::STFT<fft_t>> stft;
-  std::unique_ptr<stftpitchshift::StftPitchShiftCore<fft_t>> core;
+  struct {
+    const bool normalization = true;
+    const double quefrency[2] = {0, 1e-3};
+    double pitch{1};
+    double timbre{1};
+  } params;
+
+  struct {
+    std::shared_ptr<FFT> fft;
+    std::unique_ptr<stftpitchshift::STFT<fft_t>> stft;
+    std::unique_ptr<stftpitchshift::StftPitchShiftCore<fft_t>> core;
+  } state;
+
+  std::mutex mutex;
 
   template<typename X, typename Y>
   inline static Y transform(const X x) { return static_cast<Y>(x); }

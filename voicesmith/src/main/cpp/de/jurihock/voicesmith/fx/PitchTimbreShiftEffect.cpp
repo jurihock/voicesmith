@@ -8,6 +8,8 @@ PitchTimbreShiftEffect::PitchTimbreShiftEffect(const size_t dftsize, const size_
 }
 
 void PitchTimbreShiftEffect::reset(const float samplerate, const size_t blocksize) {
+  std::unique_lock lock(mutex);
+
   config.samplerate = samplerate;
   config.blocksize = blocksize;
   config.analysis_window_size = config.dftsize + config.dftsize;
@@ -23,14 +25,31 @@ void PitchTimbreShiftEffect::reset(const float samplerate, const size_t blocksiz
   std::fill(buffer.input.begin(), buffer.input.end(), 0);
   std::fill(buffer.output.begin(), buffer.output.end(), 0);
 
-  fft = std::make_shared<FFT>(std::get<0>(winsize));
-  stft = std::make_unique<stftpitchshift::STFT<fft_t>>(fft, winsize, hopsize);
-  core = std::make_unique<stftpitchshift::StftPitchShiftCore<fft_t>>(fft, winsize, hopsize, samplerate);
+  state.fft = std::make_shared<FFT>(std::get<0>(winsize));
+  state.stft = std::make_unique<stftpitchshift::STFT<fft_t>>(state.fft, winsize, hopsize);
+  state.core = std::make_unique<stftpitchshift::StftPitchShiftCore<fft_t>>(state.fft, winsize, hopsize, samplerate);
 
-  core->normalization(true);
-  core->quefrency(0e-3);
-  core->distortion(1);
-  core->factors({ 2 });
+  state.core->normalization(params.normalization);
+  state.core->quefrency(params.quefrency[params.timbre != 1]);
+  state.core->distortion(params.timbre);
+  state.core->factors({params.pitch});
+}
+
+void PitchTimbreShiftEffect::pitch(const std::string& value) {
+  std::unique_lock lock(mutex);
+  params.pitch = std::pow(2, std::stod(value) / 12);
+  if (state.core) {
+    state.core->factors({params.pitch});
+  }
+}
+
+void PitchTimbreShiftEffect::timbre(const std::string& value) {
+  std::unique_lock lock(mutex);
+  params.timbre = std::pow(2, std::stod(value) / 12);
+  if (state.core) {
+    state.core->quefrency(params.quefrency[params.timbre != 1]);
+    state.core->distortion(params.timbre);
+  }
 }
 
 void PitchTimbreShiftEffect::apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) {
@@ -51,8 +70,9 @@ void PitchTimbreShiftEffect::apply(const uint64_t index, const std::span<const f
     transform<float, fft_t>);
 
   // perform pitch shifting
-  (*stft)(buffer.input, buffer.output, [&](auto dft) {
-    core->shiftpitch(dft);
+  (*state.stft)(buffer.input, buffer.output, [&](auto dft) {
+    std::unique_lock lock(mutex);
+    state.core->shiftpitch(dft);
   });
 
   // copy new output samples back

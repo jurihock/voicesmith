@@ -8,12 +8,12 @@
 #include <voicesmith/fx/BypassEffect.h>
 #include <voicesmith/fx/NoiseEffect.h>
 #include <voicesmith/fx/NullEffect.h>
-#include <voicesmith/fx/PitchTimbreShiftEffect.h>
 #include <voicesmith/fx/SineEffect.h>
 #include <voicesmith/fx/SweepEffect.h>
 
 TestAudioPlugin::TestAudioPlugin(jna_callback* callback) :
   callback(callback) {
+  state.fx.shift = std::make_shared<PitchTimbreShiftEffect>(1024, 4);
 }
 
 TestAudioPlugin::~TestAudioPlugin() {
@@ -32,7 +32,12 @@ void TestAudioPlugin::setup(const std::optional<int> input,
 
 void TestAudioPlugin::set(const std::string& param,
                           const std::string& value) {
-  LOG(INFO) << $("TODO: set {0} to {1}", param, value);
+  if (param == "pitch") {
+    state.fx.shift->pitch(value);
+  }
+  if (param == "timbre") {
+    state.fx.shift->timbre(value);
+  }
 }
 
 void TestAudioPlugin::start() {
@@ -43,13 +48,12 @@ void TestAudioPlugin::start() {
   auto bypass = std::make_shared<BypassEffect>();
   auto noise = std::make_shared<NoiseEffect>(1.f);
   auto null = std::make_shared<NullEffect>();
-  auto shift = std::make_shared<PitchTimbreShiftEffect>(1024, 4);
   auto sine = std::make_shared<SineEffect>(1.f, 440.f);
   auto sweep = std::make_shared<SweepEffect>(1.f, std::make_pair(440.f, 2*440.f), 2.f);
 
-  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize, bypass);
+  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize);
   auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize);
-  auto pipe = std::make_shared<AudioPipeline>(source, sink, shift);
+  auto pipe = std::make_shared<AudioPipeline>(source, sink, state.fx.shift);
 
   pipe->subscribe([&](const AudioEventCode code, const std::string& data){
     callback(!code, data.c_str());
