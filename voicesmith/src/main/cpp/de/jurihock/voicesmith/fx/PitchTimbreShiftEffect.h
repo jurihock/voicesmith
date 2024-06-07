@@ -39,8 +39,8 @@ private:
   struct {
     const bool normalization = true;
     const double quefrency[2] = {0, 1e-3};
-    double pitch{1};
-    double timbre{1};
+    double pitch = 1;
+    double timbre = 1;
   } params;
 
   struct {
