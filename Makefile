@@ -26,4 +26,5 @@ pair:
 	@$(ADB) pair $(HOST):$(PORT) $(CODE)
 
 log:
+	@$(ADB) logcat -c
 	@$(ADB) logcat -v color voicesmith.java:D voicesmith.cpp:D *:S
