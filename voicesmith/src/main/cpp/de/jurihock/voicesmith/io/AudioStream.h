@@ -2,6 +2,7 @@
 
 #include <voicesmith/Header.h>
 
+#include <voicesmith/etc/Debouncer.h>
 #include <voicesmith/io/AudioEvent.h>
 
 #include <oboe/Oboe.h>
@@ -75,6 +76,7 @@ private:
   struct {
 
     std::shared_ptr<oboe::AudioStream> stream;
+    Debouncer xrun;
     int32_t xruns;
 
   } state;

@@ -2,6 +2,8 @@
 
 #include <voicesmith/Header.h>
 
+#include <voicesmith/etc/Debouncer.h>
+#include <voicesmith/etc/Timer.h>
 #include <voicesmith/fx/AudioEffect.h>
 #include <voicesmith/io/AudioEvent.h>
 #include <voicesmith/io/AudioSink.h>
@@ -27,6 +29,16 @@ public:
 
 private:
 
+  struct timers_t {
+    Timer<std::chrono::milliseconds> outer;
+    Timer<std::chrono::milliseconds> inner;
+  };
+
+  struct debouncers_t {
+    Debouncer read;
+    Debouncer write;
+  };
+
   const std::shared_ptr<AudioSource> source;
   const std::shared_ptr<AudioSink> sink;
   const std::shared_ptr<AudioEffect> effect;
@@ -44,6 +56,7 @@ private:
   std::mutex eventmutex;
 
   void onloop();
+  bool oncycle(timers_t& timers, debouncers_t& debouncers, uint64_t& index, const std::chrono::milliseconds& timeout) const;
   void onevent(const AudioEventCode code, const std::string& data);
 
 };

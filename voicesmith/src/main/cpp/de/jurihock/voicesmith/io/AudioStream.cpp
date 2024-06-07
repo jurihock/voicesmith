@@ -15,6 +15,16 @@ AudioStream::AudioStream(const oboe::Direction direction,
   config.blocksize.get = std::nullopt;
   config.blocksize.max = std::nullopt;
   config.timeout = std::nullopt;
+
+  if (direction == oboe::Direction::Input) {
+    state.xrun.onflush([&](auto){
+      event(AudioEventCode::SourceOverrun, $("xruns={0}", state.xruns));
+    });
+  } else if (direction == oboe::Direction::Output) {
+    state.xrun.onflush([&](auto){
+      event(AudioEventCode::SinkUnderrun, $("xruns={0}", state.xruns));
+    });
+  }
 }
 
 AudioStream::~AudioStream() {
@@ -97,30 +107,30 @@ void AudioStream::open() {
 
   config.timeout = std::chrono::milliseconds(static_cast<int>(milliseconds));
 
-  LOG(DEBUG) << "~ " << oboe::convertToText(state.stream->getDirection()) << " ~";
-  LOG(DEBUG) << "DeviceId " << state.stream->getDeviceId();
-  LOG(DEBUG) << "AudioApi " << oboe::convertToText(state.stream->getAudioApi());
-  LOG(DEBUG) << "SharingMode " << oboe::convertToText(state.stream->getSharingMode());
-  LOG(DEBUG) << "PerformanceMode " << oboe::convertToText(state.stream->getPerformanceMode());
+  LOG(DEBUG) << $("~ {0} ~", oboe::convertToText(state.stream->getDirection()));
+  LOG(DEBUG) << $("DeviceId {0}", state.stream->getDeviceId());
+  LOG(DEBUG) << $("AudioApi {0}", oboe::convertToText(state.stream->getAudioApi()));
+  LOG(DEBUG) << $("SharingMode {0}", oboe::convertToText(state.stream->getSharingMode()));
+  LOG(DEBUG) << $("PerformanceMode {0}", oboe::convertToText(state.stream->getPerformanceMode()));
   if (direction == oboe::Direction::Input) {
-    LOG(DEBUG) << "InputPreset " << oboe::convertToText(state.stream->getInputPreset());
+    LOG(DEBUG) << $("InputPreset {0}", oboe::convertToText(state.stream->getInputPreset()));
   }
   else if (direction == oboe::Direction::Output) {
-    LOG(DEBUG) << "Usage " << oboe::convertToText(state.stream->getUsage());
+    LOG(DEBUG) << $("Usage {0}", oboe::convertToText(state.stream->getUsage()));
   }
-  LOG(DEBUG) << "PerformanceHintEnabled " << (state.stream->isPerformanceHintEnabled() ? "true" : "false");
-  LOG(DEBUG) << "XRunCountSupported " << (state.stream->isXRunCountSupported() ? "true" : "false");
-  LOG(DEBUG) << "SampleRate " << state.stream->getSampleRate();
-  LOG(DEBUG) << "HardwareSampleRate " << state.stream->getHardwareSampleRate();
-  LOG(DEBUG) << "ChannelCount " << state.stream->getChannelCount();
-  LOG(DEBUG) << "HardwareChannelCount " << state.stream->getHardwareChannelCount();
-  LOG(DEBUG) << "Format " << oboe::convertToText(state.stream->getFormat());
-  LOG(DEBUG) << "HardwareFormat " << oboe::convertToText(state.stream->getHardwareFormat());
-  LOG(DEBUG) << "BufferCapacityInFrames " << state.stream->getBufferCapacityInFrames();
-  LOG(DEBUG) << "BufferSizeInFrames " << state.stream->getBufferSizeInFrames();
-  LOG(DEBUG) << "FramesPerBurst " << state.stream->getFramesPerBurst();
-  LOG(DEBUG) << "FramesPerDataCallback " << state.stream->getFramesPerDataCallback();
-  LOG(DEBUG) << "Timeout " << config.timeout.value().count() << " ms";
+  LOG(DEBUG) << $("PerformanceHintEnabled {0}", state.stream->isPerformanceHintEnabled() ? "true" : "false");
+  LOG(DEBUG) << $("XRunCountSupported {0}", state.stream->isXRunCountSupported() ? "true" : "false");
+  LOG(DEBUG) << $("SampleRate {0}", state.stream->getSampleRate());
+  LOG(DEBUG) << $("HardwareSampleRate {0}", state.stream->getHardwareSampleRate());
+  LOG(DEBUG) << $("ChannelCount {0}", state.stream->getChannelCount());
+  LOG(DEBUG) << $("HardwareChannelCount {0}", state.stream->getHardwareChannelCount());
+  LOG(DEBUG) << $("Format {0}", oboe::convertToText(state.stream->getFormat()));
+  LOG(DEBUG) << $("HardwareFormat {0}", oboe::convertToText(state.stream->getHardwareFormat()));
+  LOG(DEBUG) << $("BufferCapacityInFrames {0}", state.stream->getBufferCapacityInFrames());
+  LOG(DEBUG) << $("BufferSizeInFrames {0}", state.stream->getBufferSizeInFrames());
+  LOG(DEBUG) << $("FramesPerBurst {0}", state.stream->getFramesPerBurst());
+  LOG(DEBUG) << $("FramesPerDataCallback {0}", state.stream->getFramesPerDataCallback());
+  LOG(DEBUG) << $("Timeout {0}ms", config.timeout.value().count());
 
   onopen();
 }
@@ -154,7 +164,10 @@ void AudioStream::start() {
 
   onstart();
 
-  state.xruns = state.stream->getXRunCount().value();
+  const auto xruns = state.stream->getXRunCount();
+
+  state.xrun.reset();
+  state.xruns = xruns ? xruns.value() : 0;
   state.stream->start();
 }
 
@@ -177,16 +190,9 @@ oboe::DataCallbackResult AudioStream::onAudioReady(oboe::AudioStream* stream, vo
 
   const auto xruns = stream->getXRunCount();
 
-  if (!xruns) {
-    LOG(ERROR) << oboe::convertToText(xruns.error());
-  } else if (state.xruns != xruns.value()) {
+  if (xruns) {
+    state.xrun(xruns.value() > state.xruns);
     state.xruns = xruns.value();
-
-    if (direction == oboe::Direction::Input) {
-      event(AudioEventCode::SourceOverrun, $("xruns={0}", state.xruns));
-    } else if (direction == oboe::Direction::Output) {
-      event(AudioEventCode::SinkUnderrun, $("xruns={0}", state.xruns));
-    }
   }
 
   return oboe::DataCallbackResult::Continue;

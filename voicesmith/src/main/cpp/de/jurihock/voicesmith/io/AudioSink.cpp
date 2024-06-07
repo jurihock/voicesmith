@@ -9,7 +9,14 @@ AudioSink::AudioSink(const std::optional<int> device,
                      const std::shared_ptr<AudioBlockQueue> queue) :
   AudioStream(oboe::Direction::Output, device, samplerate, blocksize),
   effect(effect),
-  queue((queue != nullptr) ? queue : std::make_shared<AudioBlockQueue>()) {}
+  queue((queue != nullptr) ? queue : std::make_shared<AudioBlockQueue>()) {
+  state.underflow.onflush([&](auto underflows){
+    event(
+      AudioEventCode::SinkUnderflow,
+      $("underflows={0} inner={1} outer={2}",
+        underflows, state.index.inner, state.index.outer));
+  });
+}
 
 std::shared_ptr<AudioEffect> AudioSink::fx() const {
   return effect;
@@ -22,24 +29,15 @@ std::shared_ptr<AudioBlockQueue> AudioSink::fifo() const {
 void AudioSink::callback(const std::span<float> samples) {
   const bool ok = queue->read([&](AudioBlock& block) {
     if (effect) {
-      effect->apply(index.inner, block, samples);
+      effect->apply(state.index.inner, block, samples);
     } else {
       block.copyto(samples);
     }
-    ++index.inner;
+    ++state.index.inner;
   });
 
-  if (!ok) {
-    ++underflows;
-  } else if (underflows) {
-    event(
-      AudioEventCode::SinkUnderflow,
-      $("underflows={0} inner={1} outer={2}",
-        underflows, index.inner, index.outer));
-    underflows = 0;
-  }
-
-  ++index.outer;
+  state.underflow(!ok);
+  ++state.index.outer;
 }
 
 void AudioSink::onopen() {
@@ -49,6 +47,6 @@ void AudioSink::onopen() {
 }
 
 void AudioSink::onstart() {
-  index = {0, 0};
-  underflows = 0;
+  state.index = {0, 0};
+  state.underflow.reset();
 }

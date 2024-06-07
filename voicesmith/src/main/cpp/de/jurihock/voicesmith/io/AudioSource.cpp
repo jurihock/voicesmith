@@ -9,7 +9,14 @@ AudioSource::AudioSource(const std::optional<int> device,
                          const std::shared_ptr<AudioBlockQueue> queue) :
   AudioStream(oboe::Direction::Input, device, samplerate, blocksize),
   effect(effect),
-  queue((queue != nullptr) ? queue : std::make_shared<AudioBlockQueue>()) {}
+  queue((queue != nullptr) ? queue : std::make_shared<AudioBlockQueue>()) {
+  state.overflow.onflush([&](auto overflows){
+    event(
+      AudioEventCode::SourceOverflow,
+      $("overflows={0} inner={1} outer={2}",
+        overflows, state.index.inner, state.index.outer));
+  });
+}
 
 std::shared_ptr<AudioEffect> AudioSource::fx() const {
   return effect;
@@ -22,24 +29,15 @@ std::shared_ptr<AudioBlockQueue> AudioSource::fifo() const {
 void AudioSource::callback(const std::span<float> samples) {
   const bool ok = queue->write([&](AudioBlock& block) {
     if (effect) {
-      effect->apply(index.inner, samples, block);
+      effect->apply(state.index.inner, samples, block);
     } else {
       block.copyfrom(samples);
     }
-    ++index.inner;
+    ++state.index.inner;
   });
 
-  if (!ok) {
-    ++overflows;
-  } else if (overflows) {
-    event(
-      AudioEventCode::SourceOverflow,
-      $("overflows={0} inner={1} outer={2}",
-        overflows, index.inner, index.outer));
-    overflows = 0;
-  }
-
-  ++index.outer;
+  state.overflow(!ok);
+  ++state.index.outer;
 }
 
 void AudioSource::onopen() {
@@ -49,6 +47,6 @@ void AudioSource::onopen() {
 }
 
 void AudioSource::onstart() {
-  index = {0, 0};
-  overflows = 0;
+  state.index = {0, 0};
+  state.overflow.reset();
 }

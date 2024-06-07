@@ -2,6 +2,7 @@
 
 #include <voicesmith/Header.h>
 
+#include <voicesmith/etc/Debouncer.h>
 #include <voicesmith/fx/AudioEffect.h>
 #include <voicesmith/io/AudioBlockQueue.h>
 #include <voicesmith/io/AudioStream.h>
@@ -32,10 +33,14 @@ private:
   const std::shared_ptr<AudioBlockQueue> queue;
 
   struct {
-    uint64_t inner;
-    uint64_t outer;
-  } index;
 
-  uint64_t overflows;
+    struct {
+      uint64_t inner;
+      uint64_t outer;
+    } index;
+
+    Debouncer overflow;
+
+  } state;
 
 };

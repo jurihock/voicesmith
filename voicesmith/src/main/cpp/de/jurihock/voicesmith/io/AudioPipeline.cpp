@@ -2,8 +2,6 @@
 
 #include <voicesmith/Source.h>
 
-#include <voicesmith/etc/Timer.h>
-
 AudioPipeline::AudioPipeline(const std::shared_ptr<AudioSource> source,
                              const std::shared_ptr<AudioSink> sink,
                              const std::shared_ptr<AudioEffect> effect) :
@@ -107,50 +105,35 @@ void AudioPipeline::stop() {
 }
 
 void AudioPipeline::onloop() {
-  struct timers_t {
-    Timer<std::chrono::milliseconds> outer;
-    Timer<std::chrono::milliseconds> inner;
-  } timers;
-
-  const auto dowork = [this](uint64_t& index, timers_t& timers, const std::chrono::milliseconds timeout) {
-    const bool ok = source->fifo()->read(timeout, [&](AudioBlock& input) {
-      timers.outer.toc();
-      timers.outer.tic();
-
-      const bool ok = sink->fifo()->write([&](AudioBlock& output) {
-        timers.inner.tic();
-
-        if (effect) {
-          effect->apply(index, input, output);
-        } else {
-          input.copyto(output);
-        }
-
-        timers.inner.toc();
-
-        ++index;
-      });
-
-      if (!ok) {
-        event(AudioEventCode::PipeWrite, $("index={0}", index));
-      }
-    });
-
-    if (!ok) {
-      event(AudioEventCode::PipeRead, $("index={0} timeout={1}ms", index, timeout.count()));
-    }
-  };
-
-  auto millis = [](const std::chrono::steady_clock::duration& duration) {
+  const auto millis = [](const std::chrono::steady_clock::duration& duration) {
     return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
   };
 
-  auto now = []() {
+  const auto now = []() {
     return std::chrono::steady_clock::now();
   };
 
+  auto ok = true;
   auto index = uint64_t(0);
+  auto timeout = source->timeout();
   auto timestamp = now();
+
+  timers_t timers;
+  debouncers_t debouncers;
+
+  debouncers.read.onflush([&](auto count){
+    event(
+      AudioEventCode::PipeRead,
+      $("index={0} count={1} timeout={2}ms",
+        index, count, timeout.count()));
+  });
+
+  debouncers.write.onflush([&](auto count){
+    event(
+      AudioEventCode::PipeWrite,
+      $("index={0} count={1}",
+        index, count));
+  });
 
   if (!state.loop) {
     std::unique_lock lock(state.mutex);
@@ -161,27 +144,62 @@ void AudioPipeline::onloop() {
     return;
   }
 
-  timers.outer.tic();
-
   if (state.loop) {
-    dowork(index, timers, source->timeout() * 3);
+    ok = oncycle(timers, debouncers, index, timeout * 3);
   }
 
-  while (state.loop) {
-    dowork(index, timers, source->timeout());
+  while (state.loop && ok) {
+    ok = oncycle(timers, debouncers, index, timeout);
 
     if (millis(now() - timestamp) > 10000) {
-      LOG(DEBUG)
-        << "Timing: "
-        << "inner " << timers.inner.str() << " / "
-        << "outer " << timers.outer.str();
-
+      LOG(DEBUG) << $("Timing: inner {0} / outer {1}", timers.inner.str(), timers.outer.str());
       timers.outer.cls();
       timers.inner.cls();
-
       timestamp = now();
     }
   }
+
+  if (!ok) {
+    LOG(ERROR) << "Aborting pipe loop due to an error!";
+  }
+}
+
+bool AudioPipeline::oncycle(timers_t& timers, debouncers_t& debouncers, uint64_t& index, const std::chrono::milliseconds& timeout) const {
+  bool okcycle = true;
+
+  if (!index) {
+    timers.outer.tic();
+  }
+
+  const bool okread = source->fifo()->read(timeout, [&](AudioBlock& input) {
+    timers.outer.toc();
+    timers.outer.tic();
+
+    const bool okwrite = sink->fifo()->write([&](AudioBlock& output) {
+      timers.inner.tic();
+
+      try {
+        if (effect) {
+          effect->apply(index, input, output);
+        } else {
+          input.copyto(output);
+        }
+      }
+      catch (const std::exception& exception) {
+        event(AudioEventCode::PipeError, exception.what());
+        okcycle = false;
+      }
+
+      timers.inner.toc();
+      ++index;
+    });
+
+    debouncers.write(!okwrite);
+  });
+
+  debouncers.read(!okread);
+
+  return okcycle;
 }
 
 void AudioPipeline::onevent(const AudioEventCode code, const std::string& data) {
