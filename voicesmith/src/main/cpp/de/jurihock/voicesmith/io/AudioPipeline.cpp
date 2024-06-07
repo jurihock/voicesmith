@@ -144,18 +144,18 @@ void AudioPipeline::onloop() {
     return;
   }
 
-  if (state.loop) {
+  while (state.loop && ok && (millis(now() - timestamp) < 1'000)) {
     ok = oncycle(timers, debouncers, index, timeout * 3);
   }
 
   while (state.loop && ok) {
-    ok = oncycle(timers, debouncers, index, timeout);
+    LOG(DEBUG) << $("Timing: inner {0} / outer {1}", timers.inner.str(), timers.outer.str());
+    timers.outer.cls();
+    timers.inner.cls();
+    timestamp = now();
 
-    if (millis(now() - timestamp) > 10000) {
-      LOG(DEBUG) << $("Timing: inner {0} / outer {1}", timers.inner.str(), timers.outer.str());
-      timers.outer.cls();
-      timers.inner.cls();
-      timestamp = now();
+    while (state.loop && ok && (millis(now() - timestamp) < 10'000)) {
+      ok = oncycle(timers, debouncers, index, timeout);
     }
   }
 

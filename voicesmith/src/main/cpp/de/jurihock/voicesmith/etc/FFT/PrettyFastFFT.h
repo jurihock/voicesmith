@@ -27,7 +27,7 @@ public:
       PFFFT_FORWARD);
 
     const auto factor = float(1) / frame.size();
-    const auto scale = [factor](float value){ return value * factor; };
+    const auto scale = [factor](float value) { return value * factor; };
     std::transform(dst, dst + dft.size() * 2, dst, scale);
   }
 
