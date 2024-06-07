@@ -63,6 +63,7 @@ void AudioStream::open() {
   // https://github.com/google/oboe/blob/main/docs/FullGuide.md
   // https://developer.android.com/games/sdk/oboe/low-latency-audio
   // https://developer.android.com/ndk/guides/audio/audio-latency
+  // https://source.android.com/docs/core/audio/latency/app
 
   oboe::AudioStreamBuilder builder;
 
