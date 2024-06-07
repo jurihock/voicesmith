@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import de.jurihock.voicesmith.etc.Game
 import de.jurihock.voicesmith.etc.Log
 import de.jurihock.voicesmith.etc.Vibrator
 import de.jurihock.voicesmith.io.AudioDevices
@@ -28,6 +29,7 @@ import de.jurihock.voicesmith.ui.UI
 class MainActivity : AudioServiceActivity() {
 
   private val devices by lazy { AudioDevices(this) }
+  private val game by lazy { Game(this) }
   private val vibrator by lazy { Vibrator(this) }
 
   private val delay = mutableIntStateOf(0)
@@ -89,11 +91,13 @@ class MainActivity : AudioServiceActivity() {
 
   override fun onAudioServiceStarted() {
     state.value = true
+    game.on()
     vibrator.on()
   }
 
   override fun onAudioServiceStopped() {
     state.value = false
+    game.off()
     vibrator.off()
   }
 

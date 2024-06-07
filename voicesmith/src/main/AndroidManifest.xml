@@ -15,7 +15,7 @@
   <application android:name="de.jurihock.voicesmith.Main"
                android:label="@string/title"
                android:icon="@drawable/voicesmith"
-               android:appCategory="audio">
+               android:appCategory="game">
 
     <activity android:name="de.jurihock.voicesmith.MainActivity"
               android:exported="true">
