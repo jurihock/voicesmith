@@ -126,6 +126,7 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
     Log.i("Disconnecting audio service")
 
     service = null
+
     onAudioServiceStopped()
   }
 

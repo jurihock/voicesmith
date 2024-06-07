@@ -1,6 +1,5 @@
 package de.jurihock.voicesmith.plug
 
-import de.jurihock.voicesmith.Defaults
 import de.jurihock.voicesmith.etc.Log
 import de.jurihock.voicesmith.io.onError
 import de.jurihock.voicesmith.io.toAudioEventCode
@@ -25,9 +24,12 @@ open class AudioPlugin(val name: String) : AutoCloseable, JnaCallback {
     res.result { res ->
       jna.voicesmith_plugin_open(name, this, ref, res)
     }.onFailure { throw it }
+  }
+
+  fun setup(input: Int, output: Int, samplerate: Int, blocksize: Int) {
     res.result { res ->
       jna.voicesmith_plugin_setup(
-        Defaults.INPUT, Defaults.OUTPUT, Defaults.SAMPLERATE, Defaults.BLOCKSIZE,
+        input, output, samplerate, blocksize,
         ref, res)
     }.onFailure { throw it }
   }

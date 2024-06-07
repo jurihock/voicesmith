@@ -4,13 +4,16 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import de.jurihock.voicesmith.etc.Log
+import de.jurihock.voicesmith.io.AudioFeatures
 import de.jurihock.voicesmith.plug.AudioPlugin
 import de.jurihock.voicesmith.plug.TestAudioPlugin
 
 class AudioService : Service() {
 
   private var callback: ((exception: Throwable) -> Unit)? = null
-  private var plugin: AudioPlugin? = TestAudioPlugin()
+  private var plugin: AudioPlugin? = null
+
+  private val features by lazy { AudioFeatures(this) }
 
   val isStarted: Boolean
     get() = plugin?.isStarted ?: false
@@ -37,7 +40,8 @@ class AudioService : Service() {
   override fun onCreate() {
     Log.i("Creating audio service")
     try {
-      plugin?.stop()
+      plugin = TestAudioPlugin()
+      plugin?.setup(0, 0, features.samplerate, features.blocksize)
     } catch (exception: Throwable) {
       Log.e(exception)
     }
@@ -47,6 +51,7 @@ class AudioService : Service() {
     Log.i("Destroying audio service")
     try {
       plugin?.close()
+      plugin = null
     } catch (exception: Throwable) {
       Log.e(exception)
     }

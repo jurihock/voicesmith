@@ -4,21 +4,24 @@ import android.app.GameManager
 import android.app.GameState
 import android.content.Context
 
-class Game(context: Context, val interruptible: Boolean? = null) {
+class Game(context: Context, private val interruptible: Boolean? = null) {
 
-  val game: GameManager? = context.getSystemService(GameManager::class.java)
+  private val game: GameManager? = context.getSystemService(GameManager::class.java)
 
   fun on() {
-    if (interruptible != null) {
-      game?.setGameState(GameState(false,
-        if (interruptible) GameState.MODE_GAMEPLAY_INTERRUPTIBLE
-        else GameState.MODE_GAMEPLAY_UNINTERRUPTIBLE))
+    when(interruptible) {
+      null -> {}
+      true -> game?.setGameState(GameState(false,
+        GameState.MODE_GAMEPLAY_INTERRUPTIBLE))
+      false -> game?.setGameState(GameState(false,
+        GameState.MODE_GAMEPLAY_UNINTERRUPTIBLE))
     }
   }
 
   fun off() {
-    if (interruptible != null) {
-      game?.setGameState(GameState(false,
+    when(interruptible) {
+      null -> {}
+      else -> game?.setGameState(GameState(false,
         GameState.MODE_NONE))
     }
   }
