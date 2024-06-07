@@ -30,6 +30,11 @@ void TestAudioPlugin::setup(const std::optional<int> input,
   config.blocksize = blocksize;
 }
 
+void TestAudioPlugin::set(const std::string& param,
+                          const std::string& value) {
+  LOG(INFO) << $("TODO: set {0} to {1}", param, value);
+}
+
 void TestAudioPlugin::start() {
   if (state.pipeline != nullptr) {
     return;

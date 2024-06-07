@@ -14,7 +14,7 @@ open class AudioPlugin(val name: String) : AutoCloseable, JnaCallback {
   private val ref = JnaPointerByReference()
   private val res = JnaResultByReference()
 
-  private var callback: ((exception: AudioPluginException) -> Unit)? = null
+  private var error: ((exception: AudioPluginException) -> Unit)? = null
   private var state: Boolean = false
 
   val isStarted: Boolean
@@ -30,6 +30,14 @@ open class AudioPlugin(val name: String) : AutoCloseable, JnaCallback {
     res.result { res ->
       jna.voicesmith_plugin_setup(
         input, output, samplerate, blocksize,
+        ref, res)
+    }.onFailure { throw it }
+  }
+
+  fun set(param: String, value: String) {
+    res.result { res ->
+      jna.voicesmith_plugin_set(
+        param, value,
         ref, res)
     }.onFailure { throw it }
   }
@@ -69,13 +77,13 @@ open class AudioPlugin(val name: String) : AutoCloseable, JnaCallback {
         }.also {
           state = false
         }
-        callback?.invoke(AudioPluginException(event, data))
+        error?.invoke(AudioPluginException(event, data))
       }
     }
   }
 
   fun onError(callback: (exception: AudioPluginException) -> Unit) {
-    this.callback = callback
+    error = callback
   }
 
 }

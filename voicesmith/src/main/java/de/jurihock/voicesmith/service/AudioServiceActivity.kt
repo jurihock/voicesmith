@@ -60,6 +60,7 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
       }
   }
 
+  protected abstract fun onAudioServiceSync()
   protected abstract fun onAudioServiceStarted()
   protected abstract fun onAudioServiceStopped()
   protected abstract fun onAudioServiceFailed()
@@ -114,11 +115,12 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
 
     service = binder.service
 
-    service?.onServiceError {
-      Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+    service?.onServiceError { exception ->
+      Toast.makeText(this, exception.message, Toast.LENGTH_LONG).show()
       onAudioServiceFailed()
     }
 
+    onAudioServiceSync()
     onStartStopAudioService()
   }
 
@@ -128,6 +130,10 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
     service = null
 
     onAudioServiceStopped()
+  }
+
+  fun <T> setAudioParameter(param: String, value: T) {
+    service?.set(param, value.toString())
   }
 
 }

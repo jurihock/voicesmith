@@ -18,6 +18,9 @@ public:
              const std::optional<float> samplerate,
              const std::optional<size_t> blocksize) override;
 
+  void set(const std::string& param,
+           const std::string& value) override;
+
   void start() override;
   void stop() override;
 

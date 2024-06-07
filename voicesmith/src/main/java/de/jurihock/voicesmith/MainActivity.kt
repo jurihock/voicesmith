@@ -71,22 +71,37 @@ class MainActivity : AudioServiceActivity() {
             IntParameterScreen(
               name = getString(R.string.delay), unit = getString(R.string.milliseconds), value = delay,
               min = 0, max = 1000, inc = 50,
-              onChange = { delay.intValue = it })
+              onChange = {
+                setAudioParameter("delay", it)
+                delay.intValue = it
+              })
             Spacer(modifier = Modifier.height(Dp(UI.PADDING)))
             IntParameterScreen(
               name = getString(R.string.pitch), unit = getString(R.string.semitones), value = pitch,
               min = -12, max = +12, inc = 1,
-              onChange = { pitch.intValue = it })
+              onChange = {
+                setAudioParameter("pitch", it)
+                pitch.intValue = it
+              })
             Spacer(modifier = Modifier.height(Dp(UI.PADDING)))
             IntParameterScreen(
               name = getString(R.string.timbre), unit = getString(R.string.semitones), value = timbre,
               min = -12, max = +12, inc = 1,
-              onChange = { timbre.intValue = it })
+              onChange = {
+                setAudioParameter("timbre", it)
+                timbre.intValue = it
+              })
             Spacer(modifier = Modifier.weight(1f))
           }
         }
       }
     }
+  }
+
+  override fun onAudioServiceSync() {
+    setAudioParameter("delay", delay.intValue)
+    setAudioParameter("pitch", pitch.intValue)
+    setAudioParameter("timbre", timbre.intValue)
   }
 
   override fun onAudioServiceStarted() {

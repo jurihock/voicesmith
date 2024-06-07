@@ -10,7 +10,7 @@ import de.jurihock.voicesmith.plug.TestAudioPlugin
 
 class AudioService : Service() {
 
-  private var callback: ((exception: Throwable) -> Unit)? = null
+  private var error: ((exception: Throwable) -> Unit)? = null
   private var plugin: AudioPlugin? = null
 
   private val features by lazy { AudioFeatures(this) }
@@ -18,9 +18,17 @@ class AudioService : Service() {
   val isStarted: Boolean
     get() = plugin?.isStarted ?: false
 
+  fun set(param: String, value: String) {
+    Log.i("Changing audio plugin parameter ${param} to ${value}")
+    try {
+      plugin?.set(param, value)
+    } catch (exception: Throwable) {
+      Log.e(exception)
+    }
+  }
+
   fun start() {
     Log.i("Starting audio plugin")
-    plugin?.onError { onPluginError(it) }
     try {
       plugin?.start()
     } catch (exception: Throwable) {
@@ -41,6 +49,7 @@ class AudioService : Service() {
     Log.i("Creating audio service")
     try {
       plugin = TestAudioPlugin()
+      plugin?.onError { onPluginError(it) }
       plugin?.setup(0, 0, features.samplerate, features.blocksize)
     } catch (exception: Throwable) {
       Log.e(exception)
@@ -61,14 +70,14 @@ class AudioService : Service() {
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = startAudioService()
 
   fun onServiceError(callback: (exception: Throwable) -> Unit) {
-    this.callback = callback
+    error = callback
   }
 
   private fun onPluginError(exception: Throwable) {
     try {
       plugin?.stop()
     } finally {
-      callback?.invoke(exception)
+      error?.invoke(exception)
     }
   }
 

@@ -52,6 +52,21 @@ jna bool voicesmith_plugin_setup(int input, int output, int samplerate, int bloc
   }
 }
 
+jna bool voicesmith_plugin_set(const char* param, const char* value, jna_pointer* pointer, jna_result* result) {
+  if (*pointer == 0) {
+    return result->nok("Invalid plugin pointer!");
+  }
+
+  try {
+    auto plugin = reinterpret_cast<AudioPlugin*>(*pointer);
+    plugin->set(param, value);
+    return result->ok();
+  }
+  catch (const std::exception& exception) {
+    return result->nok(exception);
+  }
+}
+
 jna bool voicesmith_plugin_start(jna_pointer* pointer, jna_result* result) {
   if (*pointer == 0) {
     return result->ok();
