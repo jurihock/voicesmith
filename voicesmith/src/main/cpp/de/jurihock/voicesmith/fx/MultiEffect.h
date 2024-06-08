@@ -27,7 +27,7 @@ public:
   }
 
   void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override {
-    for (size_t i = 0, x = 0, y = 1; i < effects.size(); ++i, x ^= 1, y ^= 1) {
+    for (size_t i = 0, x = 1, y = 0; i < effects.size(); ++i, x ^= 1, y ^= 1) {
       auto src = (i > 0) ? buffers[x] : input;
       auto dst = (i < effects.size() - 1) ? buffers[y] : output;
       effects[i]->apply(index, src, dst);
