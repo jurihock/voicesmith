@@ -4,5 +4,5 @@
 
 #include <StftPitchShift/Timer.h>
 
-template<class T>
+template<typename T>
 using Timer = stftpitchshift::Timer<T>;
