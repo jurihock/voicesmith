@@ -1,19 +1,11 @@
 package de.jurihock.voicesmith
 
 import android.app.Application
-import android.content.pm.ApplicationInfo
 import de.jurihock.voicesmith.etc.Log
-import de.jurihock.voicesmith.etc.LogDebugTree
 import de.jurihock.voicesmith.io.AudioDevices
 import de.jurihock.voicesmith.io.AudioFeatures
 
 class Main : Application() {
-
-  private fun log() {
-    val debug = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-    if (debug) Log.plant(LogDebugTree())
-    else Log.plant(LogDebugTree())
-  }
 
   private fun features() {
     val features = AudioFeatures(this)
@@ -38,7 +30,6 @@ class Main : Application() {
 
   override fun onCreate() {
     super.onCreate()
-    log()
     features()
     devices()
   }

@@ -46,7 +46,7 @@ class MainActivity : AudioServiceActivity() {
       val version = info.versionName
       title = getString(R.string.title_with_version).format(version)
     } catch (exception: NameNotFoundException) {
-      Log.e(exception, "Unable to determine the package version!")
+      Log.e("Unable to determine the package version!", exception)
     }
     setContent {
       MainTheme {

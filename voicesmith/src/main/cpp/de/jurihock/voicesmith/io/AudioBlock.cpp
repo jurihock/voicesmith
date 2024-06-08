@@ -12,8 +12,8 @@ size_t AudioBlock::size() const {
 
 void AudioBlock::copyfrom(const std::span<const float> samples) {
   if (block.size() != samples.size()) {
-    LOG(WARNING) << $("Unequal block size: {0} (src), {1} (dst)",
-                      samples.size(), block.size());
+    Log::w("Unequal block size: {0} (src), {1} (dst)",
+           samples.size(), block.size());
   }
 
   const size_t size = std::min(block.size(), samples.size());
@@ -23,8 +23,8 @@ void AudioBlock::copyfrom(const std::span<const float> samples) {
 
 void AudioBlock::copyfrom(const AudioBlock& other) {
   if (block.size() != other.block.size()) {
-    LOG(WARNING) << $("Unequal block size: {0} (src), {1} (dst)",
-                      other.block.size(), block.size());
+    Log::w("Unequal block size: {0} (src), {1} (dst)",
+           other.block.size(), block.size());
   }
 
   const size_t size = std::min(block.size(), other.block.size());
@@ -34,8 +34,8 @@ void AudioBlock::copyfrom(const AudioBlock& other) {
 
 void AudioBlock::copyto(const std::span<float> samples) const {
   if (block.size() != samples.size()) {
-    LOG(WARNING) << $("Unequal block size: {0} (src), {1} (dst)",
-                      block.size(), samples.size());
+    Log::w("Unequal block size: {0} (src), {1} (dst)",
+           block.size(), samples.size());
   }
 
   const size_t size = std::min(block.size(), samples.size());
@@ -45,8 +45,8 @@ void AudioBlock::copyto(const std::span<float> samples) const {
 
 void AudioBlock::copyto(AudioBlock& other) const {
   if (block.size() != other.block.size()) {
-    LOG(WARNING) << $("Unequal block size: {0} (src), {1} (dst)",
-                      block.size(), other.block.size());
+    Log::w("Unequal block size: {0} (src), {1} (dst)",
+           block.size(), other.block.size());
   }
 
   const size_t size = std::min(block.size(), other.block.size());

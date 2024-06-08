@@ -76,5 +76,4 @@ dependencies {
   implementation(libs.jetbrains.compose.runtime)
   implementation(libs.jna) { artifact { type = "aar" } }
   implementation(libs.oboe)
-  implementation(libs.timber)
 }

@@ -23,28 +23,28 @@ void AudioPipeline::open() {
   sink->open();
 
   if (source->samplerate() != sink->samplerate()) {
-    LOG(ERROR) << $("Unequal audio stream sample rate: {0} (source), {1} (sink)!",
-                    source->samplerate(), sink->samplerate());
+    Log::e("Unequal audio stream sample rate: {0} (source), {1} (sink)!",
+           source->samplerate(), sink->samplerate());
   }
 
   if (source->samplerate() == 0 || sink->samplerate() == 0) {
-    LOG(ERROR) << $("Invalid audio stream sample rate: {0} (source), {1} (sink)!",
-                    source->samplerate(), sink->samplerate());
+    Log::e("Invalid audio stream sample rate: {0} (source), {1} (sink)!",
+           source->samplerate(), sink->samplerate());
   }
 
   if (source->blocksize() != sink->blocksize()) {
-    LOG(ERROR) << $("Unequal audio stream block size: {0} (source), {1} (sink)!",
-                    source->blocksize(), sink->blocksize());
+    Log::e("Unequal audio stream block size: {0} (source), {1} (sink)!",
+           source->blocksize(), sink->blocksize());
   }
 
   if (source->blocksize() == 0 || sink->blocksize() == 0) {
-    LOG(ERROR) << $("Invalid audio stream block size: {0} (source), {1} (sink)!",
-                    source->blocksize(), sink->blocksize());
+    Log::e("Invalid audio stream block size: {0} (source), {1} (sink)!",
+           source->blocksize(), sink->blocksize());
   }
 
   if (source->maxblocksize() == 0 || sink->maxblocksize() == 0) {
-    LOG(ERROR) << $("Invalid audio stream max. block size: {0} (source), {1} (sink)!",
-                    source->maxblocksize(), sink->maxblocksize());
+    Log::e("Invalid audio stream max. block size: {0} (source), {1} (sink)!",
+           source->maxblocksize(), sink->maxblocksize());
   }
 
   if (effect) {
@@ -149,7 +149,9 @@ void AudioPipeline::onloop() {
   }
 
   while (state.loop && ok) {
-    LOG(DEBUG) << $("Timing: inner {0} / outer {1}", timers.inner.str(), timers.outer.str());
+    Log::d("Timing: inner {0} / outer {1}",
+           timers.inner.str(), timers.outer.str());
+
     timers.outer.cls();
     timers.inner.cls();
     timestamp = now();
@@ -160,7 +162,7 @@ void AudioPipeline::onloop() {
   }
 
   if (!ok) {
-    LOG(ERROR) << "Aborting pipe loop due to an error!";
+    Log::e("Aborting pipe loop due to an error!");
   }
 }
 
@@ -204,7 +206,7 @@ bool AudioPipeline::oncycle(timers_t& timers, debouncers_t& debouncers, uint64_t
 
 void AudioPipeline::onevent(const AudioEventCode code, const std::string& data) {
   if (code >= AudioEventCode::ERROR) {
-    LOG(ERROR) << $("Aborting audio pipeline due to error: {0}!", data);
+    Log::e("Aborting audio pipeline due to error: {0}!", data);
     std::unique_lock lock(eventmutex);
     close();
   }

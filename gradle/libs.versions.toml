@@ -6,7 +6,6 @@ jetbrains-compose-runtime = "1.6.10"
 jna = "5.14.0"
 kotlin = "2.0.0"
 oboe = "1.8.1"
-timber = "5.0.1"
 
 [plugins]
 android-gradle-plugin = { id = "com.android.application", version.ref = "agp" }
@@ -19,4 +18,3 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 jetbrains-compose-runtime = { group = "org.jetbrains.compose.runtime", name="runtime", version.ref = "jetbrains-compose-runtime" }
 jna = { group = "net.java.dev.jna", name="jna", version.ref = "jna" }
 oboe = { group = "com.google.oboe", name="oboe", version.ref = "oboe" }
-timber = { group = "com.jakewharton.timber", name="timber", version.ref = "timber" }

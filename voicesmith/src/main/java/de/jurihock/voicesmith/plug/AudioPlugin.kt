@@ -70,7 +70,7 @@ open class AudioPlugin(val name: String) : AutoCloseable, JnaCallback {
 
   override fun callback(code: Int, data: String) {
     code.toAudioEventCode?.let { event ->
-      Log.log(event.toLogPriority, "${name}: ${event} ${data}")
+      Log.p(event.toLogPriority, "${name}: ${event} ${data}")
       event.onError {
         res.result { res ->
           jna.voicesmith_plugin_close(ref, res)

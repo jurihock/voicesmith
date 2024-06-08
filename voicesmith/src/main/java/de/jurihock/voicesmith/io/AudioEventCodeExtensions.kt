@@ -1,6 +1,6 @@
 package de.jurihock.voicesmith.io
 
-import android.util.Log
+import de.jurihock.voicesmith.etc.Log
 
 inline val Int.toAudioEventCode: AudioEventCode?
   get() = enumValues<AudioEventCode>().firstOrNull {
