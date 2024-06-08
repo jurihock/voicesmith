@@ -16,6 +16,10 @@ public:
     }
   }
 
+  size_t size() const {
+    return effects.size();
+  }
+
   template<class T, class = std::enable_if_t<std::is_base_of_v<AudioEffect, T>>>
   inline std::shared_ptr<T> fx(const size_t index) const {
     return std::static_pointer_cast<T>(effects.at(index));
@@ -42,7 +46,7 @@ public:
 
 private:
 
-  std::vector<std::shared_ptr<AudioEffect>> effects;
+  const std::vector<std::shared_ptr<AudioEffect>> effects;
   std::array<std::vector<float>, 2> buffers;
 
 };
