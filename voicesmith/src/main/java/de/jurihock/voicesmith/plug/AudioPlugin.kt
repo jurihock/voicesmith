@@ -7,9 +7,13 @@ import de.jurihock.voicesmith.io.toLogPriority
 import de.jurihock.voicesmith.jna.JnaCallback
 import de.jurihock.voicesmith.jna.JnaPointerByReference
 import de.jurihock.voicesmith.jna.JnaResultByReference
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 open class AudioPlugin(val name: String) : AutoCloseable, JnaCallback {
 
+  private val crs = CoroutineScope(Dispatchers.Main)
   private val jna = AudioPluginFactory()
   private val ref = JnaPointerByReference()
   private val res = JnaResultByReference()
@@ -69,15 +73,18 @@ open class AudioPlugin(val name: String) : AutoCloseable, JnaCallback {
   }
 
   override fun callback(code: Int, data: String) {
-    code.toAudioEventCode?.let { event ->
-      Log.p(event.toLogPriority, "${name}: ${event} ${data}")
-      event.onError {
-        res.result { res ->
-          jna.voicesmith_plugin_close(ref, res)
-        }.also {
-          state = false
+    crs.launch {
+      code.toAudioEventCode?.let { event ->
+        Log.p(event.toLogPriority, "${name}: ${event} ${data}")
+        event.onError {
+          res.result { res ->
+            jna.voicesmith_plugin_stop(ref, res)
+          }.also {
+            state = false
+          }.also {
+            error?.invoke(AudioPluginException(event, data))
+          }.onFailure { throw it }
         }
-        error?.invoke(AudioPluginException(event, data))
       }
     }
   }
