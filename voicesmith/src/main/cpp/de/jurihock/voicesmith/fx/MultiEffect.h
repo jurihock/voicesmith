@@ -9,7 +9,12 @@ class MultiEffect final : public AudioEffect {
 public:
 
   MultiEffect(const std::initializer_list<std::shared_ptr<AudioEffect>>& effects) :
-    effects(effects) {}
+    effects(effects) {
+    if (effects.size() == 0) {
+      throw std::invalid_argument(
+        "Provide at least one audio effect!");
+    }
+  }
 
   template<class T, class = std::enable_if_t<std::is_base_of_v<AudioEffect, T>>>
   inline std::shared_ptr<T> fx(const size_t index) const {
@@ -27,9 +32,10 @@ public:
   }
 
   void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override {
-    for (size_t i = 0, x = 1, y = 0; i < effects.size(); ++i, x ^= 1, y ^= 1) {
+    const auto j = static_cast<int>(effects.size()) - 1;
+    for (auto i = 0, x = 1, y = 0; i <= j; ++i, x ^= 1, y ^= 1) {
       auto src = (i > 0) ? buffers[x] : input;
-      auto dst = (i < effects.size() - 1) ? buffers[y] : output;
+      auto dst = (i < j) ? buffers[y] : output;
       effects[i]->apply(index, src, dst);
     }
   }
