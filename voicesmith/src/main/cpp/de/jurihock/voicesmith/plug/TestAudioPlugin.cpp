@@ -13,7 +13,11 @@
 
 TestAudioPlugin::TestAudioPlugin(jna_callback* callback) :
   callback(callback) {
-  state.fx.shift = std::make_shared<PitchTimbreShiftEffect>(1024, 4);
+  state.effects = std::make_shared<MultiEffect>(
+    std::initializer_list<std::shared_ptr<AudioEffect>>({
+      std::make_shared<DelayEffect>(),
+      std::make_shared<PitchTimbreShiftEffect>()
+    }));
 }
 
 TestAudioPlugin::~TestAudioPlugin() {
@@ -32,11 +36,14 @@ void TestAudioPlugin::setup(const std::optional<int> input,
 
 void TestAudioPlugin::set(const std::string& param,
                           const std::string& value) {
+  if (param == "delay") {
+    state.effects->fx<DelayEffect>(0)->delay(value);
+  }
   if (param == "pitch") {
-    state.fx.shift->pitch(value);
+    state.effects->fx<PitchTimbreShiftEffect>(1)->pitch(value);
   }
   if (param == "timbre") {
-    state.fx.shift->timbre(value);
+    state.effects->fx<PitchTimbreShiftEffect>(1)->timbre(value);
   }
 }
 
@@ -53,7 +60,7 @@ void TestAudioPlugin::start() {
 
   auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize);
   auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize);
-  auto pipe = std::make_shared<AudioPipeline>(source, sink, state.fx.shift);
+  auto pipe = std::make_shared<AudioPipeline>(source, sink, state.effects);
 
   pipe->subscribe([&](const AudioEventCode code, const std::string& data){
     callback(!code, data.c_str());

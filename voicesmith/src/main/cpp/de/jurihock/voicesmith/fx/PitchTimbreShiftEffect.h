@@ -12,13 +12,13 @@ class PitchTimbreShiftEffect final : public AudioEffect {
 
 public:
 
-  PitchTimbreShiftEffect(const size_t dftsize, const size_t overlap);
-
-  void reset(const float samplerate, const size_t blocksize) override;
-  void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override;
+  PitchTimbreShiftEffect(const size_t dftsize = 1024, const size_t overlap = 4);
 
   void pitch(const std::string& value);
   void timbre(const std::string& value);
+
+  void reset(const float samplerate, const size_t blocksize) override;
+  void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override;
 
 private:
 
@@ -32,11 +32,6 @@ private:
   } config;
 
   struct {
-    std::vector<fft_t> input;
-    std::vector<fft_t> output;
-  } buffer;
-
-  struct {
     const bool normalization = true;
     const double quefrency[2] = {0, 1e-3};
     double pitch = 1;
@@ -48,6 +43,11 @@ private:
     std::unique_ptr<stftpitchshift::STFT<fft_t>> stft;
     std::unique_ptr<stftpitchshift::StftPitchShiftCore<fft_t>> core;
   } state;
+
+  struct {
+    std::vector<fft_t> input;
+    std::vector<fft_t> output;
+  } buffer;
 
   std::mutex mutex;
 

@@ -7,6 +7,23 @@ PitchTimbreShiftEffect::PitchTimbreShiftEffect(const size_t dftsize, const size_
   config.overlap = overlap;
 }
 
+void PitchTimbreShiftEffect::pitch(const std::string& value) {
+  std::unique_lock lock(mutex);
+  params.pitch = std::pow(2, std::stod(value) / 12);
+  if (state.core) {
+    state.core->factors({params.pitch});
+  }
+}
+
+void PitchTimbreShiftEffect::timbre(const std::string& value) {
+  std::unique_lock lock(mutex);
+  params.timbre = std::pow(2, std::stod(value) / 12);
+  if (state.core) {
+    state.core->quefrency(params.quefrency[params.timbre != 1]);
+    state.core->distortion(params.timbre);
+  }
+}
+
 void PitchTimbreShiftEffect::reset(const float samplerate, const size_t blocksize) {
   std::unique_lock lock(mutex);
 
@@ -35,24 +52,9 @@ void PitchTimbreShiftEffect::reset(const float samplerate, const size_t blocksiz
   state.core->factors({params.pitch});
 }
 
-void PitchTimbreShiftEffect::pitch(const std::string& value) {
-  std::unique_lock lock(mutex);
-  params.pitch = std::pow(2, std::stod(value) / 12);
-  if (state.core) {
-    state.core->factors({params.pitch});
-  }
-}
-
-void PitchTimbreShiftEffect::timbre(const std::string& value) {
-  std::unique_lock lock(mutex);
-  params.timbre = std::pow(2, std::stod(value) / 12);
-  if (state.core) {
-    state.core->quefrency(params.quefrency[params.timbre != 1]);
-    state.core->distortion(params.timbre);
-  }
-}
-
 void PitchTimbreShiftEffect::apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) {
+  std::unique_lock lock(mutex);
+
   const auto analysis_window_size = config.analysis_window_size;
   const auto synthesis_window_size = config.synthesis_window_size;
 
@@ -71,7 +73,6 @@ void PitchTimbreShiftEffect::apply(const uint64_t index, const std::span<const f
 
   // perform pitch shifting
   (*state.stft)(buffer.input, buffer.output, [&](auto dft) {
-    std::unique_lock lock(mutex);
     state.core->shiftpitch(dft);
   });
 
