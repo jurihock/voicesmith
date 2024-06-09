@@ -20,7 +20,7 @@ public:
   ChainEffect() :
     ChainEffect(std::make_shared<AudioEffects>()...) {}
 
-  ChainEffect(std::shared_ptr<AudioEffects>... effects) :
+  ChainEffect(const std::shared_ptr<AudioEffects>&&... effects) :
     effects(std::make_tuple(effects...)) {}
 
   template<size_t Index>
@@ -30,28 +30,21 @@ public:
   inline auto fx() const { return std::get<std::shared_ptr<Type>>(effects); }
 
   void reset(const float samplerate, const size_t blocksize) override {
-    auto onreset = [&](auto& effect){ effect->reset(samplerate, blocksize); };
-    std::apply([onreset](auto&... effect){(..., onreset(effect));}, effects);
-
-    auto onresize = [&](auto& buffer){ buffer.resize(blocksize); };
-    std::apply([onresize](auto&... buffer){(..., onresize(buffer));}, buffers);
-
-    auto onfill = [&](auto& buffer){ std::fill(buffer.begin(), buffer.end(), 0); };
-    std::apply([onfill](auto&... buffer){(..., onfill(buffer));}, buffers);
+    for_each_apply(effects, [&](auto&& effect){
+      effect->reset(samplerate, blocksize);
+    });
+    for_each_apply(buffers, [&](auto&& buffer){
+      buffer.resize(blocksize);
+      std::fill(buffer.begin(), buffer.end(), 0);
+    });
   }
 
   void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override {
-    auto enumerate = []<typename... T>(const std::tuple<T...>& values) {
-      return [&]<std::size_t... index>(std::index_sequence<index...>) {
-        return std::make_tuple(std::make_pair(index, std::get<index>(values))...);
-      }(std::make_index_sequence<sizeof...(T)>());
-    };
-
-    auto onapply = [&](auto& pair) {
-      auto effect = pair.second;
+    for_each_apply(enumerate(effects), [&](auto&& keyval){
+      auto effect = keyval.second;
       auto total = sizeof...(AudioEffects);
 
-      auto i = pair.first;
+      auto i = keyval.first;
       auto j = int(total) - 1;
 
       auto x = i % 2;
@@ -61,15 +54,26 @@ public:
       auto dst = (i < j) ? buffers[y] : output;
 
       effect->apply(index, src, dst);
-    };
-
-    auto pairs = enumerate(effects);
-    std::apply([onapply](auto&... pair){(..., onapply(pair));}, pairs);
+    });
   }
 
 private:
 
   const std::tuple<std::shared_ptr<AudioEffects>...> effects;
   std::array<std::vector<float>, 2> buffers;
+
+  template<typename T, typename F>
+  inline static void for_each_apply(T&& values, F&& f) {
+    std::apply([&](auto&&... value) {
+      (..., f(std::forward<decltype(value)>(value)));
+    }, std::forward<T>(values));
+  }
+
+  template<typename T>
+  inline static auto enumerate(T&& values) {
+    return [&]<std::size_t... index>(std::index_sequence<index...>) {
+      return std::make_tuple(std::make_pair(index, std::get<index>(values))...);
+    }(std::make_index_sequence<std::tuple_size_v<std::decay_t<T>>>());
+  }
 
 };
