@@ -1,6 +1,5 @@
 package de.jurihock.voicesmith
 
-import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.NameNotFoundException
 import android.os.Bundle
@@ -17,8 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import de.jurihock.voicesmith.etc.Game
 import de.jurihock.voicesmith.etc.Log
+import de.jurihock.voicesmith.etc.Preferences
 import de.jurihock.voicesmith.etc.Vibrator
 import de.jurihock.voicesmith.io.AudioDevices
+import de.jurihock.voicesmith.io.selectInputDevice
+import de.jurihock.voicesmith.io.selectOutputDevice
 import de.jurihock.voicesmith.service.AudioServiceActivity
 import de.jurihock.voicesmith.ui.IntParameterScreen
 import de.jurihock.voicesmith.ui.BigToggleButtonScreen
@@ -28,6 +30,7 @@ import de.jurihock.voicesmith.ui.UI
 
 class MainActivity : AudioServiceActivity() {
 
+  private val preferences by lazy { Preferences(this) }
   private val devices by lazy { AudioDevices(this) }
   private val game by lazy { Game(this) }
   private val vibrator by lazy { Vibrator(this) }
@@ -72,36 +75,31 @@ class MainActivity : AudioServiceActivity() {
               name = getString(R.string.delay), unit = getString(R.string.milliseconds), value = delay,
               min = 0, max = 1000, inc = 50,
               onChange = {
-                setAudioParameter("delay", it)
                 delay.intValue = it
+                preferences.delay = it
               })
             Spacer(modifier = Modifier.height(Dp(UI.PADDING)))
             IntParameterScreen(
               name = getString(R.string.pitch), unit = getString(R.string.semitones), value = pitch,
               min = -12, max = +12, inc = 1,
               onChange = {
-                setAudioParameter("pitch", it)
                 pitch.intValue = it
+                preferences.pitch = it
               })
             Spacer(modifier = Modifier.height(Dp(UI.PADDING)))
             IntParameterScreen(
               name = getString(R.string.timbre), unit = getString(R.string.semitones), value = timbre,
               min = -12, max = +12, inc = 1,
               onChange = {
-                setAudioParameter("timbre", it)
                 timbre.intValue = it
+                preferences.timbre = it
               })
             Spacer(modifier = Modifier.weight(1f))
           }
         }
       }
     }
-  }
-
-  override fun onAudioServiceSync() {
-    setAudioParameter("delay", delay.intValue)
-    setAudioParameter("pitch", pitch.intValue)
-    setAudioParameter("timbre", timbre.intValue)
+    sync()
   }
 
   override fun onAudioServiceStarted() {
@@ -123,27 +121,21 @@ class MainActivity : AudioServiceActivity() {
   }
 
   private fun onSelectInputDevice() {
-    val devices = devices.inputs.map { it.name }.toTypedArray()
-    with(AlertDialog.Builder(this)) {
-      setTitle(getString(R.string.select_input_device))
-      setSingleChoiceItems(devices, 0) { dialog, index ->
-        dialog.dismiss()
-      }
-      create()
-      show()
+    devices.selectInputDevice(preferences.input) {
+      preferences.input = it
     }
   }
 
   private fun onSelectOutputDevice() {
-    val devices = devices.outputs.map { it.name }.toTypedArray()
-    with(AlertDialog.Builder(this)) {
-      setTitle(getString(R.string.select_output_device))
-      setSingleChoiceItems(devices, 0) { dialog, index ->
-        dialog.dismiss()
-      }
-      create()
-      show()
+    devices.selectOutputDevice(preferences.output) {
+      preferences.output = it
     }
+  }
+
+  private fun sync() {
+    delay.intValue = preferences.delay
+    pitch.intValue = preferences.pitch
+    timbre.intValue = preferences.timbre
   }
 
 }

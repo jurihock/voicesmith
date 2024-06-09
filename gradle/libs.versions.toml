@@ -2,6 +2,7 @@
 agp = "8.4.1"
 androidx-compose-activity = "1.9.0"
 androidx-compose-material3 = "1.2.1"
+androidx-preference = "1.2.1"
 jetbrains-compose-runtime = "1.6.10"
 jna = "5.14.0"
 kotlin = "2.0.0"
@@ -15,6 +16,7 @@ jetbrains-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version
 [libraries]
 androidx-compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-compose-activity" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
+androidx-preference = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidx-preference" }
 jetbrains-compose-runtime = { group = "org.jetbrains.compose.runtime", name="runtime", version.ref = "jetbrains-compose-runtime" }
 jna = { group = "net.java.dev.jna", name="jna", version.ref = "jna" }
 oboe = { group = "com.google.oboe", name="oboe", version.ref = "oboe" }

@@ -73,6 +73,7 @@ android {
 dependencies {
   implementation(libs.androidx.compose.activity)
   implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.preference)
   implementation(libs.jetbrains.compose.runtime)
   implementation(libs.jna) { artifact { type = "aar" } }
   implementation(libs.oboe)

@@ -1,9 +1,11 @@
 package de.jurihock.voicesmith.io
 
+import android.app.AlertDialog
 import android.content.Context
 import android.media.AudioManager
+import de.jurihock.voicesmith.R
 
-class AudioDevices(context: Context) {
+class AudioDevices(val context: Context) {
 
   private val audio: AudioManager? = context.getSystemService(AudioManager::class.java)
 
@@ -16,20 +18,20 @@ class AudioDevices(context: Context) {
 
   val inputs: List<AudioDevice>
     get() {
-      return listOf(AudioDevice()) +
-        (audio?.getAudioDevices(AudioManager.GET_DEVICES_INPUTS, types) ?: emptyList())
+      val flags = AudioManager.GET_DEVICES_INPUTS
+      return listOf(AudioDevice()) + (audio?.getAudioDevices(flags, types) ?: emptyList())
     }
 
   val outputs: List<AudioDevice>
     get() {
-      return listOf(AudioDevice()) +
-        (audio?.getAudioDevices(AudioManager.GET_DEVICES_OUTPUTS, types) ?: emptyList())
+      val flags = AudioManager.GET_DEVICES_OUTPUTS
+      return listOf(AudioDevice()) + (audio?.getAudioDevices(flags, types) ?: emptyList())
     }
 
 }
 
 fun AudioManager.getAudioDevices(flags: Int, types: Map<Int, String>) : List<AudioDevice> {
-  return this.getDevices(flags).let { devices ->
+  return getDevices(flags).let { devices ->
     devices
       .filter { it.id != 0 }
       .map { device ->
@@ -41,5 +43,41 @@ fun AudioManager.getAudioDevices(flags: Int, types: Map<Int, String>) : List<Aud
             .uppercase(),
           device.sampleRates.sorted())
       }
+  }
+}
+
+fun AudioDevices.selectInputDevice(id: Int, callback: (id: Int) -> Unit) {
+  val devices = inputs
+  val names = devices.map { it.name }.toTypedArray()
+  val oldindex = devices.indexOfFirst { it.id == id }.coerceAtLeast(0)
+
+  with(AlertDialog.Builder(context)) {
+    setTitle(context.getString(R.string.select_input_device))
+    setSingleChoiceItems(names, oldindex) { dialog, newindex ->
+      dialog.dismiss()
+      if (newindex != oldindex) {
+        callback(devices[newindex].id)
+      }
+    }
+    create()
+    show()
+  }
+}
+
+fun AudioDevices.selectOutputDevice(id: Int, callback: (id: Int) -> Unit) {
+  val devices = outputs
+  val names = devices.map { it.name }.toTypedArray()
+  val oldindex = devices.indexOfFirst { it.id == id }.coerceAtLeast(0)
+
+  with(AlertDialog.Builder(context)) {
+    setTitle(context.getString(R.string.select_output_device))
+    setSingleChoiceItems(names, oldindex) { dialog, newindex ->
+      dialog.dismiss()
+      if (newindex != oldindex) {
+        callback(devices[newindex].id)
+      }
+    }
+    create()
+    show()
   }
 }

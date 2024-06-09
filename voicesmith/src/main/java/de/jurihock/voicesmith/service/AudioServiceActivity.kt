@@ -15,8 +15,6 @@ import de.jurihock.voicesmith.etc.Log
 
 abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
 
-  private var service: AudioService? = null
-
   private val permissionToRecordAudio = android.Manifest.permission.RECORD_AUDIO
   private val permissionToPostNotifications = android.Manifest.permission.POST_NOTIFICATIONS
 
@@ -60,7 +58,8 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
       }
   }
 
-  protected abstract fun onAudioServiceSync()
+  private var service: AudioService? = null
+
   protected abstract fun onAudioServiceStarted()
   protected abstract fun onAudioServiceStopped()
   protected abstract fun onAudioServiceFailed()
@@ -120,7 +119,6 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
       onAudioServiceFailed()
     }
 
-    onAudioServiceSync()
     onStartStopAudioService()
   }
 
@@ -130,10 +128,6 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
     service = null
 
     onAudioServiceStopped()
-  }
-
-  fun <T> setAudioParameter(param: String, value: T) {
-    service?.set(param, value.toString())
   }
 
 }
