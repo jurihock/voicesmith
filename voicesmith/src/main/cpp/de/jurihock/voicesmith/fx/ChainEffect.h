@@ -30,17 +30,17 @@ public:
   inline auto fx() const { return std::get<std::shared_ptr<Type>>(effects); }
 
   void reset(const float samplerate, const size_t blocksize) override {
-    for_each_apply(effects, [&](auto&& effect){
+    for_each_invoke(effects, [&](auto&& effect){
       effect->reset(samplerate, blocksize);
     });
-    for_each_apply(buffers, [&](auto&& buffer){
+    for_each_invoke(buffers, [&](auto&& buffer){
       buffer.resize(blocksize);
       std::fill(buffer.begin(), buffer.end(), 0);
     });
   }
 
   void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override {
-    for_each_apply(enumerate(effects), [&](auto&& keyval){
+    for_each_invoke(enumerate(effects), [&](auto&& keyval){
       auto effect = keyval.second;
       auto total = sizeof...(AudioEffects);
 
@@ -63,10 +63,10 @@ private:
   std::array<std::vector<float>, 2> buffers;
 
   template<typename T, typename F>
-  inline static void for_each_apply(T&& values, F&& f) {
-    std::apply([&](auto&&... value) {
-      (..., f(std::forward<decltype(value)>(value)));
-    }, std::forward<T>(values));
+  inline static void for_each_invoke(T&& values, F&& f) {
+    [&]<std::size_t... index>(std::index_sequence<index...>) {
+      (..., f(std::get<index>(values)));
+    }(std::make_index_sequence<std::tuple_size_v<std::decay_t<T>>>());
   }
 
   template<typename T>
