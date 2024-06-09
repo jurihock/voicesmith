@@ -19,6 +19,32 @@ class AudioService : Service(), SharedPreferences.OnSharedPreferenceChangeListen
   val isStarted: Boolean
     get() = plugin?.isStarted ?: false
 
+  private fun sync() {
+    Log.i("Syncing audio plugin parameters")
+    try {
+      plugin?.setup(
+        preferences.input,
+        preferences.output,
+        preferences.samplerate,
+        preferences.blocksize)
+      plugin?.set("delay", preferences.delay.toString())
+      plugin?.set("pitch", preferences.pitch.toString())
+      plugin?.set("timbre", preferences.timbre.toString())
+    } catch (exception: Throwable) {
+      Log.e(exception)
+    }
+  }
+
+  private fun reset() {
+    Log.i("Resetting audio plugin")
+    val restart = isStarted
+    stop()
+    sync()
+    if (restart) {
+      start()
+    }
+  }
+
   fun start() {
     Log.i("Starting audio plugin")
     try {
@@ -36,6 +62,9 @@ class AudioService : Service(), SharedPreferences.OnSharedPreferenceChangeListen
       Log.e(exception)
     }
   }
+
+  override fun onBind(intent: Intent?): IBinder = bindAudioService()
+  override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = startAudioService()
 
   override fun onCreate() {
     Log.i("Creating audio service")
@@ -76,9 +105,6 @@ class AudioService : Service(), SharedPreferences.OnSharedPreferenceChangeListen
     }
   }
 
-  override fun onBind(intent: Intent?): IBinder = bindAudioService()
-  override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = startAudioService()
-
   fun onServiceError(callback: (exception: Throwable) -> Unit) {
     error = callback
   }
@@ -88,32 +114,6 @@ class AudioService : Service(), SharedPreferences.OnSharedPreferenceChangeListen
       plugin?.stop()
     } finally {
       error?.invoke(exception)
-    }
-  }
-
-  private fun sync() {
-    Log.i("Syncing audio plugin parameters")
-    try {
-      plugin?.setup(
-        preferences.input,
-        preferences.output,
-        preferences.samplerate,
-        preferences.blocksize)
-      plugin?.set("delay", preferences.delay.toString())
-      plugin?.set("pitch", preferences.pitch.toString())
-      plugin?.set("timbre", preferences.timbre.toString())
-    } catch (exception: Throwable) {
-      Log.e(exception)
-    }
-  }
-
-  private fun reset() {
-    Log.i("Resetting audio plugin")
-    val restart = isStarted
-    stop()
-    sync()
-    if (restart) {
-      start()
     }
   }
 

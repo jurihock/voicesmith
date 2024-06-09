@@ -40,6 +40,12 @@ class MainActivity : AudioServiceActivity() {
   private val timbre = mutableIntStateOf(0)
   private val state = mutableStateOf(false)
 
+  private fun sync() {
+    delay.intValue = preferences.delay
+    pitch.intValue = preferences.pitch
+    timbre.intValue = preferences.timbre
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     try {
@@ -51,55 +57,58 @@ class MainActivity : AudioServiceActivity() {
     } catch (exception: NameNotFoundException) {
       Log.e("Unable to determine the package version!", exception)
     }
-    setContent {
-      MainTheme {
-        Scaffold(
-          modifier = Modifier.fillMaxSize(),
-          topBar = {
-            DeviceSelectorScreen(
-              modifier = Modifier.padding(Dp(UI.PADDING)),
-              textInput = getString(R.string.input),
-              textOutput = getString(R.string.output),
-              onSelectInputDevice = { onSelectInputDevice() },
-              onSelectOutputDevice = { onSelectOutputDevice() })
-          },
-          bottomBar = {
-            BigToggleButtonScreen(
-              modifier = Modifier.padding(Dp(UI.PADDING)),
-              textOn = getString(R.string.start), textOff = getString(R.string.stop), value = state,
-              onToggle = { onStartStopAudioService() })
-          }) { padding ->
-          Column(modifier = Modifier.padding(padding).padding(Dp(UI.PADDING))) {
-            Spacer(modifier = Modifier.weight(1f))
-            IntParameterScreen(
-              name = getString(R.string.delay), unit = getString(R.string.milliseconds), value = delay,
-              min = 0, max = 1000, inc = 50,
-              onChange = {
-                delay.intValue = it
-                preferences.delay = it
-              })
-            Spacer(modifier = Modifier.height(Dp(UI.PADDING)))
-            IntParameterScreen(
-              name = getString(R.string.pitch), unit = getString(R.string.semitones), value = pitch,
-              min = -12, max = +12, inc = 1,
-              onChange = {
-                pitch.intValue = it
-                preferences.pitch = it
-              })
-            Spacer(modifier = Modifier.height(Dp(UI.PADDING)))
-            IntParameterScreen(
-              name = getString(R.string.timbre), unit = getString(R.string.semitones), value = timbre,
-              min = -12, max = +12, inc = 1,
-              onChange = {
-                timbre.intValue = it
-                preferences.timbre = it
-              })
-            Spacer(modifier = Modifier.weight(1f))
+    try {
+      setContent {
+        MainTheme {
+          Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+              DeviceSelectorScreen(
+                modifier = Modifier.padding(Dp(UI.PADDING)),
+                textInput = getString(R.string.input),
+                textOutput = getString(R.string.output),
+                onSelectInputDevice = { onSelectInputDevice() },
+                onSelectOutputDevice = { onSelectOutputDevice() })
+            },
+            bottomBar = {
+              BigToggleButtonScreen(
+                modifier = Modifier.padding(Dp(UI.PADDING)),
+                textOn = getString(R.string.start), textOff = getString(R.string.stop), value = state,
+                onToggle = { onStartStopAudioService() })
+            }) { padding ->
+            Column(modifier = Modifier.padding(padding).padding(Dp(UI.PADDING))) {
+              Spacer(modifier = Modifier.weight(1f))
+              IntParameterScreen(
+                name = getString(R.string.delay), unit = getString(R.string.milliseconds), value = delay,
+                min = 0, max = 1000, inc = 50,
+                onChange = {
+                  delay.intValue = it
+                  preferences.delay = it
+                })
+              Spacer(modifier = Modifier.height(Dp(UI.PADDING)))
+              IntParameterScreen(
+                name = getString(R.string.pitch), unit = getString(R.string.semitones), value = pitch,
+                min = -12, max = +12, inc = 1,
+                onChange = {
+                  pitch.intValue = it
+                  preferences.pitch = it
+                })
+              Spacer(modifier = Modifier.height(Dp(UI.PADDING)))
+              IntParameterScreen(
+                name = getString(R.string.timbre), unit = getString(R.string.semitones), value = timbre,
+                min = -12, max = +12, inc = 1,
+                onChange = {
+                  timbre.intValue = it
+                  preferences.timbre = it
+                })
+              Spacer(modifier = Modifier.weight(1f))
+            }
           }
         }
       }
+    } finally {
+      sync()
     }
-    sync()
   }
 
   override fun onAudioServiceStarted() {
@@ -130,12 +139,6 @@ class MainActivity : AudioServiceActivity() {
     devices.selectOutputDevice(preferences.output) {
       preferences.output = it
     }
-  }
-
-  private fun sync() {
-    delay.intValue = preferences.delay
-    pitch.intValue = preferences.pitch
-    timbre.intValue = preferences.timbre
   }
 
 }

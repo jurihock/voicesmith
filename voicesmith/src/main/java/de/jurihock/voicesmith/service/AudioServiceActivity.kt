@@ -27,10 +27,7 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
       when {
         permissions.getOrDefault(permissionToRecordAudio, false) == true -> {
           Log.i("Record audio permission has been granted")
-          Log.i("Starting audio service")
-          startAudioService()
-          Log.i("Binding audio service")
-          bindAudioService()
+          enableAudioService()
         }
         permissions.getOrDefault(permissionToRecordAudio, false) == false -> {
           Log.w("Record audio permission has been denied")
@@ -46,8 +43,7 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
                 val uri = Uri.parse("package:${packageName}")
                 val intent = Intent(action, uri)
                 startActivity(intent)
-              }
-              finally {
+              } finally {
                 dialog.dismiss()
               }
             }
@@ -59,6 +55,30 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
   }
 
   private var service: AudioService? = null
+
+  private fun enableAudioService() {
+    try {
+      Log.i("Starting audio service")
+      startAudioService()
+      Log.i("Binding audio service")
+      bindAudioService()
+    } finally {
+      service = null
+    }
+  }
+
+  private fun disableAudioService() {
+    service?.let {
+      try {
+        Log.i("Unbinding audio service")
+        unbindAudioService()
+        Log.i("Stopping audio service")
+        stopAudioService()
+      } finally {
+        service = null
+      }
+    }
+  }
 
   protected abstract fun onAudioServiceStarted()
   protected abstract fun onAudioServiceStopped()
@@ -78,23 +98,16 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
         it.start()
         onAudioServiceStarted()
       }
+
+      if (!it.isStarted) {
+        disableAudioService()
+      }
     }
   }
 
   override fun onDestroy() {
     super.onDestroy()
-
-    if (service != null) {
-      try {
-        Log.i("Unbinding audio service")
-        unbindAudioService()
-        Log.i("Stopping audio service")
-        stopAudioService()
-      }
-      finally {
-        service = null
-      }
-    }
+    disableAudioService()
   }
 
   final override fun onServiceConnected(serviceName: ComponentName?, serviceBinder: IBinder?) {
@@ -117,6 +130,7 @@ abstract class AudioServiceActivity : ComponentActivity(), ServiceConnection {
     service?.onServiceError { exception ->
       Toast.makeText(this, exception.message, Toast.LENGTH_LONG).show()
       onAudioServiceFailed()
+      disableAudioService()
     }
 
     onStartStopAudioService()
