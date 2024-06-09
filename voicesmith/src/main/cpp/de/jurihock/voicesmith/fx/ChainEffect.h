@@ -10,12 +10,12 @@ class ChainEffect final : public AudioEffect {
 public:
 
   static_assert(
-    (std::is_base_of_v<AudioEffect, AudioEffects>&&...),
-    "Invalid audio effect type!");
-
-  static_assert(
     (sizeof...(AudioEffects)),
     "Provide at least one audio effect!");
+
+  static_assert(
+    (std::is_base_of_v<AudioEffect, AudioEffects>&&...),
+    "Invalid audio effect type!");
 
   ChainEffect() :
     ChainEffect(std::make_shared<AudioEffects>()...) {}
