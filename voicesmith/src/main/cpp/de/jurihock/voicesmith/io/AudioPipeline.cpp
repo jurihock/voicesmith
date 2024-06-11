@@ -52,19 +52,16 @@ void AudioPipeline::open() {
         source->maxblocksize(), sink->maxblocksize()));
   }
 
-  if (effect) {
-    effect->reset(source->samplerate(), source->blocksize());
-  }
+  const auto samplerate = source->samplerate();
+  const auto blocksize = source->blocksize();
+  const auto fifosize = static_cast<size_t>(
+    std::ceil(1 /* seconds */ * samplerate / blocksize));
 
-  const auto fifosize = 1; // total seconds
+  Log::i("Using samplerate={0} blocksize={1} fifosize={2}",
+         samplerate, blocksize, fifosize);
 
-  source->fifo()->resize(
-    static_cast<size_t>(fifosize * source->samplerate() / source->blocksize()),
-    source->blocksize());
-
-  sink->fifo()->resize(
-    static_cast<size_t>(fifosize * sink->samplerate() / sink->blocksize()),
-    sink->blocksize());
+  source->fifo()->resize(fifosize, blocksize);
+  sink->fifo()->resize(fifosize, blocksize);
 
   source->subscribe([&](const AudioEventCode code, const std::string& data) {
     onevent(code, data);
@@ -73,6 +70,10 @@ void AudioPipeline::open() {
   sink->subscribe([&](const AudioEventCode code, const std::string& data) {
     onevent(code, data);
   });
+
+  if (effect) {
+    effect->reset(samplerate, blocksize);
+  }
 }
 
 void AudioPipeline::close() {
