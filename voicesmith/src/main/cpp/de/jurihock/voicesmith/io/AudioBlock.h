@@ -6,8 +6,8 @@ class AudioBlock final {
 
 public:
 
-  explicit AudioBlock(const std::span<float> data_to_attach);
   explicit AudioBlock(const size_t size_to_allocate);
+  explicit AudioBlock(const std::span<float> data_to_attach);
 
   size_t size() const;
 

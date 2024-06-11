@@ -2,6 +2,11 @@
 
 #include <voicesmith/Source.h>
 
+AudioBlockQueue::~AudioBlockQueue() {
+  blocks.clear();
+  memory.clear();
+}
+
 void AudioBlockQueue::resize(const size_t queuesize, const size_t blocksize) {
   FIFO<AudioBlock>::clear();
 

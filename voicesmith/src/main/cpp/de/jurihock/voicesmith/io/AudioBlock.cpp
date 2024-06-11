@@ -2,11 +2,11 @@
 
 #include <voicesmith/Source.h>
 
-AudioBlock::AudioBlock(const std::span<float> data_to_attach) :
-  data(0), view(data_to_attach) {}
-
 AudioBlock::AudioBlock(const size_t size_to_allocate) :
   data(size_to_allocate), view(data) {}
+
+AudioBlock::AudioBlock(const std::span<float> data_to_attach) :
+  data(0), view(data_to_attach) {}
 
 size_t AudioBlock::size() const {
   return view.size();
