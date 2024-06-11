@@ -33,13 +33,13 @@ void TestAudioPlugin::setup(const std::optional<int> input,
 void TestAudioPlugin::set(const std::string& param,
                           const std::string& value) {
   if (param == "delay") {
-    state.effects->fx<DelayEffect>()->delay(value);
+    state.effects->get<DelayEffect>()->delay(value);
   }
   if (param == "pitch") {
-    state.effects->fx<PitchTimbreShiftEffect>()->pitch(value);
+    state.effects->get<PitchTimbreShiftEffect>()->pitch(value);
   }
   if (param == "timbre") {
-    state.effects->fx<PitchTimbreShiftEffect>()->timbre(value);
+    state.effects->get<PitchTimbreShiftEffect>()->timbre(value);
   }
 }
 

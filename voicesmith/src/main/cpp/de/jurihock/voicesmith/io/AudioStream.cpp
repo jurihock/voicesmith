@@ -111,30 +111,7 @@ void AudioStream::open() {
 
   config.timeout = std::chrono::milliseconds(static_cast<int>(milliseconds));
 
-  Log::d("~ {0} ~", oboe::convertToText(state.stream->getDirection()));
-  Log::d("DeviceId {0}", state.stream->getDeviceId());
-  Log::d("AudioApi {0}", oboe::convertToText(state.stream->getAudioApi()));
-  Log::d("SharingMode {0}", oboe::convertToText(state.stream->getSharingMode()));
-  Log::d("PerformanceMode {0}", oboe::convertToText(state.stream->getPerformanceMode()));
-  if (direction == oboe::Direction::Input) {
-    Log::d("InputPreset {0}", oboe::convertToText(state.stream->getInputPreset()));
-  }
-  else if (direction == oboe::Direction::Output) {
-    Log::d("Usage {0}", oboe::convertToText(state.stream->getUsage()));
-  }
-  Log::d("PerformanceHintEnabled {0}", state.stream->isPerformanceHintEnabled() ? "true" : "false");
-  Log::d("XRunCountSupported {0}", state.stream->isXRunCountSupported() ? "true" : "false");
-  Log::d("SampleRate {0}", state.stream->getSampleRate());
-  Log::d("HardwareSampleRate {0}", state.stream->getHardwareSampleRate());
-  Log::d("ChannelCount {0}", state.stream->getChannelCount());
-  Log::d("HardwareChannelCount {0}", state.stream->getHardwareChannelCount());
-  Log::d("Format {0}", oboe::convertToText(state.stream->getFormat()));
-  Log::d("HardwareFormat {0}", oboe::convertToText(state.stream->getHardwareFormat()));
-  Log::d("BufferCapacityInFrames {0}", state.stream->getBufferCapacityInFrames());
-  Log::d("BufferSizeInFrames {0}", state.stream->getBufferSizeInFrames());
-  Log::d("FramesPerBurst {0}", state.stream->getFramesPerBurst());
-  Log::d("FramesPerDataCallback {0}", state.stream->getFramesPerDataCallback());
-  Log::d("Timeout {0}ms", config.timeout.value().count());
+  dump();
 
   onopen();
 }
@@ -192,6 +169,33 @@ void AudioStream::stop() {
   onstop();
 
   state.stream->stop();
+}
+
+void AudioStream::dump() const {
+  Log::d("~ {0} ~", oboe::convertToText(state.stream->getDirection()));
+  Log::d("DeviceId {0}", state.stream->getDeviceId());
+  Log::d("AudioApi {0}", oboe::convertToText(state.stream->getAudioApi()));
+  Log::d("SharingMode {0}", oboe::convertToText(state.stream->getSharingMode()));
+  Log::d("PerformanceMode {0}", oboe::convertToText(state.stream->getPerformanceMode()));
+  if (direction == oboe::Direction::Input) {
+    Log::d("InputPreset {0}", oboe::convertToText(state.stream->getInputPreset()));
+  }
+  else if (direction == oboe::Direction::Output) {
+    Log::d("Usage {0}", oboe::convertToText(state.stream->getUsage()));
+  }
+  Log::d("PerformanceHintEnabled {0}", state.stream->isPerformanceHintEnabled() ? "true" : "false");
+  Log::d("XRunCountSupported {0}", state.stream->isXRunCountSupported() ? "true" : "false");
+  Log::d("SampleRate {0}", state.stream->getSampleRate());
+  Log::d("HardwareSampleRate {0}", state.stream->getHardwareSampleRate());
+  Log::d("ChannelCount {0}", state.stream->getChannelCount());
+  Log::d("HardwareChannelCount {0}", state.stream->getHardwareChannelCount());
+  Log::d("Format {0}", oboe::convertToText(state.stream->getFormat()));
+  Log::d("HardwareFormat {0}", oboe::convertToText(state.stream->getHardwareFormat()));
+  Log::d("BufferCapacityInFrames {0}", state.stream->getBufferCapacityInFrames());
+  Log::d("BufferSizeInFrames {0}", state.stream->getBufferSizeInFrames());
+  Log::d("FramesPerBurst {0}", state.stream->getFramesPerBurst());
+  Log::d("FramesPerDataCallback {0}", state.stream->getFramesPerDataCallback());
+  Log::d("Timeout {0}ms", config.timeout.value().count());
 }
 
 oboe::DataCallbackResult AudioStream::onAudioReady(oboe::AudioStream* stream, void* data, int32_t size) {

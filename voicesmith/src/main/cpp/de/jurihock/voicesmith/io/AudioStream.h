@@ -81,6 +81,8 @@ private:
 
   } state;
 
+  void dump() const;
+
   oboe::DataCallbackResult onAudioReady(oboe::AudioStream* stream, void* data, int32_t size) override;
   bool onError(oboe::AudioStream* stream, oboe::Result error) override;
 

@@ -24,10 +24,10 @@ public:
     effects(std::make_tuple(effects...)) {}
 
   template<size_t Index>
-  inline auto fx() const { return std::get<Index>(effects); }
+  inline auto get() const { return std::get<Index>(effects); }
 
   template<typename Type>
-  inline auto fx() const { return std::get<std::shared_ptr<Type>>(effects); }
+  inline auto get() const { return std::get<std::shared_ptr<Type>>(effects); }
 
   void reset(const float samplerate, const size_t blocksize) override {
     for_each_invoke(effects, [&](auto&& effect){
