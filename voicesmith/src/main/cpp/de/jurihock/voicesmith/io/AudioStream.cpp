@@ -96,7 +96,8 @@ void AudioStream::open() {
   if (result != oboe::Result::OK) {
     close();
     throw std::runtime_error(
-      $("Unable to open audio source stream: {0}",
+      $("Unable to open the {0} stream: {1}",
+        oboe::convertToText(direction),
         oboe::convertToText(result)));
   }
 
@@ -171,7 +172,16 @@ void AudioStream::start() {
 
   state.xrun.reset();
   state.xruns = xruns ? xruns.value() : 0;
-  state.stream->start();
+
+  const oboe::Result result = state.stream->start();
+
+  if (result != oboe::Result::OK) {
+    stop();
+    throw std::runtime_error(
+      $("Unable to start the {0} stream: {1}",
+        oboe::convertToText(direction),
+        oboe::convertToText(result)));
+  }
 }
 
 void AudioStream::stop() {
