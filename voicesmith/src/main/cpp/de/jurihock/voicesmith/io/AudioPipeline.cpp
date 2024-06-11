@@ -23,28 +23,33 @@ void AudioPipeline::open() {
   sink->open();
 
   if (source->samplerate() != sink->samplerate()) {
-    Log::e("Unequal audio stream sample rate: {0} (source), {1} (sink)!",
-           source->samplerate(), sink->samplerate());
+    throw std::runtime_error(
+      $("Unequal audio stream sample rate: {0} (source), {1} (sink)!",
+        source->samplerate(), sink->samplerate()));
   }
 
   if (source->samplerate() == 0 || sink->samplerate() == 0) {
-    Log::e("Invalid audio stream sample rate: {0} (source), {1} (sink)!",
-           source->samplerate(), sink->samplerate());
+    throw std::runtime_error(
+      $("Invalid audio stream sample rate: {0} (source), {1} (sink)!",
+        source->samplerate(), sink->samplerate()));
   }
 
   if (source->blocksize() != sink->blocksize()) {
-    Log::e("Unequal audio stream block size: {0} (source), {1} (sink)!",
-           source->blocksize(), sink->blocksize());
+    throw std::runtime_error(
+      $("Unequal audio stream block size: {0} (source), {1} (sink)!",
+        source->blocksize(), sink->blocksize()));
   }
 
   if (source->blocksize() == 0 || sink->blocksize() == 0) {
-    Log::e("Invalid audio stream block size: {0} (source), {1} (sink)!",
-           source->blocksize(), sink->blocksize());
+    throw std::runtime_error(
+      $("Invalid audio stream block size: {0} (source), {1} (sink)!",
+        source->blocksize(), sink->blocksize()));
   }
 
   if (source->maxblocksize() == 0 || sink->maxblocksize() == 0) {
-    Log::e("Invalid audio stream max. block size: {0} (source), {1} (sink)!",
-           source->maxblocksize(), sink->maxblocksize());
+    throw std::runtime_error(
+      $("Invalid audio stream max. block size: {0} (source), {1} (sink)!",
+        source->maxblocksize(), sink->maxblocksize()));
   }
 
   if (effect) {
