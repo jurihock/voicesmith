@@ -10,7 +10,7 @@ class FIFO {
 public:
 
   FIFO() {
-    resize(0, []() { return nullptr; }, [](T*) {});
+    resize(0, [](size_t) { return nullptr; }, [](T*) {});
   }
 
   virtual ~FIFO() {
@@ -40,7 +40,7 @@ public:
     }
   }
 
-  void resize(const size_t size, std::function<T*()> alloc, std::function<void(T*)> free) {
+  void resize(const size_t size, std::function<T*(size_t)> alloc, std::function<void(T*)> free) {
     clear();
 
     func = {alloc, free};
@@ -48,7 +48,7 @@ public:
     done = moodycamel::BlockingReaderWriterQueue<T*>(size);
 
     for (size_t i = 0; i < size; ++i) {
-      done.enqueue(func.alloc());
+      done.enqueue(func.alloc(i));
     }
   }
 
@@ -117,7 +117,7 @@ public:
 private:
 
   struct {
-    std::function<T*()> alloc;
+    std::function<T*(size_t)> alloc;
     std::function<void(T*)> free;
   } func;
 

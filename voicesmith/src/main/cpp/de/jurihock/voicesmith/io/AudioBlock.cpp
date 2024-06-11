@@ -2,62 +2,64 @@
 
 #include <voicesmith/Source.h>
 
-AudioBlock::AudioBlock(const size_t capacity) {
-  block.resize(capacity);
-}
+AudioBlock::AudioBlock(const std::span<float> data_to_attach) :
+  data(0), view(data_to_attach) {}
+
+AudioBlock::AudioBlock(const size_t size_to_allocate) :
+  data(size_to_allocate), view(data) {}
 
 size_t AudioBlock::size() const {
-  return block.size();
+  return view.size();
 }
 
 void AudioBlock::copyfrom(const std::span<const float> samples) {
-  if (block.size() != samples.size()) {
+  if (view.size() != samples.size()) {
     Log::w("Unequal block size: {0} (src), {1} (dst)",
-           samples.size(), block.size());
+           samples.size(), view.size());
   }
 
-  const size_t size = std::min(block.size(), samples.size());
+  const size_t size = std::min(view.size(), samples.size());
 
-  std::memcpy(block.data(), samples.data(), size * sizeof(float));
+  std::memcpy(view.data(), samples.data(), size * sizeof(float));
 }
 
 void AudioBlock::copyfrom(const AudioBlock& other) {
-  if (block.size() != other.block.size()) {
+  if (view.size() != other.view.size()) {
     Log::w("Unequal block size: {0} (src), {1} (dst)",
-           other.block.size(), block.size());
+           other.view.size(), view.size());
   }
 
-  const size_t size = std::min(block.size(), other.block.size());
+  const size_t size = std::min(view.size(), other.view.size());
 
-  std::memcpy(block.data(), other.block.data(), size * sizeof(float));
+  std::memcpy(view.data(), other.view.data(), size * sizeof(float));
 }
 
 void AudioBlock::copyto(const std::span<float> samples) const {
-  if (block.size() != samples.size()) {
+  if (view.size() != samples.size()) {
     Log::w("Unequal block size: {0} (src), {1} (dst)",
-           block.size(), samples.size());
+           view.size(), samples.size());
   }
 
-  const size_t size = std::min(block.size(), samples.size());
+  const size_t size = std::min(view.size(), samples.size());
 
-  std::memcpy(samples.data(), block.data(), size * sizeof(float));
+  std::memcpy(samples.data(), view.data(), size * sizeof(float));
 }
 
 void AudioBlock::copyto(AudioBlock& other) const {
-  if (block.size() != other.block.size()) {
+  if (view.size() != other.view.size()) {
     Log::w("Unequal block size: {0} (src), {1} (dst)",
-           block.size(), other.block.size());
+           view.size(), other.view.size());
   }
 
-  const size_t size = std::min(block.size(), other.block.size());
+  const size_t size = std::min(view.size(), other.view.size());
 
-  std::memcpy(other.block.data(), block.data(), size * sizeof(float));
+  std::memcpy(other.view.data(), view.data(), size * sizeof(float));
 }
 
 AudioBlock::operator std::span<float>() {
-  return std::span<float>(block.data(), block.size());
+  return view;
 }
 
 AudioBlock::operator std::span<const float>() const {
-  return std::span<const float>(block.data(), block.size());
+  return view;
 }

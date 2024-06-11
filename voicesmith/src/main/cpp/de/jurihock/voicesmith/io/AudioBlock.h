@@ -6,7 +6,8 @@ class AudioBlock final {
 
 public:
 
-  AudioBlock(const size_t capacity);
+  explicit AudioBlock(const std::span<float> data_to_attach);
+  explicit AudioBlock(const size_t size_to_allocate);
 
   size_t size() const;
 
@@ -21,6 +22,7 @@ public:
 
 private:
 
-  std::vector<float> block;
+  std::vector<float> data;
+  std::span<float> view;
 
 };
