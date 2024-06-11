@@ -74,7 +74,9 @@ void AudioStream::open() {
   builder.setFramesPerDataCallback(static_cast<int32_t>(config.blocksize.set.value_or(oboe::Unspecified)));
 
   builder.setChannelCount(oboe::ChannelCount::Mono);
+  builder.setChannelConversionAllowed(true);
   builder.setFormat(oboe::AudioFormat::Float);
+  builder.setFormatConversionAllowed(true);
   builder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
   builder.setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Fastest);
   builder.setSharingMode(oboe::SharingMode::Exclusive);
