@@ -21,6 +21,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/libs/pffft.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/pocketfft.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/readerwriterqueue.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/libs/stftpitchshift.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/libs/vad.cmake")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
   android
@@ -31,4 +32,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
   pffft
   pocketfft
   readerwriterqueue
-  stftpitchshift)
+  stftpitchshift
+  vad)
