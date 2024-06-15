@@ -15,7 +15,8 @@ if(pffft_ADDED)
   add_library(pffft)
 
   target_sources(pffft
-    PUBLIC "${HDR}" "${SRC}")
+    PUBLIC "${HDR}"
+    PRIVATE "${SRC}")
 
   target_include_directories(pffft
     PUBLIC "${pffft_SOURCE_DIR}")
