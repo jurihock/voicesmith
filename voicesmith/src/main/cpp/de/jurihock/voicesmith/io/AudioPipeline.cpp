@@ -28,28 +28,10 @@ void AudioPipeline::open() {
         source->samplerate(), sink->samplerate()));
   }
 
-  if (source->samplerate() == 0 || sink->samplerate() == 0) {
-    throw std::runtime_error(
-      $("Invalid audio stream sample rate: {0} (source), {1} (sink)!",
-        source->samplerate(), sink->samplerate()));
-  }
-
   if (source->blocksize() != sink->blocksize()) {
     throw std::runtime_error(
       $("Unequal audio stream block size: {0} (source), {1} (sink)!",
         source->blocksize(), sink->blocksize()));
-  }
-
-  if (source->blocksize() == 0 || sink->blocksize() == 0) {
-    throw std::runtime_error(
-      $("Invalid audio stream block size: {0} (source), {1} (sink)!",
-        source->blocksize(), sink->blocksize()));
-  }
-
-  if (source->maxblocksize() == 0 || sink->maxblocksize() == 0) {
-    throw std::runtime_error(
-      $("Invalid audio stream max. block size: {0} (source), {1} (sink)!",
-        source->maxblocksize(), sink->maxblocksize()));
   }
 
   const auto samplerate = source->samplerate();
