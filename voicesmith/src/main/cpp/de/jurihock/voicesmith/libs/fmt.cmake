@@ -2,6 +2,6 @@
 
 CPMAddPackage(
   NAME fmt
-  VERSION 10.2.1
-  GIT_TAG 10.2.1
+  VERSION 12.0.0
+  GIT_TAG 12.0.0
   GITHUB_REPOSITORY fmtlib/fmt)

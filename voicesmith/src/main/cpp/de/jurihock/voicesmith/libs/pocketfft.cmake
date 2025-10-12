@@ -2,8 +2,8 @@
 
 CPMAddPackage(
   NAME pocketfft
-  VERSION 2024.05.05
-  GIT_TAG b557a3519ccc1e36b74dc0901a073dd7872c0af2
+  VERSION 2024.11.30
+  GIT_TAG 0fa0ef591e38c2758e3184c6c23e497b9f732ffa
   GIT_REPOSITORY https://gitlab.mpcdf.mpg.de/mtr/pocketfft
   DOWNLOAD_ONLY YES)
 

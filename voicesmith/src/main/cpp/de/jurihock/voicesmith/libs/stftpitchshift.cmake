@@ -3,7 +3,7 @@
 CPMAddPackage(
   NAME stftpitchshift
   VERSION 2.0
-  GIT_TAG 8e55dc639811a8ac5b3f5bc3d1f90a11c59ca582
+  GIT_TAG 1a4f21f6c300a785cce860e374fd63cb5e9ba154
   GITHUB_REPOSITORY jurihock/stftPitchShift
   DOWNLOAD_ONLY YES)
 

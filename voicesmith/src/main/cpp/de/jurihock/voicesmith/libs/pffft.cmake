@@ -2,8 +2,8 @@
 
 CPMAddPackage(
   NAME pffft
-  VERSION 2024.04.08
-  GIT_TAG fbc4058602803f40dc554b8a5d2bcc694c005f2f
+  VERSION 2025.02.24
+  GIT_TAG d7a4c0206a29423478776d6b23a37bbb308f21d5
   GIT_REPOSITORY https://bitbucket.org/jpommier/pffft
   DOWNLOAD_ONLY YES)
 

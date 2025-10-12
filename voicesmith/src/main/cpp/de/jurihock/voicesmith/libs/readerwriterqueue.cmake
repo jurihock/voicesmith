@@ -2,7 +2,7 @@
 
 CPMAddPackage(
   NAME readerwriterqueue
-  VERSION 1.0.6
+  VERSION 1.0.7
   GITHUB_REPOSITORY cameron314/readerwriterqueue
   DOWNLOAD_ONLY YES)
 
