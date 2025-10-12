@@ -1,5 +1,5 @@
 [versions]
-agp = "8.4.1"
+agp = "8.13.0"
 androidx-compose-activity = "1.9.0"
 androidx-compose-material3 = "1.2.1"
 androidx-preference = "1.2.1"
