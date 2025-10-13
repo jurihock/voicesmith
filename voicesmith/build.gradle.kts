@@ -3,8 +3,9 @@
 // - AndroidX Compose de facto require at least SDK 34
 // - JDK version must match SDK version
 //   https://developer.android.com/build/jdks
+val min by extra(33)
 val sdk by extra(34)
-val jdk by extra(JavaVersion.VERSION_17)
+val jdk by extra(17)
 
 // also consider using the appropriate NDK and AGP (libs.versions.toml) version
 // https://developer.android.com/build/releases/gradle-plugin#compatibility
@@ -22,7 +23,7 @@ android {
     applicationId = "de.jurihock.voicesmith"
     versionName = "3.0"
     versionCode = 13
-    minSdk = sdk
+    minSdk = min
     targetSdk = sdk
     ndk {
       // restrict ABIs as supplied by Oboe
@@ -46,10 +47,12 @@ android {
 
   compileSdk = sdk
   compileOptions {
-    sourceCompatibility = jdk
-    targetCompatibility = jdk
+    sourceCompatibility = JavaVersion.toVersion(jdk)
+    targetCompatibility = JavaVersion.toVersion(jdk)
   }
+  // TODO kotlin jvm version
   kotlinOptions {
+    @Suppress("DEPRECATION")
     jvmTarget = jdk.toString()
   }
 
@@ -73,6 +76,11 @@ android {
     }
   }
 }
+
+// TODO kotlin jvm version
+//kotlin {
+//  jvmToolchain(jdk)
+//}
 
 dependencies {
   implementation(libs.androidx.compose.activity)
