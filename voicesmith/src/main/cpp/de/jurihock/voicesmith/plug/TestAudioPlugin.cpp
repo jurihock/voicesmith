@@ -14,7 +14,7 @@
 
 TestAudioPlugin::TestAudioPlugin(jna_callback* callback) :
   callback(callback) {
-  state.effects = std::make_shared<ChainEffect<DelayEffect, PitchTimbreShiftEffect>>();
+  state.effects = std::make_shared<StereoChainEffect<DelayEffect, PitchTimbreShiftEffect>>();
 }
 
 TestAudioPlugin::~TestAudioPlugin() {
@@ -56,7 +56,7 @@ void TestAudioPlugin::start() {
   auto sweep = std::make_shared<SweepEffect>(1.f, std::make_pair(440.f, 2*440.f), 2.f);
   auto vad = std::make_shared<VadEffect>();
 
-  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize, vad);
+  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize);
   auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize);
   auto pipe = std::make_shared<AudioPipeline>(source, sink, state.effects);
 

@@ -6,7 +6,7 @@
 #include <voicesmith/io/AudioPipeline.h>
 #include <voicesmith/plug/AudioPlugin.h>
 
-#include <voicesmith/fx/ChainEffect.h>
+#include <voicesmith/fx/StereoChainEffect.h>
 #include <voicesmith/fx/DelayEffect.h>
 #include <voicesmith/fx/PitchTimbreShiftEffect.h>
 
@@ -44,7 +44,7 @@ private:
   struct {
 
     std::shared_ptr<AudioPipeline> pipeline;
-    std::shared_ptr<ChainEffect<DelayEffect, PitchTimbreShiftEffect>> effects;
+    std::shared_ptr<StereoChainEffect<DelayEffect, PitchTimbreShiftEffect>> effects;
 
   } state;
 
