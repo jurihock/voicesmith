@@ -38,7 +38,7 @@ An audio effect implements the following interface:
 
 The `reset` callback is triggered once at startup. It provides the audio stream parameters in advance. Not all audio effects need to implement this event.
 
-The `apply` callback is triggered on data block processing. The `input` and `output` buffers are of the same length and addresses the normalized mono samples.
+The `apply` callback is triggered on data block processing. The `input` and `output` buffers are of the same length and address the normalized mono samples.
 
 Use the `ChainEffect` to concatenate multiple audio effects. In case of stereo use `StereoChainEffect`. It will allocate each audio effect instance twice. The `StereoChainEffect` will also handle the signal decoding and channel routing.
 
