@@ -11,7 +11,11 @@ class StereoChainEffect : public AudioEffect
 public:
 
   template<typename Type>
-  inline auto get() const { return left.template get<Type>(); }
+  inline void get(const std::function<void(std::shared_ptr<Type> effect)> callback) const
+  {
+    left.template get<Type>(callback);
+    right.template get<Type>(callback);
+  }
 
   void reset(const float samplerate, const size_t blocksize) override {
     const size_t n = blocksize / 2;
