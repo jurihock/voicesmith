@@ -13,55 +13,44 @@ public:
   template<typename Type>
   inline void get(const std::function<void(std::shared_ptr<Type> effect)> callback) const
   {
-    left.template get<Type>(callback);
-    right.template get<Type>(callback);
+    effects[0].template get<Type>(callback);
+    effects[1].template get<Type>(callback);
   }
 
   void reset(const float samplerate, const size_t blocksize) override {
     const size_t n = blocksize / 2;
 
-    left.reset(samplerate, n);
-    right.reset(samplerate, n);
+    effects[0].reset(samplerate, n);
+    effects[1].reset(samplerate, n);
+
+    inputs[0].resize(n);
+    inputs[1].resize(n);
+
+    outputs[0].resize(n);
+    outputs[1].resize(n);
   }
 
   void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override {
     const size_t n = input.size() / 2;
 
-    inputs.left.resize(n);
-    inputs.right.resize(n);
-
-    outputs.left.resize(n);
-    outputs.right.resize(n);
-
     for (size_t i = 0; i < n; ++i) {
-      inputs.left[i] = input[i * 2 + 0];
-      inputs.right[i] = input[i * 2 + 1];
+      inputs[0][i] = input[i * 2 + 0];
+      inputs[1][i] = input[i * 2 + 1];
     }
 
-    left.apply(index, inputs.left, outputs.left);
-    right.apply(index, inputs.right, outputs.right);
+    effects[0].apply(index, inputs[0], outputs[0]);
+    effects[1].apply(index, inputs[1], outputs[1]);
 
     for (size_t i = 0; i < n; ++i) {
-      output[i * 2 + 0] = outputs.left[i];
-      output[i * 2 + 1] = outputs.right[i];
+      output[i * 2 + 0] = outputs[0][i];
+      output[i * 2 + 1] = outputs[1][i];
     }
   }
 
 private:
 
-  ChainEffect<AudioEffects...> left;
-  ChainEffect<AudioEffects...> right;
-
-  struct
-  {
-    std::vector<float> left;
-    std::vector<float> right;
-  } inputs;
-
-  struct
-  {
-    std::vector<float> left;
-    std::vector<float> right;
-  } outputs;
+  std::array<ChainEffect<AudioEffects...>, 2> effects;
+  std::array<std::vector<float>, 2> inputs;
+  std::array<std::vector<float>, 2> outputs;
 
 };
