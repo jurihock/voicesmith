@@ -1,14 +1,21 @@
-// - Oboe with AAudio API requires at least SDK 27
-// - Some particular functions require at least SDK 33
-// - AndroidX Compose de facto require at least SDK 34
-// - JDK version must match SDK version
-//   https://developer.android.com/build/jdks
-val min by extra(33)
-val sdk by extra(34)
-val jdk by extra(17)
+// use appropriate version of Gradle, JDK, NDK, and AGP
+// for a particular version of Android Studio
+// e.g. Narwhal 4 Feature Drop | 2025.1.4
+// - Gradle >= 8.13
+// - JDK >= 17
+// - NDK >= N/A (27.0.12077973)
+// - AGP >= 8.13.0
+//   https://developer.android.com/build/releases/gradle-plugin#compatibility
 
-// also consider using the appropriate NDK and AGP (libs.versions.toml) version
-// https://developer.android.com/build/releases/gradle-plugin#compatibility
+// Android SDK and JVM compatibility considerations
+// - Oboe with AAudio API requires at least SDK 27 (consider as minSdk)
+// - Samsung Galaxy A13 5G is our main device running Android 14 (consider as targetSdk)
+// - set compileSdk as high as required by project dependencies
+// - set Java compatibility version according to
+//   https://developer.android.com/build/jdks
+//   https://developer.android.com/studio/write/java8-support
+val sdk by extra(intArrayOf(27, 34, 36)) // minSdk <= targetSdk <= compileSdk
+val jvm by extra(1.8) // sourceCompatibility == targetCompatibility == jvmTarget
 
 plugins {
   alias(libs.plugins.android.gradle.plugin)
@@ -23,8 +30,8 @@ android {
     applicationId = "de.jurihock.voicesmith"
     versionName = "3.0"
     versionCode = 13
-    minSdk = min
-    targetSdk = sdk
+    minSdk = sdk[0]
+    targetSdk = sdk[1]
     ndk {
       // restrict ABIs as supplied by Oboe
       // see https://github.com/google/oboe/blob/main/build_all_android.sh
@@ -45,15 +52,17 @@ android {
     }
   }
 
-  compileSdk = sdk
+  compileSdk = sdk[2]
   compileOptions {
-    sourceCompatibility = JavaVersion.toVersion(jdk)
-    targetCompatibility = JavaVersion.toVersion(jdk)
+    sourceCompatibility = JavaVersion.toVersion(jvm)
+    targetCompatibility = JavaVersion.toVersion(jvm)
   }
-  // TODO kotlin jvm version
   kotlinOptions {
+    // consider jvmTarget as non-officially deprecated
+    // https://stackoverflow.com/q/77363060
+    // https://youtrack.jetbrains.com/issue/KT-27301#focus=Comments-27-6565858.0-0
     @Suppress("DEPRECATION")
-    jvmTarget = jdk.toString()
+    jvmTarget = jvm.toString()
   }
 
   buildTypes {
@@ -77,16 +86,11 @@ android {
   }
 }
 
-// TODO kotlin jvm version
-//kotlin {
-//  jvmToolchain(jdk)
-//}
-
 dependencies {
-  implementation(libs.androidx.compose.activity)
-  implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.activity)
+  implementation(libs.androidx.material3)
   implementation(libs.androidx.preference)
   implementation(libs.jetbrains.compose.runtime)
-  implementation(libs.jna) { artifact { type = "aar" } }
+  implementation(libs.jna)
   implementation(libs.oboe)
 }
