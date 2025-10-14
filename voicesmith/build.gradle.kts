@@ -91,6 +91,6 @@ dependencies {
   implementation(libs.androidx.material3)
   implementation(libs.androidx.preference)
   implementation(libs.jetbrains.compose.runtime)
-  implementation(libs.jna)
+  implementation(libs.jna) { artifact { type = "aar" } } // don't remove aar artifact!
   implementation(libs.oboe)
 }
