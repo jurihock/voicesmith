@@ -50,17 +50,17 @@ An audio plugin implements following interface:
 #include <voicesmith/fx/AudioPlugin.h>
 ```
 
-but also in the _Kotlin_ domain:
+and another one in the _Kotlin_ domain:
 
 ```c++
 AudioPlugin.kt
 ```
 
-An audio plugin manages the `AudioSource`, `AudioSink`, `AudioPipeline`, and `[Stereo]ChainEffect` instances.
+The purpose of the audio plugin is to manage the `AudioSource`, `AudioSink`, `AudioPipeline`, and `[Stereo]ChainEffect` instances.
 
 It also must provide callbacks `setup` and `set` for parameter synchronization, as well as callbacks `start` and `stop` for state management.
 
-On the _Kotlin_ side `MainActivity.kt` provides the UI for the associated audio plugin, which is currently the `TestAudioPlugin` by default.
+On the _Kotlin_ side the `MainActivity.kt` file provides the UI for the associated audio plugin, which is currently the `TestAudioPlugin` by default.
 
 Currently the `MainActivity.kt` provides three audio parameters:
 
