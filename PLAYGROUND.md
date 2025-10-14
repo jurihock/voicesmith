@@ -68,4 +68,6 @@ Currently the `MainActivity.kt` provides three audio parameters:
 - `pitch` in semitones
 - `timbre` in semitones
 
-The value range is also specified in the same `.kt` file. In the default setting, a change to any parameter triggers the `TestAudioPlugin::set` callback in the `C++` domain. The parameter names and values are passed as a string.
+The parameter value range is also specified in the same `.kt` file. In default case, a change to any parameter triggers the `TestAudioPlugin::set` callback in the `C++` domain. The parameter names and values are passed as a string.
+
+The audio plugin preferences are managed by the `Preferences.kt`. `AudioFeatures.kt` provides system defaults like `samplesrate` and `blocksize`.
