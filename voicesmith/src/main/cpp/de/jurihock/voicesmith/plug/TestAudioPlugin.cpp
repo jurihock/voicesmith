@@ -55,12 +55,12 @@ void TestAudioPlugin::start() {
     return;
   }
 
-  auto bypass = std::make_shared<BypassEffect>();
-  auto noise = std::make_shared<NoiseEffect>(1.f);
-  auto null = std::make_shared<NullEffect>();
-  auto sine = std::make_shared<SineEffect>(1.f, 440.f);
-  auto sweep = std::make_shared<SweepEffect>(1.f, std::make_pair(440.f, 2*440.f), 2.f);
-  auto vad = std::make_shared<VadEffect>();
+  // auto bypass = std::make_shared<BypassEffect>();
+  // auto noise = std::make_shared<NoiseEffect>(1.f);
+  // auto null = std::make_shared<NullEffect>();
+  // auto sine = std::make_shared<SineEffect>(1.f, 440.f);
+  // auto sweep = std::make_shared<SweepEffect>(1.f, std::make_pair(440.f, 2*440.f), 2.f);
+  // auto vad = std::make_shared<VadEffect>();
 
   auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize);
   auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize);
