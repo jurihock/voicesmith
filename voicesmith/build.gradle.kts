@@ -14,7 +14,7 @@
 // - set Java compatibility version according to
 //   https://developer.android.com/build/jdks
 //   https://developer.android.com/studio/write/java8-support
-val sdk by extra(intArrayOf(27, 34, 36)) // minSdk <= targetSdk <= compileSdk
+val sdk by extra(intArrayOf(28, 34, 36)) // minSdk <= targetSdk <= compileSdk
 val jvm by extra(1.8) // sourceCompatibility == targetCompatibility == jvmTarget
 
 plugins {
