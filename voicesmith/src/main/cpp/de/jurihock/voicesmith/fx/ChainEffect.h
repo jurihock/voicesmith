@@ -20,7 +20,7 @@ public:
   ChainEffect() :
     ChainEffect(std::make_shared<AudioEffects>()...) {}
 
-  ChainEffect(const std::shared_ptr<AudioEffects>&&... effects) :
+  explicit ChainEffect(const std::shared_ptr<AudioEffects>&&... effects) :
     effects(std::make_tuple(effects...)) {}
 
   // TODO function callback
