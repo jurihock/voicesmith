@@ -30,7 +30,7 @@ https://developer.android.com/studio/debug/logcat
 
 # Audio Effect
 
-An audio effect implements following interface:
+An audio effect implements the following interface:
 
 ```c++
 #include <voicesmith/fx/AudioEffect.h>
@@ -44,7 +44,7 @@ Use the `ChainEffect` to concatenate multiple audio effects. In case of stereo u
 
 # Audio Plugin
 
-An audio plugin implements following interface:
+An audio plugin implements the following interface:
 
 ```c++
 #include <voicesmith/fx/AudioPlugin.h>
@@ -62,12 +62,12 @@ It also must provide callbacks `setup` and `set` for parameter synchronization, 
 
 On the _Kotlin_ side the `MainActivity.kt` file provides the UI for the associated audio plugin, which is currently the `TestAudioPlugin` by default.
 
-Currently the `MainActivity.kt` provides three audio parameters:
+Currently the `MainActivity.kt` exposes three audio parameters:
 
 - `delay` in milliseconds
 - `pitch` in semitones
 - `timbre` in semitones
 
-The parameter value range is also specified in the same `.kt` file. In default case, a change to any parameter triggers the `TestAudioPlugin::set` callback in the `C++` domain. The parameter names and values are passed as a string.
+The parameter value range is also specified in the same `.kt` file. In default case, a change to any parameter triggers the `TestAudioPlugin::set` callback in the _C++_ domain. The parameter names and values are passed as a string.
 
-The audio plugin preferences are managed by the `Preferences.kt`. `AudioFeatures.kt` provides system defaults like `samplesrate` and `blocksize`.
+The audio plugin preferences are managed by the `Preferences.kt`. The `AudioFeatures.kt` provides system defaults for `samplesrate` and `blocksize`.
