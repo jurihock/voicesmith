@@ -41,7 +41,8 @@ fun AudioManager.getAudioDevices(flags: Int, types: Map<Int, String>) : List<Aud
             .filter { it.isNotEmpty() }
             .joinToString(" ")
             .uppercase(),
-          device.sampleRates.sorted())
+          device.sampleRates.sorted(),
+          device.channelCounts.sorted())
       }
   }
 }
