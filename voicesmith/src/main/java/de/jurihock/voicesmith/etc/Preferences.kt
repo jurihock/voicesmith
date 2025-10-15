@@ -25,7 +25,7 @@ class Preferences(context: Context) {
     get() { return features.blocksize }
 
   var channels: Int
-    get() { return preferences.getInt(::channels.name, 2) }
+    get() { return preferences.getInt(::channels.name, 1) }
     set(value) { preferences.edit().putInt(::channels.name, value).commit() }
 
   var delay: Int

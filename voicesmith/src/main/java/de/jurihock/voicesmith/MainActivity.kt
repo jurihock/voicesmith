@@ -19,6 +19,7 @@ import de.jurihock.voicesmith.etc.Log
 import de.jurihock.voicesmith.etc.Preferences
 import de.jurihock.voicesmith.etc.Vibrator
 import de.jurihock.voicesmith.io.AudioDevices
+import de.jurihock.voicesmith.io.selectChannels
 import de.jurihock.voicesmith.io.selectInputDevice
 import de.jurihock.voicesmith.io.selectOutputDevice
 import de.jurihock.voicesmith.service.AudioServiceActivity
@@ -35,12 +36,14 @@ class MainActivity : AudioServiceActivity() {
   private val game by lazy { Game(this) }
   private val vibrator by lazy { Vibrator(this) }
 
+  private val channels = mutableIntStateOf(1)
   private val delay = mutableIntStateOf(0)
   private val pitch = mutableIntStateOf(0)
   private val timbre = mutableIntStateOf(0)
   private val state = mutableStateOf(false)
 
   private fun sync() {
+    channels.intValue = preferences.channels
     delay.intValue = preferences.delay
     pitch.intValue = preferences.pitch
     timbre.intValue = preferences.timbre
@@ -67,8 +70,12 @@ class MainActivity : AudioServiceActivity() {
                 modifier = Modifier.padding(Dp(UI.PADDING)),
                 textInput = getString(R.string.input),
                 textOutput = getString(R.string.output),
+                textMono = getString(R.string.mono),
+                textStereo = getString(R.string.stereo),
+                channels = channels,
                 onSelectInputDevice = { onSelectInputDevice() },
-                onSelectOutputDevice = { onSelectOutputDevice() })
+                onSelectOutputDevice = { onSelectOutputDevice() },
+                onSelectChannels = { onSelectChannels() })
             },
             bottomBar = {
               BigToggleButtonScreen(
@@ -138,6 +145,13 @@ class MainActivity : AudioServiceActivity() {
   private fun onSelectOutputDevice() {
     devices.selectOutputDevice(preferences.output) {
       preferences.output = it
+    }
+  }
+
+  private fun onSelectChannels() {
+    devices.selectChannels(preferences.channels) {
+      channels.intValue = it
+      preferences.channels = it
     }
   }
 

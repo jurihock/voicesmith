@@ -82,3 +82,20 @@ fun AudioDevices.selectOutputDevice(id: Int, callback: (id: Int) -> Unit) {
     show()
   }
 }
+
+fun AudioDevices.selectChannels(id: Int, callback: (id: Int) -> Unit) {
+  val names = arrayOf("MONO", "STEREO")
+  val oldindex = id - 1
+
+  with(AlertDialog.Builder(context)) {
+    setTitle(context.getString(R.string.select_channels))
+    setSingleChoiceItems(names, oldindex) { dialog, newindex ->
+      dialog.dismiss()
+      if (newindex != oldindex) {
+        callback(newindex + 1)
+      }
+    }
+    create()
+    show()
+  }
+}
