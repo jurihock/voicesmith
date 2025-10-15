@@ -14,7 +14,7 @@ public:
     frequency(frequency) {
   }
 
-  void reset(const float samplerate, const size_t blocksize) override {
+  void reset(const float samplerate, const size_t blocksize, const size_t channels) override {
     osc = Oscillator<float>(frequency, samplerate);
   }
 

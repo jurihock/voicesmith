@@ -20,7 +20,8 @@ public:
   void setup(const std::optional<int> input,
              const std::optional<int> output,
              const std::optional<float> samplerate,
-             const std::optional<size_t> blocksize) override;
+             const std::optional<size_t> blocksize,
+             const std::optional<size_t> channels) override;
 
   void set(const std::string& param,
            const std::string& value) override;
@@ -38,6 +39,7 @@ private:
     std::optional<int> output;
     std::optional<float> samplerate;
     std::optional<size_t> blocksize;
+    std::optional<size_t> channels;
 
   } config;
 

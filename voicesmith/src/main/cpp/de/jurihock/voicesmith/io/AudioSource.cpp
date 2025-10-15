@@ -5,9 +5,10 @@
 AudioSource::AudioSource(const std::optional<int> device,
                          const std::optional<float> samplerate,
                          const std::optional<size_t> blocksize,
+                         const std::optional<size_t> channels,
                          const std::shared_ptr<AudioEffect> effect,
                          const std::shared_ptr<AudioBlockQueue> queue) :
-  AudioStream(oboe::Direction::Input, device, samplerate, blocksize),
+  AudioStream(oboe::Direction::Input, device, samplerate, blocksize, channels),
   effect(effect),
   queue((queue != nullptr) ? queue : std::make_shared<AudioBlockQueue>()) {
   state.overflow.onflush([&](auto overflows){
@@ -42,7 +43,7 @@ void AudioSource::callback(const std::span<float> samples) {
 
 void AudioSource::onopen() {
   if (effect) {
-    effect->reset(samplerate(), blocksize());
+    effect->reset(samplerate(), blocksize(), channels());
   }
 }
 

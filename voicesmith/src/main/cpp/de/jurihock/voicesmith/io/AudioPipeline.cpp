@@ -34,13 +34,21 @@ void AudioPipeline::open() {
         source->blocksize(), sink->blocksize()));
   }
 
+  if (source->channels() != sink->channels()) {
+    throw std::runtime_error(
+      $("Unequal audio stream channel count: {0} (source), {1} (sink)!",
+        source->channels(), sink->channels()));
+  }
+
   const auto samplerate = source->samplerate();
   const auto blocksize = source->blocksize();
+  const auto channels = source->channels();
+
   const auto fifosize = static_cast<size_t>(
     std::ceil(1 /* seconds */ * samplerate / blocksize));
 
-  Log::i("Using samplerate={0} blocksize={1} fifosize={2}",
-         samplerate, blocksize, fifosize);
+  Log::i("Using samplerate={0} blocksize={1} fifosize={2} channels={3}",
+         samplerate, blocksize, fifosize, channels);
 
   source->fifo()->resize(fifosize, blocksize);
   sink->fifo()->resize(fifosize, blocksize);
@@ -54,7 +62,7 @@ void AudioPipeline::open() {
   });
 
   if (effect) {
-    effect->reset(samplerate, blocksize);
+    effect->reset(samplerate, blocksize, channels);
   }
 }
 

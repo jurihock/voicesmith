@@ -17,23 +17,39 @@ public:
     effects[1].template get<Type>(callback);
   }
 
-  void reset(const float samplerate, const size_t blocksize) override {
-    const size_t n = blocksize / 2;
+  void reset(const float samplerate, const size_t blocksize, const size_t channels) override {
+    mono = channels != 2;
 
-    effects[0].reset(samplerate, n);
-    effects[1].reset(samplerate, n);
+    if (channels == 1) {
+      effects[0].reset(samplerate, blocksize, channels);
+    }
+    else if (channels == 2) {
+      const size_t halfsize = blocksize / 2;
 
-    inputs[0].resize(n);
-    inputs[1].resize(n);
+      effects[0].reset(samplerate, halfsize, channels);
+      effects[1].reset(samplerate, halfsize, channels);
 
-    outputs[0].resize(n);
-    outputs[1].resize(n);
+      inputs[0].resize(halfsize);
+      inputs[1].resize(halfsize);
+
+      outputs[0].resize(halfsize);
+      outputs[1].resize(halfsize);
+    }
+    else {
+      throw std::invalid_argument(
+        "Invalid number of channels!");
+    }
   }
 
   void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override {
-    const size_t n = input.size() / 2;
+    if (mono) {
+      effects[0].apply(index, input, output);
+      return;
+    }
 
-    for (size_t i = 0; i < n; ++i) {
+    const size_t halfsize = input.size() / 2;
+
+    for (size_t i = 0; i < halfsize; ++i) {
       inputs[0][i] = input[i * 2 + 0];
       inputs[1][i] = input[i * 2 + 1];
     }
@@ -41,13 +57,15 @@ public:
     effects[0].apply(index, inputs[0], outputs[0]);
     effects[1].apply(index, inputs[1], outputs[1]);
 
-    for (size_t i = 0; i < n; ++i) {
+    for (size_t i = 0; i < halfsize; ++i) {
       output[i * 2 + 0] = outputs[0][i];
       output[i * 2 + 1] = outputs[1][i];
     }
   }
 
 private:
+
+  bool mono {false};
 
   std::array<ChainEffect<AudioEffects...>, 2> effects;
   std::array<std::vector<float>, 2> inputs;

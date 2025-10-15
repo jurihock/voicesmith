@@ -30,10 +30,10 @@ open class AudioPlugin(val name: String) : AutoCloseable, JnaCallback {
     }.onFailure { throw it }
   }
 
-  fun setup(input: Int, output: Int, samplerate: Int, blocksize: Int) {
+  fun setup(input: Int, output: Int, samplerate: Int, blocksize: Int, channels: Int) {
     res.result { res ->
       jna.voicesmith_plugin_setup(
-        input, output, samplerate, blocksize,
+        input, output, samplerate, blocksize, channels,
         ref, res)
     }.onFailure { throw it }
   }

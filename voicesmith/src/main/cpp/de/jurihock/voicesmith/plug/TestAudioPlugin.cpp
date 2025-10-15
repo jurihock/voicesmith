@@ -24,11 +24,13 @@ TestAudioPlugin::~TestAudioPlugin() {
 void TestAudioPlugin::setup(const std::optional<int> input,
                             const std::optional<int> output,
                             const std::optional<float> samplerate,
-                            const std::optional<size_t> blocksize) {
+                            const std::optional<size_t> blocksize,
+                            const std::optional<size_t> channels) {
   config.input = input;
   config.output = output;
   config.samplerate = samplerate;
   config.blocksize = blocksize;
+  config.channels = channels;
 }
 
 void TestAudioPlugin::set(const std::string& param,
@@ -62,8 +64,8 @@ void TestAudioPlugin::start() {
   // auto sweep = std::make_shared<SweepEffect>(1.f, std::make_pair(440.f, 2*440.f), 2.f);
   // auto vad = std::make_shared<VadEffect>();
 
-  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize);
-  auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize);
+  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize, config.channels);
+  auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize, config.channels);
   auto pipe = std::make_shared<AudioPipeline>(source, sink, state.effects);
 
   pipe->subscribe([&](const AudioEventCode code, const std::string& data){

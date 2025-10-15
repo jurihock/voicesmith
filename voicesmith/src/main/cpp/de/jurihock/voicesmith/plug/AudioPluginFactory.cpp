@@ -29,7 +29,7 @@ jna bool voicesmith_plugin_open(const char* name, jna_callback* callback, jna_po
   }
 }
 
-jna bool voicesmith_plugin_setup(int input, int output, int samplerate, int blocksize, jna_pointer* pointer, jna_result* result) {
+jna bool voicesmith_plugin_setup(int input, int output, int samplerate, int blocksize, int channels, jna_pointer* pointer, jna_result* result) {
   if (*pointer == 0) {
     return result->nok("Invalid plugin pointer!");
   }
@@ -44,7 +44,8 @@ jna bool voicesmith_plugin_setup(int input, int output, int samplerate, int bloc
       optional.template operator()<int>(input),
       optional.template operator()<int>(output),
       optional.template operator()<float>(samplerate),
-      optional.template operator()<size_t>(blocksize));
+      optional.template operator()<size_t>(blocksize),
+      optional.template operator()<size_t>(channels));
     return result->ok();
   }
   catch (const std::exception& exception) {

@@ -12,7 +12,7 @@ public:
 
   VadEffect(const int level = 0, const float window = 10e-3);
 
-  void reset(const float samplerate, const size_t blocksize) override;
+  void reset(const float samplerate, const size_t blocksize, const size_t channels) override;
   void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override;
 
 private:

@@ -33,9 +33,9 @@ public:
     callback(std::get<std::shared_ptr<Type>>(effects));
   }
 
-  void reset(const float samplerate, const size_t blocksize) override {
+  void reset(const float samplerate, const size_t blocksize, const size_t channels) override {
     for_each_invoke(effects, [&](auto&& effect){
-      effect->reset(samplerate, blocksize);
+      effect->reset(samplerate, blocksize, channels);
     });
     for_each_invoke(buffers, [&](auto&& buffer){
       buffer.resize(blocksize);
