@@ -11,6 +11,8 @@
 #endif
 
 typedef jlong jna_pointer;
+const jna_pointer jna_nullptr = 0;
+
 typedef void jna_callback(const int code, const char* data);
 
 struct jna_result {

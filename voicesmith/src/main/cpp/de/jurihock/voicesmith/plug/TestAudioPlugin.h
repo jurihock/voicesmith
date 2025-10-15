@@ -31,7 +31,7 @@ public:
 
 private:
 
-  jna_callback* const callback;
+  jna_callback* callback;
 
   struct {
 
