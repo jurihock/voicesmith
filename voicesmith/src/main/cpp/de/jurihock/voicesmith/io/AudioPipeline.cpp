@@ -44,11 +44,11 @@ void AudioPipeline::open() {
   const auto blocksize = source->blocksize();
   const auto channels = source->channels();
 
-  const auto fifosize = static_cast<size_t>(
-    std::ceil(1 /* seconds */ * samplerate / blocksize));
+  const auto fifosize = static_cast<size_t>(std::ceil(
+    (1.0 /* seconds */ * samplerate) / (1.0 * blocksize / channels)));
 
-  Log::i("Using samplerate={0} blocksize={1} fifosize={2} channels={3}",
-         samplerate, blocksize, fifosize, channels);
+  Log::i("Using samplerate={0} blocksize={1} channels={2} fifosize={3}",
+         samplerate, blocksize, channels, fifosize);
 
   source->fifo()->resize(fifosize, blocksize);
   sink->fifo()->resize(fifosize, blocksize);
