@@ -20,18 +20,22 @@ public:
   ChainEffect() :
     ChainEffect(std::make_shared<AudioEffects>()...) {}
 
-  ChainEffect(const std::shared_ptr<AudioEffects>&&... effects) :
+  explicit ChainEffect(const std::shared_ptr<AudioEffects>&&... effects) :
     effects(std::make_tuple(effects...)) {}
 
-  template<size_t Index>
-  inline auto get() const { return std::get<Index>(effects); }
+  // TODO function callback
+  // template<size_t Index>
+  // inline auto get() const { return std::get<Index>(effects); }
 
   template<typename Type>
-  inline auto get() const { return std::get<std::shared_ptr<Type>>(effects); }
+  inline void get(const std::function<void(std::shared_ptr<Type> effect)> callback) const
+  {
+    callback(std::get<std::shared_ptr<Type>>(effects));
+  }
 
-  void reset(const float samplerate, const size_t blocksize) override {
+  void reset(const float samplerate, const size_t blocksize, const size_t channels) override {
     for_each_invoke(effects, [&](auto&& effect){
-      effect->reset(samplerate, blocksize);
+      effect->reset(samplerate, blocksize, channels);
     });
     for_each_invoke(buffers, [&](auto&& buffer){
       buffer.resize(blocksize);

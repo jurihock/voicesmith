@@ -17,7 +17,7 @@ VadEffect::VadEffect(const int level, const float window) :
   WebRtcVad_set_mode(vad.get(), std::clamp(config.level, 0, 3));
 }
 
-void VadEffect::reset(const float samplerate, const size_t blocksize) {
+void VadEffect::reset(const float samplerate, const size_t blocksize, const size_t channels) {
   config.samplerate = samplerate;
   config.blocksize = blocksize;
 

@@ -7,7 +7,7 @@ void DelayEffect::delay(const std::string& value) {
   params.delay.min = std::stod(value) * 1e-3;
 }
 
-void DelayEffect::reset(const float samplerate, const size_t blocksize) {
+void DelayEffect::reset(const float samplerate, const size_t blocksize, const size_t channels) {
   std::unique_lock lock(mutex);
 
   config.samplerate = samplerate;

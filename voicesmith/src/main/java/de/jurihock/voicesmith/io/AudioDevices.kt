@@ -41,7 +41,8 @@ fun AudioManager.getAudioDevices(flags: Int, types: Map<Int, String>) : List<Aud
             .filter { it.isNotEmpty() }
             .joinToString(" ")
             .uppercase(),
-          device.sampleRates.sorted())
+          device.sampleRates.sorted(),
+          device.channelCounts.sorted())
       }
   }
 }
@@ -75,6 +76,23 @@ fun AudioDevices.selectOutputDevice(id: Int, callback: (id: Int) -> Unit) {
       dialog.dismiss()
       if (newindex != oldindex) {
         callback(devices[newindex].id)
+      }
+    }
+    create()
+    show()
+  }
+}
+
+fun AudioDevices.selectChannels(id: Int, callback: (id: Int) -> Unit) {
+  val names = arrayOf("MONO", "STEREO")
+  val oldindex = id - 1
+
+  with(AlertDialog.Builder(context)) {
+    setTitle(context.getString(R.string.select_channels))
+    setSingleChoiceItems(names, oldindex) { dialog, newindex ->
+      dialog.dismiss()
+      if (newindex != oldindex) {
+        callback(newindex + 1)
       }
     }
     create()

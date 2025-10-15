@@ -11,7 +11,8 @@ public:
   virtual void setup(const std::optional<int> input,
                      const std::optional<int> output,
                      const std::optional<float> samplerate,
-                     const std::optional<size_t> blocksize) = 0;
+                     const std::optional<size_t> blocksize,
+                     const std::optional<size_t> channels) = 0;
 
   virtual void set(const std::string& param,
                    const std::string& value) = 0;

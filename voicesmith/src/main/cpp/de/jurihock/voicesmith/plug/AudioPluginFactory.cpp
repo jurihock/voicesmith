@@ -14,7 +14,7 @@ TestAudioPlugin* make_plugin(const std::string& name, jna_callback* callback) {
 }
 
 jna bool voicesmith_plugin_open(const char* name, jna_callback* callback, jna_pointer* pointer, jna_result* result) {
-  if (*pointer != 0) {
+  if (*pointer != jna_nullptr) {
     return result->ok();
   }
 
@@ -24,13 +24,13 @@ jna bool voicesmith_plugin_open(const char* name, jna_callback* callback, jna_po
     return result->ok();
   }
   catch (const std::exception& exception) {
-    *pointer = 0;
+    *pointer = jna_nullptr;
     return result->nok(exception);
   }
 }
 
-jna bool voicesmith_plugin_setup(int input, int output, int samplerate, int blocksize, jna_pointer* pointer, jna_result* result) {
-  if (*pointer == 0) {
+jna bool voicesmith_plugin_setup(int input, int output, int samplerate, int blocksize, int channels, jna_pointer* pointer, jna_result* result) {
+  if (*pointer == jna_nullptr) {
     return result->nok("Invalid plugin pointer!");
   }
 
@@ -44,7 +44,8 @@ jna bool voicesmith_plugin_setup(int input, int output, int samplerate, int bloc
       optional.template operator()<int>(input),
       optional.template operator()<int>(output),
       optional.template operator()<float>(samplerate),
-      optional.template operator()<size_t>(blocksize));
+      optional.template operator()<size_t>(blocksize),
+      optional.template operator()<size_t>(channels));
     return result->ok();
   }
   catch (const std::exception& exception) {
@@ -53,7 +54,7 @@ jna bool voicesmith_plugin_setup(int input, int output, int samplerate, int bloc
 }
 
 jna bool voicesmith_plugin_set(const char* param, const char* value, jna_pointer* pointer, jna_result* result) {
-  if (*pointer == 0) {
+  if (*pointer == jna_nullptr) {
     return result->nok("Invalid plugin pointer!");
   }
 
@@ -68,7 +69,7 @@ jna bool voicesmith_plugin_set(const char* param, const char* value, jna_pointer
 }
 
 jna bool voicesmith_plugin_start(jna_pointer* pointer, jna_result* result) {
-  if (*pointer == 0) {
+  if (*pointer == jna_nullptr) {
     return result->ok();
   }
 
@@ -83,7 +84,7 @@ jna bool voicesmith_plugin_start(jna_pointer* pointer, jna_result* result) {
 }
 
 jna bool voicesmith_plugin_stop(jna_pointer* pointer, jna_result* result) {
-  if (*pointer == 0) {
+  if (*pointer == jna_nullptr) {
     return result->ok();
   }
 
@@ -98,18 +99,18 @@ jna bool voicesmith_plugin_stop(jna_pointer* pointer, jna_result* result) {
 }
 
 jna bool voicesmith_plugin_close(jna_pointer* pointer, jna_result* result) {
-  if (*pointer == 0) {
+  if (*pointer == jna_nullptr) {
     return result->ok();
   }
 
   try {
     auto plugin = reinterpret_cast<AudioPlugin*>(*pointer);
     delete plugin;
-    *pointer = 0;
+    *pointer = jna_nullptr;
     return result->ok();
   }
   catch (const std::exception& exception) {
-    *pointer = 0;
+    *pointer = jna_nullptr;
     return result->nok(exception);
   }
 }

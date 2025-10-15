@@ -6,7 +6,7 @@
 #include <voicesmith/io/AudioPipeline.h>
 #include <voicesmith/plug/AudioPlugin.h>
 
-#include <voicesmith/fx/ChainEffect.h>
+#include <voicesmith/fx/StereoChainEffect.h>
 #include <voicesmith/fx/DelayEffect.h>
 #include <voicesmith/fx/PitchTimbreShiftEffect.h>
 
@@ -20,7 +20,8 @@ public:
   void setup(const std::optional<int> input,
              const std::optional<int> output,
              const std::optional<float> samplerate,
-             const std::optional<size_t> blocksize) override;
+             const std::optional<size_t> blocksize,
+             const std::optional<size_t> channels) override;
 
   void set(const std::string& param,
            const std::string& value) override;
@@ -30,7 +31,7 @@ public:
 
 private:
 
-  jna_callback* const callback;
+  jna_callback* callback;
 
   struct {
 
@@ -38,13 +39,14 @@ private:
     std::optional<int> output;
     std::optional<float> samplerate;
     std::optional<size_t> blocksize;
+    std::optional<size_t> channels;
 
   } config;
 
   struct {
 
     std::shared_ptr<AudioPipeline> pipeline;
-    std::shared_ptr<ChainEffect<DelayEffect, PitchTimbreShiftEffect>> effects;
+    std::shared_ptr<StereoChainEffect<DelayEffect, PitchTimbreShiftEffect>> effects;
 
   } state;
 

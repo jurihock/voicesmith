@@ -14,6 +14,7 @@ public:
   AudioSink(const std::optional<int> device = std::nullopt,
             const std::optional<float> samplerate = std::nullopt,
             const std::optional<size_t> blocksize = std::nullopt,
+            const std::optional<size_t> channels = std::nullopt,
             const std::shared_ptr<AudioEffect> effect = nullptr,
             const std::shared_ptr<AudioBlockQueue> queue = nullptr);
 

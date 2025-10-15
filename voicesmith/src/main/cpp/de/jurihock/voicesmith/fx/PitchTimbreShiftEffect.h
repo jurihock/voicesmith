@@ -17,7 +17,7 @@ public:
   void pitch(const std::string& value);
   void timbre(const std::string& value);
 
-  void reset(const float samplerate, const size_t blocksize) override;
+  void reset(const float samplerate, const size_t blocksize, const size_t channels) override;
   void apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) override;
 
 private:

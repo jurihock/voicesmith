@@ -24,7 +24,7 @@ void PitchTimbreShiftEffect::timbre(const std::string& value) {
   }
 }
 
-void PitchTimbreShiftEffect::reset(const float samplerate, const size_t blocksize) {
+void PitchTimbreShiftEffect::reset(const float samplerate, const size_t blocksize, const size_t channels) {
   std::unique_lock lock(mutex);
 
   config.samplerate = samplerate;

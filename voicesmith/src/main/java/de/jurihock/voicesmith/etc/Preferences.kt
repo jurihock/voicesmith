@@ -24,6 +24,10 @@ class Preferences(context: Context) {
   val blocksize: Int
     get() { return features.blocksize }
 
+  var channels: Int
+    get() { return preferences.getInt(::channels.name, 1) }
+    set(value) { preferences.edit().putInt(::channels.name, value).commit() }
+
   var delay: Int
     get() { return preferences.getInt(::delay.name, 0) }
     set(value) { preferences.edit().putInt(::delay.name, value).commit() }

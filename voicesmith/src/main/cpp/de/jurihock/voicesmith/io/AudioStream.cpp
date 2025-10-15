@@ -5,7 +5,8 @@
 AudioStream::AudioStream(const oboe::Direction direction,
                          const std::optional<int> device,
                          const std::optional<float> samplerate,
-                         const std::optional<size_t> blocksize) :
+                         const std::optional<size_t> blocksize,
+                         const std::optional<size_t> channels) :
   direction(direction) {
   config.device.set = device;
   config.device.get = std::nullopt;
@@ -14,6 +15,9 @@ AudioStream::AudioStream(const oboe::Direction direction,
   config.blocksize.set = blocksize;
   config.blocksize.get = std::nullopt;
   config.blocksize.max = std::nullopt;
+  config.channels.set = channels;
+  config.channels.get = std::nullopt;
+  config.channels.max = std::nullopt;
   config.timeout = std::nullopt;
 
   if (direction == oboe::Direction::Input) {
@@ -51,6 +55,14 @@ size_t AudioStream::maxblocksize() const {
   return config.blocksize.max.value();
 }
 
+size_t AudioStream::channels() const {
+  return config.channels.get.value();
+}
+
+size_t AudioStream::maxchannels() const {
+  return config.channels.max.value();
+}
+
 std::chrono::milliseconds AudioStream::timeout() const {
   return config.timeout.value();
 }
@@ -72,11 +84,18 @@ void AudioStream::open() {
   builder.setDeviceId(static_cast<int32_t>(config.device.set.value_or(oboe::Unspecified)));
   builder.setSampleRate(static_cast<int32_t>(config.samplerate.set.value_or(oboe::Unspecified)));
   builder.setFramesPerDataCallback(static_cast<int32_t>(config.blocksize.set.value_or(oboe::Unspecified)));
+  builder.setChannelCount(static_cast<int32_t>(config.channels.set.value_or(oboe::Unspecified)));
 
-  builder.setChannelCount(oboe::ChannelCount::Mono);
-  builder.setChannelConversionAllowed(true);
+  if (builder.getChannelCount() > oboe::Unspecified) {
+    builder.setChannelConversionAllowed(true);
+  }
+  else {
+    builder.setChannelConversionAllowed(false);
+  }
+
   builder.setFormat(oboe::AudioFormat::Float);
   builder.setFormatConversionAllowed(true);
+
   builder.setPerformanceMode(oboe::PerformanceMode::LowLatency);
   builder.setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Fastest);
   builder.setSharingMode(oboe::SharingMode::Exclusive);
@@ -103,8 +122,10 @@ void AudioStream::open() {
 
   config.device.get = state.stream->getDeviceId();
   config.samplerate.get = state.stream->getSampleRate();
-  config.blocksize.get = state.stream->getFramesPerDataCallback();
-  config.blocksize.max = state.stream->getBufferSizeInFrames();
+  config.blocksize.get = state.stream->getFramesPerDataCallback() * state.stream->getChannelCount();
+  config.blocksize.max = state.stream->getBufferSizeInFrames() * state.stream->getChannelCount();
+  config.channels.get = state.stream->getChannelCount();
+  config.channels.max = state.stream->getHardwareChannelCount();
 
   const double seconds = 1.0 * state.stream->getBufferSizeInFrames() / state.stream->getSampleRate();
   const double milliseconds = std::max(1.0, seconds * 1e+3);
@@ -201,7 +222,7 @@ void AudioStream::dump() const {
 oboe::DataCallbackResult AudioStream::onAudioReady(oboe::AudioStream* stream, void* data, int32_t size) {
   const std::span<float> samples(
     static_cast<float*>(data),
-    static_cast<size_t>(size));
+    static_cast<size_t>(size * config.channels.get.value()));
 
   callback(samples);
 

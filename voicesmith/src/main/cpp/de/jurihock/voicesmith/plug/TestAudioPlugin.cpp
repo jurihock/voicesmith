@@ -14,7 +14,7 @@
 
 TestAudioPlugin::TestAudioPlugin(jna_callback* callback) :
   callback(callback) {
-  state.effects = std::make_shared<ChainEffect<DelayEffect, PitchTimbreShiftEffect>>();
+  state.effects = std::make_shared<StereoChainEffect<DelayEffect, PitchTimbreShiftEffect>>();
 }
 
 TestAudioPlugin::~TestAudioPlugin() {
@@ -24,23 +24,31 @@ TestAudioPlugin::~TestAudioPlugin() {
 void TestAudioPlugin::setup(const std::optional<int> input,
                             const std::optional<int> output,
                             const std::optional<float> samplerate,
-                            const std::optional<size_t> blocksize) {
+                            const std::optional<size_t> blocksize,
+                            const std::optional<size_t> channels) {
   config.input = input;
   config.output = output;
   config.samplerate = samplerate;
   config.blocksize = blocksize;
+  config.channels = channels;
 }
 
 void TestAudioPlugin::set(const std::string& param,
                           const std::string& value) {
   if (param == "delay") {
-    state.effects->get<DelayEffect>()->delay(value);
+    state.effects->get<DelayEffect>([value](auto effect){
+      effect->delay(value);
+    });
   }
   if (param == "pitch") {
-    state.effects->get<PitchTimbreShiftEffect>()->pitch(value);
+    state.effects->get<PitchTimbreShiftEffect>([value](auto effect){
+      effect->pitch(value);
+    });
   }
   if (param == "timbre") {
-    state.effects->get<PitchTimbreShiftEffect>()->timbre(value);
+    state.effects->get<PitchTimbreShiftEffect>([value](auto effect){
+      effect->timbre(value);
+    });
   }
 }
 
@@ -49,15 +57,15 @@ void TestAudioPlugin::start() {
     return;
   }
 
-  auto bypass = std::make_shared<BypassEffect>();
-  auto noise = std::make_shared<NoiseEffect>(1.f);
-  auto null = std::make_shared<NullEffect>();
-  auto sine = std::make_shared<SineEffect>(1.f, 440.f);
-  auto sweep = std::make_shared<SweepEffect>(1.f, std::make_pair(440.f, 2*440.f), 2.f);
-  auto vad = std::make_shared<VadEffect>();
+  // auto bypass = std::make_shared<BypassEffect>();
+  // auto noise = std::make_shared<NoiseEffect>(1.f);
+  // auto null = std::make_shared<NullEffect>();
+  // auto sine = std::make_shared<SineEffect>(1.f, 440.f);
+  // auto sweep = std::make_shared<SweepEffect>(1.f, std::make_pair(440.f, 2*440.f), 2.f);
+  // auto vad = std::make_shared<VadEffect>();
 
-  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize, vad);
-  auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize);
+  auto source = std::make_shared<AudioSource>(config.input, config.samplerate, config.blocksize, config.channels);
+  auto sink = std::make_shared<AudioSink>(config.output, config.samplerate, config.blocksize, config.channels);
   auto pipe = std::make_shared<AudioPipeline>(source, sink, state.effects);
 
   pipe->subscribe([&](const AudioEventCode code, const std::string& data){
