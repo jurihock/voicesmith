@@ -40,7 +40,7 @@ The `reset` callback is triggered once at startup. It provides the audio stream 
 
 The `apply` callback is triggered on data block processing. The `input` and `output` buffers are of the same length and address the normalized mono samples.
 
-Use the `ChainEffect` to concatenate multiple audio effects. In case of stereo use `StereoChainEffect`. It will allocate each audio effect instance twice. The `StereoChainEffect` will also handle the signal decoding and channel routing.
+Use the `StereoChainEffect` to combine multiple audio effects. It can handle both mono and stereo signal paths.
 
 # Audio Plugin
 
