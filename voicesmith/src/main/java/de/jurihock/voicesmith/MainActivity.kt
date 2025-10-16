@@ -95,7 +95,7 @@ class MainActivity : AudioServiceActivity() {
               Spacer(modifier = Modifier.height(Dp(UI.PADDING)))
               IntParameterScreen(
                 name = getString(R.string.pitch), unit = getString(R.string.semitones), value = pitch,
-                min = -12, max = +12, inc = 1,
+                min = -60, max = 0, inc = 12,
                 onChange = {
                   pitch.intValue = it
                   preferences.pitch = it

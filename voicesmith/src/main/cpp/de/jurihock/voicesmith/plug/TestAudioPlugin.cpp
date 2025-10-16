@@ -14,7 +14,7 @@
 
 TestAudioPlugin::TestAudioPlugin(jna_callback* callback) :
   callback(callback) {
-  state.effects = std::make_shared<StereoChainEffect<DelayEffect, PitchTimbreShiftEffect>>();
+  state.effects = std::make_shared<StereoChainEffect<DelayEffect, PitchShiftEffect>>();
 }
 
 TestAudioPlugin::~TestAudioPlugin() {
@@ -41,15 +41,20 @@ void TestAudioPlugin::set(const std::string& param,
     });
   }
   if (param == "pitch") {
-    state.effects->get<PitchTimbreShiftEffect>([value](auto effect){
+    state.effects->get<PitchShiftEffect>([value](auto effect){
       effect->pitch(value);
     });
   }
-  if (param == "timbre") {
-    state.effects->get<PitchTimbreShiftEffect>([value](auto effect){
-      effect->timbre(value);
-    });
-  }
+//  if (param == "pitch") {
+//    state.effects->get<PitchTimbreShiftEffect>([value](auto effect){
+//      effect->pitch(value);
+//    });
+//  }
+//  if (param == "timbre") {
+//    state.effects->get<PitchTimbreShiftEffect>([value](auto effect){
+//      effect->timbre(value);
+//    });
+//  }
 }
 
 void TestAudioPlugin::start() {
