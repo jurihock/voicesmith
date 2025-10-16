@@ -19,6 +19,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/cmake/fmt.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/oboe.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/pffft.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/pocketfft.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/qdft.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/readerwriterqueue.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/stftpitchshift.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/vad.cmake")
@@ -31,6 +32,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
   oboe
   pffft
   pocketfft
+  qdft
   readerwriterqueue
   stftpitchshift
   vad)
