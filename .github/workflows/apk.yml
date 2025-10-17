@@ -25,9 +25,9 @@ jobs:
 
     - name: Decode keystore file
       run: |
-        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/local.keystore
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > local.keystore
 
-    - name: Build signed APK
+    - name: Build APK
       run: |
         ./gradlew assembleRelease \
           -Pandroid.injected.signing.store.file=${{ github.workspace }}/local.keystore \
@@ -35,11 +35,15 @@ jobs:
           -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
           -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
 
-    - name: Upload signed APK
+    - name: Rename APK
+      run: |
+        mv voicesmith/build/outputs/apk/release/voicesmith-release.apk voicesmith-latest.apk
+
+    - name: Upload APK
       uses: actions/upload-artifact@master
       with:
-        name: voicesmith-release-apk
-        path: voicesmith/build/outputs/apk/release/voicesmith-release.apk
+        name: voicesmith-latest-apk
+        path: voicesmith-latest.apk
 
   upload-release-artifact:
 
@@ -51,15 +55,19 @@ jobs:
 
     steps:
 
-    - name: Download signed APK
+    - name: Download APK
       uses: actions/download-artifact@master
       with:
-        name: voicesmith-release-apk
-        path: ./release-artifacts
+        name: voicesmith-latest-apk
+        path: ${{ github.workspace }}
 
-    - name: Upload signed APK to GitHub release
+    - name: Rename APK
+      run: |
+        mv voicesmith-latest.apk voicesmith-${{ github.event.release.tag_name }}.apk
+
+    - name: Upload APK to GitHub release
       uses: softprops/action-gh-release@master
       with:
-        files: release-artifacts/voicesmith-release.apk
+        files: voicesmith-${{ github.event.release.tag_name }}.apk
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
