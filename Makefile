@@ -9,6 +9,7 @@ CODE ?= $(shell bash -c 'read -p "CODE> " CODE; echo $$CODE')
 help:
 	@echo build
 	@echo clean
+	@echo apk
 	@echo dev
 	@echo pair
 	@echo log
@@ -18,6 +19,10 @@ build:
 
 clean:
 	@./gradlew clean
+
+apk:
+	@./gradlew assembleRelease
+	@ls ./voicesmith/build/outputs/apk/release/*.apk
 
 dev:
 	@$(ADB) devices
