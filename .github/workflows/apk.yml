@@ -37,5 +37,5 @@ jobs:
     - name: Upload signed APK
       uses: actions/upload-artifact@master
       with:
-        name: voicesmith-latest-signed-apk
-        path: voicesmith/build/outputs/apk/release/*.apk
+        name: voicesmith-release-apk
+        path: voicesmith/build/outputs/apk/release/voicesmith-release.apk
