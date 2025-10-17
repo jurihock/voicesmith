@@ -17,6 +17,10 @@
 val sdk by extra(intArrayOf(33, 34, 36)) // minSdk <= targetSdk <= compileSdk
 val jvm by extra(1.8) // sourceCompatibility == targetCompatibility == jvmTarget
 
+// release version information
+val releaseVersionName by extra("3.0")
+val releaseVersionCode by extra(13)
+
 plugins {
   alias(libs.plugins.android.gradle.plugin)
   alias(libs.plugins.jetbrains.kotlin.android)
@@ -28,8 +32,8 @@ android {
 
   defaultConfig {
     applicationId = "de.jurihock.voicesmith"
-    versionName = "3.0"
-    versionCode = 13
+    versionName = releaseVersionName
+    versionCode = releaseVersionCode
     minSdk = sdk[0]
     targetSdk = sdk[1]
     ndk {
