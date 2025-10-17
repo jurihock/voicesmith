@@ -29,12 +29,12 @@ void PitchShiftEffect::reset(const float samplerate, const size_t blocksize, con
 void PitchShiftEffect::apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) {
   std::unique_lock lock(mutex);
 
-  const fft_t rayleigh = 0;
-  const fft_t nyquist = config.samplerate / 2;
+  const auto rayleigh = static_cast<fft_t>(0);
+  const auto nyquist = static_cast<fft_t>(config.samplerate / 2);
+  const auto pitch = static_cast<fft_t>(params.pitch);
 
   auto& [qdft, vocoder] = state;
   auto& [dft, magns, freqs] = buffer;
-  auto& pitch = params.pitch;
 
   for (size_t i = 0; i < input.size(); ++i) {
     qdft->qdft(input[i], dft.data());
