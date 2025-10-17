@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  build:
+  build-signed-apk:
 
     runs-on: ubuntu-latest
 
@@ -45,11 +45,11 @@ jobs:
         name: voicesmith-latest-apk
         path: voicesmith-latest.apk
 
-  upload-release-artifact:
+  upload-release-apk:
 
     if: github.event_name == 'release'
 
-    needs: build
+    needs: build-signed-apk
 
     runs-on: ubuntu-latest
 
