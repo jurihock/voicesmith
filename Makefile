@@ -1,9 +1,10 @@
-.PHONY: help build clean dev pair log key
+.PHONY: help build clean dev pair log key props
 
 KEYDNA = CN=Juergen Hock, O=Voicesmith
 KEYARG = -keyalg RSA -keysize 2048 -validity 12345
 
-ADB = ~/Library/Android/sdk/platform-tools/adb
+SDK = ~/Library/Android/sdk
+ADB = $(SDK)/platform-tools/adb
 
 HOST ?= $(shell bash -c 'read -p "HOST> " HOST; echo 192.168.178.$$HOST')
 PORT ?= $(shell bash -c 'read -p "PORT> " PORT; echo $$PORT')
@@ -16,6 +17,7 @@ help:
 	@echo pair
 	@echo log
 	@echo key
+	@echo props
 
 build:
 	@./gradlew assembleRelease lintRelease
@@ -34,7 +36,10 @@ log:
 	@$(ADB) logcat -v color voicesmith.java:D voicesmith.cpp:D *:S
 
 key:
-	@keytool -genkeypair -keystore local.keystore -alias github-jurihock-voicesmith -dname "$(KEYDNA)" $(KEYARG)
+	@keytool -genkeypair -keystore local.keystore -alias github-jurihock-voicesmith -dname '$(KEYDNA)' $(KEYARG)
 
 key-base64:
 	@base64 -i local.keystore
+
+props:
+	@realpath $(SDK) | sed 's/^/sdk.dir=/' > local.properties
