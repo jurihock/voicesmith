@@ -7,6 +7,10 @@
 // - AGP >= 8.13.0
 //   https://developer.android.com/build/releases/gradle-plugin#compatibility
 
+// keep Gradle wrapper in sync with AGP
+// ./gradlew wrapper --gradle-version 8.13
+// https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
+
 // Android SDK and JVM compatibility considerations:
 // - Oboe with AAudio API requires at least SDK 27 (consider as minSdk, see also issue #33)
 // - Samsung Galaxy A13 5G is our main device running Android 14 (consider as targetSdk)
