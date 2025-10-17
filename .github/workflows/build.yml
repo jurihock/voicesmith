@@ -16,8 +16,11 @@ jobs:
     - name: Setup
       uses: actions/setup-java@master
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'oracle'
 
     - name: Build
-      run: ./gradlew build --no-daemon
+      run: ./gradlew assembleRelease
+
+    - name: Lint
+      run: ./gradlew lintRelease

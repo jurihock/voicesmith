@@ -1,0 +1,73 @@
+name: apk.yml
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+jobs:
+
+  build-signed-apk:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Setup
+      uses: actions/setup-java@master
+      with:
+        java-version: '21'
+        distribution: 'oracle'
+
+    - name: Decode keystore file
+      run: |
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > local.keystore
+
+    - name: Build APK
+      run: |
+        ./gradlew assembleRelease \
+          -Pandroid.injected.signing.store.file=${{ github.workspace }}/local.keystore \
+          -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+          -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+          -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+
+    - name: Rename APK
+      run: |
+        mv voicesmith/build/outputs/apk/release/voicesmith-release.apk voicesmith-latest.apk
+
+    - name: Upload APK
+      uses: actions/upload-artifact@master
+      with:
+        name: voicesmith-latest-apk
+        path: voicesmith-latest.apk
+
+  upload-release-apk:
+
+    if: github.event_name == 'release'
+
+    needs: build-signed-apk
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Download APK
+      uses: actions/download-artifact@master
+      with:
+        name: voicesmith-latest-apk
+        path: ${{ github.workspace }}
+
+    - name: Rename APK
+      run: |
+        mv voicesmith-latest.apk voicesmith-${{ github.event.release.tag_name }}.apk
+
+    - name: Upload APK to GitHub release
+      uses: softprops/action-gh-release@master
+      with:
+        files: voicesmith-${{ github.event.release.tag_name }}.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

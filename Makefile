@@ -1,4 +1,7 @@
-.PHONY: help build clean dev pair log
+.PHONY: help build clean dev pair log key
+
+KEYDNA = CN=Juergen Hock, O=Voicesmith
+KEYARG = -keyalg RSA -keysize 2048 -validity 12345
 
 ADB = ~/Library/Android/sdk/platform-tools/adb
 
@@ -12,9 +15,10 @@ help:
 	@echo dev
 	@echo pair
 	@echo log
+	@echo key
 
 build:
-	@./gradlew build
+	@./gradlew assembleRelease lintRelease
 
 clean:
 	@./gradlew clean
@@ -28,3 +32,9 @@ pair:
 log:
 	@$(ADB) logcat -c
 	@$(ADB) logcat -v color voicesmith.java:D voicesmith.cpp:D *:S
+
+key:
+	@keytool -genkeypair -keystore local.keystore -alias github-jurihock-voicesmith -dname "$(KEYDNA)" $(KEYARG)
+
+key-base64:
+	@base64 -i local.keystore

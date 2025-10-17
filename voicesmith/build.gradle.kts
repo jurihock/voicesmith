@@ -7,6 +7,10 @@
 // - AGP >= 8.13.0
 //   https://developer.android.com/build/releases/gradle-plugin#compatibility
 
+// keep Gradle wrapper in sync with AGP
+// ./gradlew wrapper --gradle-version 8.13
+// https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:upgrading_wrapper
+
 // Android SDK and JVM compatibility considerations:
 // - Oboe with AAudio API requires at least SDK 27 (consider as minSdk, see also issue #33)
 // - Samsung Galaxy A13 5G is our main device running Android 14 (consider as targetSdk)
@@ -16,6 +20,10 @@
 //   https://developer.android.com/studio/write/java8-support
 val sdk by extra(intArrayOf(33, 34, 36)) // minSdk <= targetSdk <= compileSdk
 val jvm by extra(1.8) // sourceCompatibility == targetCompatibility == jvmTarget
+
+// release version information
+val releaseVersionName by extra("3.0")
+val releaseVersionCode by extra(13)
 
 plugins {
   alias(libs.plugins.android.gradle.plugin)
@@ -28,8 +36,8 @@ android {
 
   defaultConfig {
     applicationId = "de.jurihock.voicesmith"
-    versionName = "3.0"
-    versionCode = 13
+    versionName = releaseVersionName
+    versionCode = releaseVersionCode
     minSdk = sdk[0]
     targetSdk = sdk[1]
     ndk {

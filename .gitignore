@@ -5,6 +5,7 @@
 .kotlin/
 
 build/
+local.keystore
 local.properties
 
 .DS_Store
