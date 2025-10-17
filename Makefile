@@ -36,10 +36,10 @@ log:
 	@$(ADB) logcat -v color voicesmith.java:D voicesmith.cpp:D *:S
 
 key:
-	@keytool -genkeypair -keystore local.keystore -alias github-jurihock-voicesmith -dname '$(KEYDNA)' $(KEYARG)
+	@keytool -genkeypair -keystore secret.keystore -alias github-jurihock-voicesmith -dname '$(KEYDNA)' $(KEYARG)
 
 key-base64:
-	@base64 -i local.keystore
+	@base64 -i secret.keystore
 
 props:
 	@realpath $(SDK) | sed 's/^/sdk.dir=/' > local.properties
