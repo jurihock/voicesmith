@@ -30,14 +30,14 @@ private:
   } params;
 
   struct {
-    std::shared_ptr<QDFT> qdft;
-    std::shared_ptr<Vocoder> vocoder;
+    std::shared_ptr<QDFT<fft_t>> qdft;
+    std::shared_ptr<Vocoder<fft_t>> vocoder;
   } state;
 
   struct {
-    std::vector<std::complex<double>> dft;
-    std::vector<double> magns;
-    std::vector<double> freqs;
+    std::vector<std::complex<fft_t>> dft;
+    std::vector<fft_t> magns;
+    std::vector<fft_t> freqs;
   } buffer;
 
   std::mutex mutex;

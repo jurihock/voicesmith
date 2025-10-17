@@ -2,4 +2,5 @@
 
 #include <qdft/qdft.h>
 
-using QDFT = qdft::QDFT<float, double>;
+template<typename T>
+using QDFT = qdft::QDFT<float, T>;

@@ -14,8 +14,8 @@ void PitchShiftEffect::reset(const float samplerate, const size_t blocksize, con
   config.bandwidth = { 10e3, samplerate / 2 };
   config.resolution = 24;
 
-  state.qdft = std::make_shared<QDFT>(config.samplerate, config.bandwidth, config.resolution);
-  state.vocoder = std::make_shared<Vocoder>(config.samplerate, state.qdft->size());
+  state.qdft = std::make_shared<QDFT<fft_t>>(config.samplerate, config.bandwidth, config.resolution);
+  state.vocoder = std::make_shared<Vocoder<fft_t>>(config.samplerate, state.qdft->size());
 
   buffer.dft.resize(state.qdft->size());
   buffer.magns.resize(state.qdft->size());
@@ -29,8 +29,8 @@ void PitchShiftEffect::reset(const float samplerate, const size_t blocksize, con
 void PitchShiftEffect::apply(const uint64_t index, const std::span<const float> input, const std::span<float> output) {
   std::unique_lock lock(mutex);
 
-  const double rayleigh = 0;
-  const double nyquist = config.samplerate / 2;
+  const fft_t rayleigh = 0;
+  const fft_t nyquist = config.samplerate / 2;
 
   auto& [qdft, vocoder] = state;
   auto& [dft, magns, freqs] = buffer;
