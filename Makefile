@@ -31,6 +31,9 @@ apk:
 key:
 	@keytool -genkeypair -keystore local.keystore -alias github-jurihock-voicesmith -dname "$(KEYDNA)" $(KEYARG)
 
+key-base64:
+	@base64 -i local.keystore
+
 dev:
 	@$(ADB) devices
 
