@@ -1,0 +1,41 @@
+name: apk.yml
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Setup
+      uses: actions/setup-java@master
+      with:
+        java-version: '17'
+        distribution: 'oracle'
+
+    - name: Decode keystore file
+      run: |
+        echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > local.keystore
+
+    - name: Build signed APK
+      run: |
+        ./gradlew assembleRelease \
+          -Pandroid.injected.signing.store.file=local.keystore \
+          -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+          -Pandroid.injected.signing.key.alias=${{ secrets.KEY_ALIAS }} \
+          -Pandroid.injected.signing.key.password=${{ secrets.KEY_PASSWORD }}
+
+    - name: Upload signed APK
+      uses: actions/upload-artifact@master
+      with:
+        name: voicesmith-latest-signed-apk
+        path: voicesmith/build/outputs/apk/release/*.apk
