@@ -44,15 +44,7 @@ void PitchShiftEffect::apply(const uint64_t index, const std::span<const float> 
       auto magn = magns[j];
       auto freq = freqs[j] * pitch;
 
-      if (!std::isfinite(freq)) {
-        magn = 0;
-        freq = 0;
-      }
-      else if (freq < rayleigh) {
-        magn = 0;
-        freq = 0;
-      }
-      else if (freq > nyquist) {
+      if (!std::isfinite(freq) || freq < rayleigh || freq > nyquist) {
         magn = 0;
         freq = 0;
       }
