@@ -19,7 +19,7 @@ jobs:
     - name: Setup
       uses: actions/setup-java@master
       with:
-        java-version: '17'
+        java-version: '25'
         distribution: 'oracle'
 
     - name: Decode keystore file
