@@ -1,4 +1,4 @@
-.PHONY: help build clean apk key dev pair log
+.PHONY: help build clean dev pair log key
 
 KEYDNA = CN=Juergen Hock, O=Voicesmith
 KEYARG = -keyalg RSA -keysize 2048 -validity 12345
@@ -12,27 +12,16 @@ CODE ?= $(shell bash -c 'read -p "CODE> " CODE; echo $$CODE')
 help:
 	@echo build
 	@echo clean
-	@echo apk
-	@echo key
 	@echo dev
 	@echo pair
 	@echo log
+	@echo key
 
 build:
-	@./gradlew build
+	@./gradlew assembleRelease lintRelease
 
 clean:
 	@./gradlew clean
-
-apk:
-	@./gradlew assembleRelease
-	@ls ./voicesmith/build/outputs/apk/release/*.apk
-
-key:
-	@keytool -genkeypair -keystore local.keystore -alias github-jurihock-voicesmith -dname "$(KEYDNA)" $(KEYARG)
-
-key-base64:
-	@base64 -i local.keystore
 
 dev:
 	@$(ADB) devices
@@ -43,3 +32,9 @@ pair:
 log:
 	@$(ADB) logcat -c
 	@$(ADB) logcat -v color voicesmith.java:D voicesmith.cpp:D *:S
+
+key:
+	@keytool -genkeypair -keystore local.keystore -alias github-jurihock-voicesmith -dname "$(KEYDNA)" $(KEYARG)
+
+key-base64:
+	@base64 -i local.keystore

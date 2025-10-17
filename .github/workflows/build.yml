@@ -20,4 +20,7 @@ jobs:
         distribution: 'oracle'
 
     - name: Build
-      run: ./gradlew build --no-daemon
+      run: ./gradlew assembleRelease
+
+    - name: Lint
+      run: ./gradlew lintRelease
