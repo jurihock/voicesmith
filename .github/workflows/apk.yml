@@ -2,7 +2,9 @@ name: apk.yml
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+  release:
+    types: [published]
 
 jobs:
 
@@ -38,3 +40,26 @@ jobs:
       with:
         name: voicesmith-release-apk
         path: voicesmith/build/outputs/apk/release/voicesmith-release.apk
+
+  upload-release-artifact:
+
+    if: github.event_name == 'release'
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Download signed APK
+      uses: actions/download-artifact@master
+      with:
+        name: voicesmith-release-apk
+        path: ./release-artifacts
+
+    - name: Upload signed APK to GitHub release
+      uses: softprops/action-gh-release@master
+      with:
+        files: release-artifacts/voicesmith-release.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
