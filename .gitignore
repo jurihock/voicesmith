@@ -5,8 +5,8 @@
 .kotlin/
 
 build/
-local.keystore
 local.properties
+secret.keystore
 
 .DS_Store
 Thumbs.db
