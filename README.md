@@ -21,7 +21,9 @@ There is no official support for other devices or operating system versions.
 
 ## Installation
 
-Unfortunately, there are currently no plans to publish it on app stores such as _F-Droid_ or _Google Play_.
+<a href="https://f-droid.org/packages/de.jurihock.voicesmith/"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80"></a>
+  
+Unfortunately, there are currently no plans to publish it on _Google Play_.
 Please use the _APK_ file provided in the [releases](https://github.com/jurihock/voicesmith/releases) or attached to the [latest commits](https://github.com/jurihock/voicesmith/actions/workflows/apk.yml).
 
 [How to Download & Install an APK on Android?](https://www.wikihow.com/Install-APK-Files-on-Android)
