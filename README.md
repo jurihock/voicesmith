@@ -23,11 +23,11 @@ There is no official support for other devices or operating system versions.
 
 Feel free to get the latest version on _F-Droid_. Unfortunately, there are currently no plans to publish it on _Google Play_.
 
-<p style="text-align:center"><a href="https://f-droid.org/packages/de.jurihock.voicesmith"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get Voicesmith on F-Droid" height="55"></a></p>
+<p align="center"><a href="https://f-droid.org/packages/de.jurihock.voicesmith"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get Voicesmith on F-Droid" height="55"></a></p>
 
 Otherwise manually install the _APK_ file provided in the [releases](https://github.com/jurihock/voicesmith/releases) or attached to the [latest commits](https://github.com/jurihock/voicesmith/actions/workflows/apk.yml).
 
-<p style="text-align:center"><a href="https://www.wikihow.com/Install-APK-Files-on-Android">How to Download & Install an APK on Android?</a></p>
+<p align="center"><a href="https://www.wikihow.com/Install-APK-Files-on-Android">How to Download & Install an APK on Android?</a></p>
 
 ## Building from sources
 
