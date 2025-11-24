@@ -9,8 +9,8 @@
 Voicesmith is a voice changer app for Android OS. Internally it utilizes the [stftPitchShift](https://github.com/jurihock/stftPitchShift) engine to perform pitch and timbre shifting in real time.
 
 > [!NOTE]
-> The current working copy, which is not yet complete, is on the [main](https://github.com/jurihock/voicesmith/tree/main) branch of this repository.
-> The previous version of this app is still available on the [master](https://github.com/jurihock/voicesmith/tree/master) branch.
+> The latest app version is on the [main](https://github.com/jurihock/voicesmith/tree/main) branch.
+> The previous app version remains available on the [master](https://github.com/jurihock/voicesmith/tree/master) branch.
 
 ## Compatibility
 
@@ -21,10 +21,13 @@ There is no official support for other devices or operating system versions.
 
 ## Installation
 
-Unfortunately, there are currently no plans to publish it on app stores such as _F-Droid_ or _Google Play_.
-Please use the _APK_ file provided in the [releases](https://github.com/jurihock/voicesmith/releases) or attached to the [latest commits](https://github.com/jurihock/voicesmith/actions/workflows/apk.yml).
+Feel free to get the latest version on _F-Droid_. Unfortunately, there are currently no plans to publish it on _Google Play_.
 
-[How to Download & Install an APK on Android?](https://www.wikihow.com/Install-APK-Files-on-Android)
+<p style="text-align:center"><a href="https://f-droid.org/packages/de.jurihock.voicesmith"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get Voicesmith on F-Droid" height="55"></a></p>
+
+Otherwise manually install the _APK_ file provided in the [releases](https://github.com/jurihock/voicesmith/releases) or attached to the [latest commits](https://github.com/jurihock/voicesmith/actions/workflows/apk.yml).
+
+<p style="text-align:center"><a href="https://www.wikihow.com/Install-APK-Files-on-Android">How to Download & Install an APK on Android?</a></p>
 
 ## Building from sources
 
