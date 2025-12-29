@@ -40,6 +40,10 @@ class Preferences(context: Context) {
     get() { return preferences.getInt(::timbre.name, 0) }
     set(value) { preferences.edit().putInt(::timbre.name, value).commit() }
 
+  var clonedApps: Set<String>
+    get() { return preferences.getStringSet(::clonedApps.name, emptySet()) ?: emptySet() }
+    set(value) { preferences.edit().putStringSet(::clonedApps.name, value).commit() }
+
   fun register(listener: OnSharedPreferenceChangeListener) {
     preferences.registerOnSharedPreferenceChangeListener(listener)
   }

@@ -11,10 +11,12 @@
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
   <uses-permission android:name="android.permission.RECORD_AUDIO" />
   <uses-permission android:name="android.permission.VIBRATE" />
+  <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
   <application android:name="de.jurihock.voicesmith.Main"
                android:label="@string/title"
-               android:icon="@drawable/voicesmith"
+               android:icon="@drawable/blackbox"
                android:appCategory="game">
 
     <activity android:name="de.jurihock.voicesmith.MainActivity"
@@ -27,6 +29,9 @@
 
     <service android:name="de.jurihock.voicesmith.service.AudioService"
              android:foregroundServiceType="microphone"
+             android:exported="false" />
+
+    <service android:name="de.jurihock.voicesmith.service.OverlayService"
              android:exported="false" />
 
   </application>
